@@ -51,7 +51,6 @@ public class ClassUtil {
 	/**
 	 * @param  classloader            classloader
 	 * @return the 'class-annotation' mapping
-	 * @throws Exception              exception
 	 */
 	public AnnotationClassQuerier scan(ClassLoader classloader) {
 

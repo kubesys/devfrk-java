@@ -10,9 +10,7 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<groupId>io.github.kubesys</groupId>
 	<artifactId>nuwa</artifactId>
-	<version>${project.version}</version>
 	<packaging>jar</packaging>
 
 	<name>nuwa</name>

@@ -31,7 +31,7 @@ import javax.net.ssl.*;
  * This class is used to configure the https parameters for each incoming https
  * connection on a HttpsServer. Applications need to override the
  * {@link #configure(HttpsParameters)} method in order to change the default
- * configuration. The following <a name="example">example</a> shows how this may
+ * configuration. The following example shows how this may
  * be done: SSLContext sslContext = SSLContext.getInstance (....); HttpsServer
  * server = HttpsServer.create();
  *

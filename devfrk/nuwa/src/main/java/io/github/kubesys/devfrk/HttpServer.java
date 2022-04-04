@@ -49,7 +49,7 @@ import io.github.kubesys.devfrk.httpserver.HttpsServer;
  * {@link java.util.concurrent.Executor} object. If none is provided a default
  * implementation is used.
  * <p>
- * <a name="mapping_description"></a> <b>Mapping request URIs to HttpContext
+ *  <b>Mapping request URIs to HttpContext
  * paths</b>
  * <p>
  * When a HTTP request is received, the appropriate HttpContext (and handler) is
