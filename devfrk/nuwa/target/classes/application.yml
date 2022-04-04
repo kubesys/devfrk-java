@@ -1,6 +1,0 @@
-# General configuration
-server:
-  port: 8088
-  servlet:
-    contextPath: /httpfrk
-    
