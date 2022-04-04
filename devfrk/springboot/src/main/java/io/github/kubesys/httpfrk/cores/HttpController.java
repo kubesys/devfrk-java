@@ -55,6 +55,9 @@ public class HttpController {
 	 */
 	@Autowired
 	protected HttpHandlerManager handlers;
+	
+	@Autowired
+	protected HttpAPIDoc apiDoc;
 
 	@Autowired
 	protected HttpContext context;
@@ -148,10 +151,9 @@ public class HttpController {
 	 * @return the {@code HttpBodyHandler} result. In fact, it may be an exception.
 	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
 	 */
-	@RequestMapping(value = { "/error/error" })
-	public @ResponseBody String defaultError() throws Exception {
-		return ((HttpResponse) context.getBean("resp")).fail(
-				new Exception("only support " + HttpHandlerManager.servletHandlers.keySet()));
+	@RequestMapping(value = { "/v3/api" })
+	public @ResponseBody String openAPI() throws Exception {
+		return apiDoc.getAPIDoc();
 	}
 
 	

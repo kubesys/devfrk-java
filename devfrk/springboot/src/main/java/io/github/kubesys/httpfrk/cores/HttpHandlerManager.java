@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -25,6 +26,9 @@ public final class HttpHandlerManager  {
 	 */
 	public static Map<String, Method> servletHandlers = new HashMap<String, Method>();
 	
+	@Autowired
+	protected HttpAPIDoc apidoc;
+	
 	/**
 	 * services 
 	 */
@@ -35,9 +39,11 @@ public final class HttpHandlerManager  {
 	 * @param serviceName     service name
 	 */
 	public void addHandler(String serviceModule, Method serviceName) {
-		servletHandlers.put(serviceModule + "/" + 
-				serviceName.getName(), serviceName);
-		services.add(serviceModule + "/" + serviceName.getName());
+		String servicePath = serviceModule + "/" + 
+				serviceName.getName();
+		servletHandlers.put(servicePath, serviceName);
+		services.add(servicePath);
+		apidoc.addPath("post", servicePath, serviceName);
 	}
 
 	/**
