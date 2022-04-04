@@ -1,0 +1,7 @@
+io.github.kubesys.devfrk
+io.github.kubesys.devfrk.annotation
+io.github.kubesys.devfrk.configs
+io.github.kubesys.devfrk.httpserver
+io.github.kubesys.devfrk.httpserver.impl
+io.github.kubesys.devfrk.mgr
+io.github.kubesys.devfrk.utils

@@ -20,7 +20,6 @@
 
                  <modules>
                           <module>springboot</module>
-                          <module>nuwa</module>
                  </modules>
 
 </project>
