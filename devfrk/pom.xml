@@ -20,7 +20,7 @@
 
                  <modules>
                           <module>springboot</module>
-                          <module>httpfrk</module>
+                          <module>nuwa</module>
                  </modules>
 
 </project>

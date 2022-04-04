@@ -11,12 +11,12 @@
 	</parent>
 
 	<groupId>io.github.kubesys</groupId>
-	<artifactId>httpfrk</artifactId>
+	<artifactId>nuwa</artifactId>
 	<version>${project.version}</version>
 	<packaging>jar</packaging>
 
-	<name>httpfrk</name>
-	<description>httpfrk</description>
+	<name>nuwa</name>
+	<description>nuwa</description>
 
 	<properties>
 		<jackson.version>2.12.4</jackson.version>
