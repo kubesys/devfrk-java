@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+                 <parent>
+                       <groupId>io.github.kubesys</groupId>
+                       <artifactId>specs</artifactId>
+                       <version>${project.version}</version>
+                       <relativePath>../pom.xml</relativePath>
+                </parent>
+
+                 <groupId>io.github.kubesys</groupId>
+	<artifactId>specs-devfrk</artifactId>
+	<version>${project.version}</version>
+	<packaging>pom</packaging>
+
+	<name>specs-devfrk</name>
+	<description>specs-devfrk</description>
+
+                 <modules>
+                          <module>springboot</module>
+                 </modules>
+
+</project>
