@@ -13,8 +13,7 @@
 	<description>specs</description>
 
 	<modules>
-                       <module>devfrk</module>
-                       <module>testfrk</module>
+                       <module>httpfrk</module>
                  </modules>
 
                 <properties>

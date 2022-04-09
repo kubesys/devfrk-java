@@ -1,2 +1,2 @@
 # specs
-specs for springboot, JDBC, unit est and devices
+specs for httpfrk, testfrk, datafrk and devfrk
