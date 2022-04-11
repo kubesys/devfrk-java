@@ -5,12 +5,12 @@
 	<modelVersion>4.0.0</modelVersion>
  
 	<groupId>io.github.kubesys</groupId>
-	<artifactId>devfrk-springboot</artifactId>
-	<version>2.0.0</version>
+	<artifactId>httpfrk-springboot</artifactId>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
-	<name>devfrk-springboot</name>
-	<description>devfrk-springboot</description>
+	<name>httpfrk-springboot</name>
+	<description>httpfrk-springboot</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>

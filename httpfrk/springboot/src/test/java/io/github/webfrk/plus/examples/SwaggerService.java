@@ -1,4 +1,4 @@
-package io.github.webfrk.examples;
+package io.github.webfrk.plus.examples;
 
 
 import javax.validation.Valid;
@@ -6,7 +6,6 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import io.github.kubesys.httpfrk.cores.HttpHandler;
@@ -27,7 +26,6 @@ public class SwaggerService extends HttpHandler {
 		throw new Exception("assddd");
 	}
 	
-	@PostMapping
 	public Object echoHello2(@RequestBody @Valid User user) {
 		return "Hello, " + user.getName();
 	}

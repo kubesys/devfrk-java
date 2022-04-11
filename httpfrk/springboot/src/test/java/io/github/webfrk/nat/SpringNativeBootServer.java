@@ -1,14 +1,14 @@
 /**
  * Copyright (2019, ) Institute of Software, Chinese Academy of Sciences
  */
-package io.github.webfrk;
+package io.github.webfrk.nat;
 
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
-
-import io.github.kubesys.httpfrk.HttpServer;
-
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author wuheng@iscas.ac.cn
@@ -21,12 +21,14 @@ import io.github.kubesys.httpfrk.HttpServer;
  *        src/main/resources/application.yml src/main/resources/log4j.properties
  * 
  */
-@ComponentScan(basePackages = { "io.github.webfrk.examples" })
-public class SpringPlusBootServer extends HttpServer  {
+@Configuration
+@SpringBootApplication
+@EnableAutoConfiguration
+@ComponentScan(basePackages = { "io.github.webfrk.nat.exampls" })
+public class SpringNativeBootServer  {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SpringPlusBootServer.class, args);
+		SpringApplication.run(SpringNativeBootServer.class, args);
 	}
 
-	
 }

@@ -11,12 +11,12 @@
                 </parent>
 
                  <groupId>io.github.kubesys</groupId>
-	<artifactId>specs-devfrk</artifactId>
+	<artifactId>specs-httpfrk</artifactId>
 	<version>${project.version}</version>
 	<packaging>pom</packaging>
 
-	<name>specs-devfrk</name>
-	<description>specs-devfrk</description>
+	<name>specs-httpfrk</name>
+	<description>specs-httpfrk</description>
 
                  <modules>
                           <module>springboot</module>

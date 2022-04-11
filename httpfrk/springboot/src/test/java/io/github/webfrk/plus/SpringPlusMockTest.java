@@ -1,7 +1,7 @@
 /**
  * Copyright (2019, ) Institute of Software, Chinese Academy of Sciences
  */
-package io.github.webfrk;
+package io.github.webfrk.plus;
 
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -29,7 +29,7 @@ import io.github.kubesys.httpfrk.cores.HttpConstants;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SpringPlusBootServer.class)
 @AutoConfigureMockMvc
-@ComponentScan(basePackages= {"io.github.kubesys.httpfrk", "io.github.webfrk.examples"})
+@ComponentScan(basePackages= {"io.github.kubesys.httpfrk", "io.github.webfrk.plus.examples"})
 public class SpringPlusMockTest  {
 
 	public final static String INVALID_GET_REQUEST_PATH = "/mock/listMock8";
