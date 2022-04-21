@@ -15,7 +15,7 @@ import io.github.kubesys.tools.annotations.ServiceDefinition;
 @ServiceDefinition
 public class SwaggerService extends HttpHandler {
 	
-	public Object echoHello( /* 参数注解 */
+	public String echoHello( /* 参数注解 */
 			@Size(min = 5) String name) {
 		return "Hello " + name + "!";
 	}
@@ -26,8 +26,8 @@ public class SwaggerService extends HttpHandler {
 		throw new Exception("assddd");
 	}
 	
-	public Object echoHello2(@RequestBody @Valid User user) {
-		return "Hello, " + user.getName();
+	public User echoHello2(@RequestBody @Valid User user) {
+		return user;
 	}
 	
 	public static class User {

@@ -42,6 +42,7 @@ public class HttpAPIDoc {
 		api.set("paths", paths);
 	}
 
+	
 	public void addPath (String type, String servicePath, Method serviceDetail) {
 		ObjectNode detail = new ObjectMapper().createObjectNode();
 		ObjectNode params = new ObjectMapper().createObjectNode();
