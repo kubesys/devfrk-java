@@ -13,13 +13,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import io.github.kubesys.httpfrk.cores.HttpHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RequestMapping("/swagger")
 @Controller
 @Tag(name = "SwaggerService", description = "Swagger服务")
-public class SwaggerService {
+public class SwaggerService extends HttpHandler {
 	
 	@PostMapping("/echoHello")
 	@Operation(summary = "打印Hello",description = "post请求")

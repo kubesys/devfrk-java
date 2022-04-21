@@ -18,7 +18,6 @@ import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +41,6 @@ import io.github.kubesys.httpfrk.utils.JavaUtil;
  * related handler, if the handler is not found, it would throw an exception.
  */
 @RestController
-@ComponentScan
 public class HttpController {
 
 	/**
@@ -56,9 +54,6 @@ public class HttpController {
 	@Autowired
 	protected HttpHandlerManager handlers;
 	
-	@Autowired
-	protected HttpAPIDoc apiDoc;
-
 	@Autowired
 	protected HttpContext context;
 	
@@ -151,10 +146,10 @@ public class HttpController {
 	 * @return the {@code HttpBodyHandler} result. In fact, it may be an exception.
 	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
 	 */
-	@RequestMapping(value = { "/v3/api" })
-	public @ResponseBody String openAPI() throws Exception {
-		return apiDoc.getAPIDoc();
-	}
+//	@RequestMapping(value = { "/v3/api" })
+//	public @ResponseBody String openAPI() throws Exception {
+//		return apiDoc.getAPIDoc();
+//	}
 
 	
 	/**

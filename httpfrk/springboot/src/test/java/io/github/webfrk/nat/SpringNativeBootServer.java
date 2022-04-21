@@ -10,6 +10,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import io.github.kubesys.httpfrk.HttpServer;
+
 /**
  * @author wuheng@iscas.ac.cn
  * @since  
@@ -21,11 +23,9 @@ import org.springframework.context.annotation.Configuration;
  *        src/main/resources/application.yml src/main/resources/log4j.properties
  * 
  */
-@Configuration
-@SpringBootApplication
-@EnableAutoConfiguration
+
 @ComponentScan(basePackages = { "io.github.webfrk.nat.exampls" })
-public class SpringNativeBootServer  {
+public class SpringNativeBootServer extends HttpServer  {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringNativeBootServer.class, args);

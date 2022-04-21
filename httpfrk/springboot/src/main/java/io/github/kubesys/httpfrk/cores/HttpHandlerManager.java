@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -22,12 +22,14 @@ import org.springframework.stereotype.Component;
 public final class HttpHandlerManager  {
 
 	/**
+	 * logger
+	 */
+	public static final Logger m_logger = Logger.getLogger(HttpHandlerManager.class.getName());
+	
+	/**
 	 * handlers
 	 */
 	public static Map<String, Method> servletHandlers = new HashMap<String, Method>();
-	
-	@Autowired
-	protected HttpAPIDoc apidoc;
 	
 	/**
 	 * services 
@@ -43,7 +45,6 @@ public final class HttpHandlerManager  {
 				serviceName.getName();
 		servletHandlers.put(servicePath, serviceName);
 		services.add(servicePath);
-		apidoc.addPath("post", servicePath, serviceName);
 	}
 
 	/**
