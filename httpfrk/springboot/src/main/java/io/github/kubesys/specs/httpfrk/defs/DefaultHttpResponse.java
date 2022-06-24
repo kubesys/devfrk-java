@@ -1,16 +1,16 @@
 /**
  * Copyright (2019, ) Institute of Software, Chinese Academy of Sciences
  */
-package io.github.kubesys.httpfrk.defs;
+package io.github.kubesys.specs.httpfrk.defs;
 
 import java.util.logging.Logger;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import io.github.kubesys.httpfrk.cores.HttpContext;
-import io.github.kubesys.httpfrk.cores.HttpResponse;
-import io.github.kubesys.httpfrk.utils.JSONUtil;
+import io.github.kubesys.specs.httpfrk.cores.HttpContext;
+import io.github.kubesys.specs.httpfrk.cores.HttpResponse;
+import io.github.kubesys.specs.httpfrk.utils.JSONUtil;
 
 /**
  * @author  wuheng@iscas.ac.cn

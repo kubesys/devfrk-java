@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 
 import org.springframework.web.bind.annotation.RequestBody;
 
-import io.github.kubesys.httpfrk.cores.HttpHandler;
+import io.github.kubesys.specs.httpfrk.cores.HttpHandler;
 import io.github.kubesys.tools.annotations.ServiceDefinition;
 
 

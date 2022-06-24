@@ -1,7 +1,7 @@
 /**
  * Copyright (2018, ) Institute of Software, Chinese Academy of Sciences
  */
-package io.github.kubesys.httpfrk.utils;
+package io.github.kubesys.specs.httpfrk.utils;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -28,7 +28,7 @@ import org.springframework.util.SystemPropertyUtils;
 /**
  * 
  * @author wuheng@iscas.ac.cn
- * @since  2.2.3
+ * @since  1.1.0
  */
 public class ClassUtil implements ResourceLoaderAware {
 

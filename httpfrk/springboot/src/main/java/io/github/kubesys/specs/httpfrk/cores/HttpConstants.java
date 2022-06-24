@@ -1,7 +1,7 @@
 /**
  * Copyrigt (2019, ) Institute of Software, Chinese Academy of Sciences
  */
-package io.github.kubesys.httpfrk.cores;
+package io.github.kubesys.specs.httpfrk.cores;
 
 /**
  * @author wuheng@iscas.ac.cn

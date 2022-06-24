@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author wuheng@iscas.ac.cn
- * @since  2.2.3
+ * @since  1.1.0
  *
  */
 @Target({ElementType.TYPE})
@@ -25,7 +25,7 @@ public @interface ServiceDefinition {
 
 	/**
 	 * The value may indicate a suggestion for a logical component name,
-	 * to be turned into a Spring bean in case of an autodetected component.
+	 * to be turned into a Spring bean in case of an auto-detected component.
 	 * @return the suggested component name, if any (or empty String otherwise)
 	 */
 	@AliasFor(annotation = Component.class)

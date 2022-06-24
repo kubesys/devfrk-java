@@ -1,7 +1,7 @@
 /**
  * Copyright (2019, ) Institute of Software, Chinese Academy of Sciences
  */
-package io.github.kubesys.httpfrk.cores;
+package io.github.kubesys.specs.httpfrk.cores;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;

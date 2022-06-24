@@ -1,7 +1,7 @@
 /**
  * Copyright (2019, ) Institute of Software, Chinese Academy of Sciences
  */
-package io.github.kubesys.httpfrk.cores;
+package io.github.kubesys.specs.httpfrk.cores;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -29,9 +29,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.github.kubesys.httpfrk.cores.HttpValidator.ValidationResult;
-import io.github.kubesys.httpfrk.utils.JSONUtil;
-import io.github.kubesys.httpfrk.utils.JavaUtil;
+import io.github.kubesys.specs.httpfrk.cores.HttpValidator.ValidationResult;
+import io.github.kubesys.specs.httpfrk.utils.JSONUtil;
+import io.github.kubesys.specs.httpfrk.utils.JavaUtil;
 
 /**
  * @author wuheng@iscas.ac.cn
