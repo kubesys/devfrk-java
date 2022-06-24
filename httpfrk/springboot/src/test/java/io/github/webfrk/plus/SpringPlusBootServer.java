@@ -21,7 +21,7 @@ import io.github.kubesys.specs.httpfrk.HttpServer;
  *        src/main/resources/application.yml src/main/resources/log4j.properties
  * 
  */
-@ComponentScan(basePackages = { "io.github.webfrk.examples" })
+@ComponentScan(basePackages = { "io.github.webfrk.plus.examples" })
 public class SpringPlusBootServer extends HttpServer  {
 
 	public static void main(String[] args) {

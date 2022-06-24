@@ -30,8 +30,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.kubesys.specs.httpfrk.cores.HttpValidator.ValidationResult;
-import io.github.kubesys.specs.httpfrk.utils.JSONUtil;
-import io.github.kubesys.specs.httpfrk.utils.JavaUtil;
+import io.github.kubesys.specs.httpfrk.utils.JSONUtils;
+import io.github.kubesys.specs.httpfrk.utils.JavaUtils;
 
 /**
  * @author wuheng@iscas.ac.cn
@@ -139,7 +139,7 @@ public class HttpController {
 			"/**/get*", "/**/list*", "/**/query*", "/**/describe*", "/**/retrieve*", "/**/echo*", "/**/exec*" })
 	public @ResponseBody String retrieveTypeGetRequest(HttpServletRequest request,
 			@RequestParam(required = false) Map<String, String> body) throws Exception {
-		return doResponse(getServletPath(request), JSONUtil.toJsonNode(body));
+		return doResponse(getServletPath(request), JSONUtils.toJsonNode(body));
 	}
 	
 	/**
@@ -237,7 +237,7 @@ public class HttpController {
 			String name = targetMethod.getParameters()[i].getName();
 			if (!body.has(name)) {
 				String typeName = targetMethod.getParameters()[i].getType().getName();
-				if (JavaUtil.isPrimitive(typeName) && !typeName.equals(String.class.getName())) {
+				if (JavaUtils.isPrimitive(typeName) && !typeName.equals(String.class.getName())) {
 					params[i] = 0;
 				} else {
 					params[i] = null;

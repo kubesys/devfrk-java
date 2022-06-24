@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author  wuheng@iscas.ac.cn
  * @since   1.1.0
  */
-public class JSONUtil {
+public class JSONUtils {
 
 	/**********************************
 	 *  String utils

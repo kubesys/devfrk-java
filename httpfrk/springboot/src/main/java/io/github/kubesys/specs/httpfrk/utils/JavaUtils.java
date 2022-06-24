@@ -16,7 +16,7 @@ import java.util.Set;
  * 
  */
 
-public class JavaUtil {
+public class JavaUtils {
 
 	private static final Map<String, String> typeMapping = new HashMap<String, String>();
 
@@ -103,7 +103,7 @@ public class JavaUtil {
 	public static boolean isStringStringMap(String typename) {
 		try {
 			return isNull(typename) ? false
-					: typename.equals(JavaUtil.class.getDeclaredField("map").getGenericType().getTypeName());
+					: typename.equals(JavaUtils.class.getDeclaredField("map").getGenericType().getTypeName());
 		} catch (Exception e) {
 			return false;
 		}
@@ -140,7 +140,7 @@ public class JavaUtil {
 	public static boolean isStringList(String typename) {
 		try {
 			return isNull(typename) ? false
-					: typename.equals(JavaUtil.class.getDeclaredField("list").getGenericType().getTypeName());
+					: typename.equals(JavaUtils.class.getDeclaredField("list").getGenericType().getTypeName());
 		} catch (Exception e) {
 			return false;
 		}
@@ -176,7 +176,7 @@ public class JavaUtil {
 	public static boolean isStringSet(String typename) {
 		try {
 			return isNull(typename) ? false
-					: typename.equals(JavaUtil.class.getDeclaredField("set").getGenericType().getTypeName());
+					: typename.equals(JavaUtils.class.getDeclaredField("set").getGenericType().getTypeName());
 		} catch (Exception e) {
 			return false;
 		}
