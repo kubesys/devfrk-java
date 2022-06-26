@@ -9,11 +9,12 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
-import org.jboss.logging.Logger;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
@@ -21,17 +22,20 @@ import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
-import org.springframework.util.StringUtils;
 import org.springframework.util.SystemPropertyUtils;
 
 /**
+ * this class is used for finding all filtered classes with specified annotations.
  * 
  * @author wuheng@iscas.ac.cn
  * @since 1.1.0
  */
 public class ClassUtils implements ResourceLoaderAware {
 
-	private static Logger m_logger = Logger.getLogger(ClassUtils.class);
+	/**
+	 * logger
+	 */
+	private static Logger m_logger = Logger.getLogger(ClassUtils.class.getName());
 
 	/**
 	 * the filtered classes with specified annotations
@@ -46,12 +50,12 @@ public class ClassUtils implements ResourceLoaderAware {
 	/**
 	 * it is used for finding all classes with specified annotations
 	 */
-	private static ResourcePatternResolver m_classResolver = null;
+	private static ResourcePatternResolver m_classResolver = new PathMatchingResourcePatternResolver();
 
 	/**
 	 * it is used for recording all classes
 	 */
-	private static MetadataReaderFactory m_classFactory = null;
+	private static MetadataReaderFactory m_classFactory = new CachingMetadataReaderFactory(m_classResolver);
 
 	/**
 	 * @param basePackages if basePackages are null, return null
@@ -62,16 +66,6 @@ public class ClassUtils implements ResourceLoaderAware {
 		return ClassUtils.scan(basePackages, null);
 	}
 	
-	/**
-	 * @param basePackages if basePackages is null, return null
-	 * @param annotations  if annotations are null, return all classes under the specified 'basePackages'
-	 * @return filtered classes with specified annotations
-	 */
-	@SuppressWarnings("unchecked")
-	public static Set<Class<?>> scan(String basePackages, Class<? extends Annotation>... annotations) {
-		return ClassUtils.scan(StringUtils.tokenizeToStringArray(basePackages, ",; \t\n"), annotations);
-	}
-
 	/**
 	 * @param basePackages if basePackages are null, return null
 	 * @param annotations  if annotations are null, return all classes under the specified 'basePackages'
@@ -115,7 +109,7 @@ public class ClassUtils implements ResourceLoaderAware {
 					classes.add(Class.forName(reader.getClassMetadata().getClassName()));
 				}
 			} catch (Exception e) {
-				m_logger.warn("cannot load this class", e);
+				m_logger.warning("cannot load this class, " + e);
 			}
 		}
 		return classes;
@@ -125,7 +119,7 @@ public class ClassUtils implements ResourceLoaderAware {
 		try {
 			return m_classResolver.getResources(classPattern);
 		} catch (IOException ex) {
-			m_logger.warn("I/O failure during classpath scanning", ex);
+			m_logger.warning("I/O failure during classpath scanning, " + ex);
 		}
 		return new Resource[] {};
 	}
