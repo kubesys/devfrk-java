@@ -8,6 +8,8 @@ import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.github.kubesys.specs.httpfrk.cores.HttpContext;
 import io.github.kubesys.specs.httpfrk.cores.HttpResponse;
 import io.github.kubesys.specs.httpfrk.utils.JSONUtils;
@@ -47,7 +49,7 @@ public class DefaultHttpResponse implements HttpResponse {
 				new HttpResponseData(50000, value.toString().indexOf(":") == -1 ? value.toString() 
 								: value.toString().substring(value.toString().indexOf(":"))) 
 				: new HttpResponseData(20000, value);
-		return JSONUtils.toJSONString(response);
+		return new ObjectMapper().writeValueAsString(response);
 	}
 	
 

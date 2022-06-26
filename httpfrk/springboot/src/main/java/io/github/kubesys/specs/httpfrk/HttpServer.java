@@ -18,7 +18,7 @@ import io.github.kubesys.specs.httpfrk.defs.DefaultHttpResponse;
 
 /**
  * @author wuheng@otcaix.iscas.ac.cn
- * @since 2.2.3
+ * @since 1.1.0
  * 
  *        <p>
  *        The {@code ApplicationServer} class is used for starting web

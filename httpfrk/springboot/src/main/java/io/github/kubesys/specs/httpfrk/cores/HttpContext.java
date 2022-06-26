@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author wuheng@iscas.ac.cn
- * @since  2.2.3
+ * @since  1.1.0
  * 
  * The {@code HttpContext} class is used to get a specified bean.
  */
