@@ -12,7 +12,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.kubesys.specs.httpfrk.cores.HttpContext;
 import io.github.kubesys.specs.httpfrk.cores.HttpResponse;
-import io.github.kubesys.specs.httpfrk.utils.JSONUtils;
 
 /**
  * @author  wuheng@iscas.ac.cn

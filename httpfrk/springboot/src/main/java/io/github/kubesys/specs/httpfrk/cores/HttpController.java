@@ -122,7 +122,7 @@ public class HttpController {
 	 * @return the {@code HttpBodyHandler} result. In fact, it may be an exception.
 	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
 	 */
-	@RequestMapping(method = { RequestMethod.POST }, value = { "/**/mock*", "/**/user*",
+	@RequestMapping(method = { RequestMethod.POST }, value = { "/**/index*", "/**/mock*", "/**/user*",
 			"/**/get*", "/**/list*", "/**/query*", "/**/describe*", "/**/retrieve*", "/**/echo*", "/**/exec*" })
 	public @ResponseBody String retrievePostTypeRequest(HttpServletRequest request, @RequestBody JsonNode body)
 			throws Exception {
@@ -135,7 +135,7 @@ public class HttpController {
 	 * @return the {@code HttpBodyHandler} result. In fact, it may be an exception.
 	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
 	 */
-	@RequestMapping(method = { RequestMethod.GET }, value = { "/**/mock*", "/**/user*",
+	@RequestMapping(method = { RequestMethod.GET }, value = { "/**/index*", "/**/mock*", "/**/user*",
 			"/**/get*", "/**/list*", "/**/query*", "/**/describe*", "/**/retrieve*", "/**/echo*", "/**/exec*" })
 	public @ResponseBody String retrieveTypeGetRequest(HttpServletRequest request,
 			@RequestParam(required = false) Map<String, String> body) throws Exception {
