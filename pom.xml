@@ -5,19 +5,22 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>io.github.kubesys</groupId>
-	<artifactId>specs</artifactId>
+	<artifactId>devfrk</artifactId>
 	<version>${project.version}</version>
 	<packaging>pom</packaging>
 
-	<name>specs</name>
-	<description>specs</description>
+	<name>devfrk</name>
+	<description>devfrk</description>
 
 	<modules>
-                       <module>httpfrk</module>
-                 </modules>
+        <module>httpfrk</module>
+        <module>datafrk</module>
+        <module>testfrk</module>
+        <module>opsfrk</module>
+    </modules>
 
-                <properties>
-                       <project.version>2.0.0</project.version>
-                </properties>
+    <properties>
+        <project.version>2.0.0</project.version>
+    </properties>
 
 </project>

@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.server.ErrorPage;
@@ -32,6 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.kubesys.specs.httpfrk.cores.HttpValidator.ValidationResult;
 import io.github.kubesys.specs.httpfrk.utils.JSONUtils;
 import io.github.kubesys.specs.httpfrk.utils.JavaUtils;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author wuheng@iscas.ac.cn
