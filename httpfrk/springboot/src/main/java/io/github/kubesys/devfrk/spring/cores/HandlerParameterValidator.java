@@ -20,7 +20,7 @@ import jakarta.validation.Validator;
  * @since   2.0.0
  */
 @Component
-public class HttpValidator {
+public class HandlerParameterValidator {
 
 	/**********************************
 	 *  JSR 303

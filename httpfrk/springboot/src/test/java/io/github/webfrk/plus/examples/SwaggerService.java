@@ -3,7 +3,7 @@ package io.github.webfrk.plus.examples;
 
 import org.springframework.web.bind.annotation.RequestBody;
 
-import io.github.kubesys.devfrk.spring.cores.HttpHandler;
+import io.github.kubesys.devfrk.spring.cores.AbstractHttpHandler;
 import io.github.kubesys.devfrk.tools.annotations.ServiceDefinition;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -12,7 +12,7 @@ import jakarta.validation.constraints.Size;
 
 
 @ServiceDefinition
-public class SwaggerService extends HttpHandler {
+public class SwaggerService extends AbstractHttpHandler {
 	
 	public String echoHello( /* 参数注解 */
 			@Size(min = 5) String name) {

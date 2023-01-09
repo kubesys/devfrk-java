@@ -5,9 +5,7 @@ package io.github.kubesys.devfrk.spring.cores;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.springframework.beans.BeansException;
@@ -33,42 +31,37 @@ public final class HttpHandlerRegistry  {
 	/**
 	 * handlers
 	 */
-	protected static Map<String, Method> servletHandlers = new HashMap<String, Method>();
+	protected static Map<String, Method> httpHandlers = new HashMap<>();
 	
-	/**
-	 * services 
-	 */
-	protected final static Set<String> services = new HashSet<String>();
 
 	/**
 	 * @param serviceModule   service module
 	 * @param serviceName     service name
 	 */
-	public void addHandler(String serviceModule, Method serviceName) {
-		String servicePath = serviceModule + "/" + 
+	public void addHttpHandler(String serviceModule, Method serviceName) {
+		String customPath = serviceModule + "/" + 
 				serviceName.getName();
-		servletHandlers.put(servicePath, serviceName);
-		services.add(servicePath);
+		httpHandlers.put(customPath, serviceName);
 	}
 
 	/**
-	 * @param servletPath   servlet
+	 * @param customPath   servlet
 	 * @return              the related method
 	 * @throws Exception    exception
 	 */
-	public Method getHandler(String servletPath) throws BeansException {
-		if (!servletHandlers.containsKey(servletPath)) {
+	public Method getHttpHandler(String customPath) throws BeansException {
+		if (!httpHandlers.containsKey(customPath)) {
 			throw new NoSuchBeanDefinitionException(HttpConstants.EXCEPTION_INVALID_REQUEST_URL);
 		}
-		return servletHandlers.get(servletPath);
+		return httpHandlers.get(customPath);
 	}
 
 	/**
 	 * @param servletPath   servlet
 	 * @return              true or false
 	 */
-	public boolean contain(String servletPath) {
-		return servletHandlers.containsKey(servletPath);
+	public boolean contains(String servletPath) {
+		return httpHandlers.containsKey(servletPath);
 	}
 		
 }

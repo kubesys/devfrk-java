@@ -16,21 +16,20 @@ import io.github.kubesys.devfrk.spring.assists.HttpConstants;
  * @author wuheng@iscas.ac.cn
  * @since  2.0.0
  * 
- * The {@code HttpHandler} class is used to register a servlet handler to {@code HttpHandlerManager}.
+ * The {@code AbstractHttpHandler} class is used to register a servlet handler to {@code HttpHandlerManager}.
  */
-public abstract class HttpHandler implements CommandLineRunner {
+public abstract class AbstractHttpHandler implements CommandLineRunner {
 
 	/**
 	 * logger
 	 */
-	public final static Logger m_logger = Logger.getLogger(HttpDispatcher.class.getName());
+	public static final Logger m_logger = Logger.getLogger(AbstractHttpHandler.class.getName());
 
-	
 	/**
-	 * handers
+	 * registry
 	 */
 	@Autowired
-	protected HttpHandlerRegistry handlers;
+	protected HttpHandlerRegistry registry;
 	
 	/**********************************************************
 	 * 
@@ -50,15 +49,15 @@ public abstract class HttpHandler implements CommandLineRunner {
 			throw new Exception(HttpConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_WRONG_NAME + simplename);
 		}
 
-		// register services
-		registerService(simplename);
+		// register http handler
+		registerHttpHandler(simplename);
 	}
 
 	/**
 	 * @param classname                classname
 	 * @throws Exception               exception
 	 */
-	private void registerService(String classname) throws Exception {
+	private void registerHttpHandler(String classname) throws Exception {
 
 		// In our design, a method name of a class is a service name.
 		// Now we unsupport polymorphism to deal with duplicated method names 
@@ -75,7 +74,7 @@ public abstract class HttpHandler implements CommandLineRunner {
 			}
 
 			// 2. filter duplicated services
-			if (HttpHandlerRegistry.services.contains(service.getName())) {
+			if (registry.contains(service.getName())) {
 				m_logger.severe(HttpConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_POLYMORPHISM + classname
 						+ "." + service.getName());
 				throw new Exception(HttpConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_POLYMORPHISM + classname
@@ -84,8 +83,7 @@ public abstract class HttpHandler implements CommandLineRunner {
 			
 								
 			// 3. register to <code>HttpHandlerManager.addHandler<code>
-			handlers.addHandler(serviceModule, service);
-			HttpHandlerRegistry.services.add(service.getName());
+			registry.addHttpHandler(serviceModule, service);
 			m_logger.info("servelet path '" + serviceModule 
 						+ "/" + service.getName() + "' registered sucessful.");
 				
@@ -98,7 +96,7 @@ public abstract class HttpHandler implements CommandLineRunner {
 	 * @param name object name
 	 * @return lowercase
 	 */
-	private static String getServiceModule(String classname) {
+	String getServiceModule(String classname) {
 		String name = classname.substring(0, classname.length() 
 				- HttpConstants.POSTFIX_SERVICE.length());
 		return name.substring(0, 1).toLowerCase() + name.substring(1);

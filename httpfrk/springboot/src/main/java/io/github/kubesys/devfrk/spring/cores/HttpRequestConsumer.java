@@ -4,21 +4,14 @@
 package io.github.kubesys.devfrk.spring.cores;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.server.ErrorPage;
-import org.springframework.boot.web.server.WebServerFactoryCustomizer;
-import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,54 +22,36 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.kubesys.devfrk.spring.assists.HttpResponse;
-import io.github.kubesys.devfrk.spring.cores.HttpValidator.ValidationResult;
 import io.github.kubesys.devfrk.spring.utils.JSONUtils;
-import io.github.kubesys.devfrk.spring.utils.JavaUtils;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author wuheng@iscas.ac.cn
- * @since  2.2.3
+ * @since  2.0.0
  * 
- * The {@code HttpController} class is used to dispatch request to the
+ * The {@code HttpRequestConsumer} class is used to dispatch request to the
  * related handler, if the handler is not found, it would throw an exception.
  */
 @RestController
 @Component
-public class HttpDispatcher implements ApplicationContextAware {
+public class HttpRequestConsumer implements ApplicationContextAware {
 
 	/**
 	 * logger
 	 */
-	public static final Logger m_logger = Logger.getLogger(HttpDispatcher.class.getName());
+	public static final Logger m_logger = Logger.getLogger(HttpRequestConsumer.class.getName());
 
-	/**
-	 * handler means how to deal with the request for specified servletPath
-	 */
-	@Autowired
-	protected HttpHandlerRegistry handlers;
-	
 	
 	@Value("${server.servlet.context-path}")
     private String path;
 	
 	@Autowired
-	protected HttpValidator validator;
+	protected RequestHandlerMapper mapper;
 	
-	/**
-	 * ctx
-	 */
 	protected ApplicationContext ctx;
 	
-	@Bean
-	public WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> servletContainer() {
-		Set<ErrorPage> errorPages = new HashSet<>();
-		errorPages.add(new ErrorPage(path + "/error/error"));
-		return factory -> factory.setErrorPages(errorPages );
-	}
 	
 	/**************************************************
 	 * 
@@ -94,7 +69,7 @@ public class HttpDispatcher implements ApplicationContextAware {
 			"/**/insert*", "/**/clone*", "/**/attach*", "/**/plug*", "/**/set*", "/**/bind*", "/**/solve*" })
 	public @ResponseBody String createTypeRequest(HttpServletRequest request, @RequestBody JsonNode body)
 			throws Exception {
-		return doResponse(getServletPath(request), body);
+		return doResponse(mapper.getCustomPath(request), body);
 	}
 
 	/**
@@ -107,7 +82,7 @@ public class HttpDispatcher implements ApplicationContextAware {
 			"/**/eject*", "/**/detach*", "/**/unplug*", "/**/unset*", "/**/unbind*" })
 	public @ResponseBody String deleteTypeRequest(HttpServletRequest request, @RequestBody JsonNode body)
 			throws Exception {
-		return doResponse(getServletPath(request), body);
+		return doResponse(mapper.getCustomPath(request), body);
 	}
 
 	/**
@@ -121,7 +96,7 @@ public class HttpDispatcher implements ApplicationContextAware {
 			"/**/replace*", "/**/change*", "/**/resize*", "/**/tune*", "/**/revert*", "/**/convert*" })
 	public @ResponseBody String updateTypeRequest(HttpServletRequest request, @RequestBody JsonNode body)
 			throws Exception {
-		return doResponse(getServletPath(request), body);
+		return doResponse(mapper.getCustomPath(request), body);
 	}
 
 	/**
@@ -134,7 +109,7 @@ public class HttpDispatcher implements ApplicationContextAware {
 			"/**/get*", "/**/list*", "/**/query*", "/**/describe*", "/**/retrieve*", "/**/echo*", "/**/exec*" })
 	public @ResponseBody String retrievePostTypeRequest(HttpServletRequest request, @RequestBody JsonNode body)
 			throws Exception {
-		return doResponse(getServletPath(request), body);
+		return doResponse(mapper.getCustomPath(request), body);
 	}
 
 	/**
@@ -147,7 +122,7 @@ public class HttpDispatcher implements ApplicationContextAware {
 			"/**/get*", "/**/list*", "/**/query*", "/**/describe*", "/**/retrieve*", "/**/echo*", "/**/exec*" })
 	public @ResponseBody String retrieveTypeGetRequest(HttpServletRequest request,
 			@RequestParam(required = false) Map<String, String> body) throws Exception {
-		return doResponse(getServletPath(request), JSONUtils.toJsonNode(body));
+		return doResponse(mapper.getCustomPath(request), JSONUtils.toJsonNode(body));
 	}
 	
 	/**
@@ -177,13 +152,6 @@ public class HttpDispatcher implements ApplicationContextAware {
 		return ((HttpResponse) getBean("resp")).fail(e);
 	}
 	
-	/**
-	 * @param request servlet path should be startwith 'get', 'list', or 'describe'
-	 * @return the {@code HttpBodyHandler} result. In fact, it may be an exception.
-	 */
-	protected String getServletPath(HttpServletRequest request) {
-		return request.getRequestURI().substring(request.getContextPath().length() + 1);
-	}
 
 	/**************************************************
 	 * 
@@ -192,27 +160,24 @@ public class HttpDispatcher implements ApplicationContextAware {
 	 **************************************************/
 
 	/**
-	 * @param servletPath                   path
+	 * @param customPath                   customPath
 	 * @param body                          body
 	 * @return                              resp
 	 * @throws Exception                    exception
 	 */
-	protected String doResponse(String servletPath, JsonNode body) throws Exception {
+	protected String doResponse(String customPath, JsonNode body) throws Exception {
 
-		m_logger.info("Begin to deal with " + servletPath);
+		m_logger.info("Begin to deal with " + customPath);
 
 		long start = System.currentTimeMillis();
-		Method hanlder = handlers.getHandler(servletPath);
 		try {
 
-			Object[] params = getParameters(body, hanlder);
-			Object result = (params != null) ? hanlder.invoke(getInstance(servletPath), params)
-					: hanlder.invoke(getInstance(servletPath));
+			Object result = mapper.getAndExecHttpHandler(customPath, body);
 
-			m_logger.info("Successfully deal with " + servletPath);
+			m_logger.info("Successfully deal with " + customPath);
 			return ((HttpResponse) getBean("resp")).success(result);
 		} catch (Exception ex) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			if (ex instanceof InvocationTargetException) {
 				sb.append(((InvocationTargetException) ex).getTargetException());
 			} else {
@@ -224,53 +189,11 @@ public class HttpDispatcher implements ApplicationContextAware {
 			throw new Exception(sb.toString());
 		} finally {
 			long end = System.currentTimeMillis();
-			m_logger.info(servletPath + "," + (end - start) + "ms");
+			m_logger.info(customPath + "," + (end - start) + "ms");
 		}
 		
 	}
-
-
-	/**
-	 * @param body                             body
-	 * @param targetMethod                     target
-	 * @return                                 objects 
-	 * @throws Exception                       exception
-	 */
-	protected Object[] getParameters(JsonNode body, Method targetMethod) throws Exception {
-
-		int parameterCount = targetMethod.getParameterCount();
-		Object[] params = (parameterCount == 0) ? null : new Object[parameterCount];
-		for (int i = 0; i < parameterCount; i++) {
-			String name = targetMethod.getParameters()[i].getName();
-			if (!body.has(name)) {
-				String typeName = targetMethod.getParameters()[i].getType().getName();
-				if (JavaUtils.isPrimitive(typeName) && !typeName.equals(String.class.getName())) {
-					params[i] = 0;
-				} else {
-					params[i] = null;
-				}
-			} else {
-				params[i] = new ObjectMapper().readValue(body.get(name).toPrettyString(),
-					targetMethod.getParameterTypes()[i]);
-			}
-			
-			checkParameter(params, i);
-		}
-		return params;
-
-	}
-
-	/**
-	 * @param params                              params
-	 * @param i                                   i
-	 * @throws Exception                          exception
-	 */
-	protected void checkParameter(Object[] params, int i) throws Exception {
-		ValidationResult result = validator.validateEntity(params[i]);
-		if (result.isHasErrors()) {
-			throw new Exception(new ObjectMapper().writeValueAsString(result.getErrorMsg()));
-		}
-	}
+	
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -279,16 +202,6 @@ public class HttpDispatcher implements ApplicationContextAware {
 		}
 	}
 
-	/**
-	 * @param servletPath                         path
-	 * @return                                    obj
-	 * @throws Exception                          exception
-	 */
-	public Object getInstance(String servletPath) throws BeansException {
-		String name = handlers.getHandler(servletPath).getDeclaringClass().getSimpleName();
-		return ctx.getBean(name.substring(0, 1).toLowerCase() + name.substring(1));
-	}
-	
 	/**
 	 * @param name                                name
 	 * @return                                    obj

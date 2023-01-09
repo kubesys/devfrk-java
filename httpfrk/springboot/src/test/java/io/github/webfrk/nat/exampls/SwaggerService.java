@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import io.github.kubesys.devfrk.spring.cores.HttpHandler;
+import io.github.kubesys.devfrk.spring.cores.AbstractHttpHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -19,7 +19,7 @@ import jakarta.validation.constraints.Size;
 @RequestMapping("/swagger")
 @Controller
 @Tag(name = "SwaggerService", description = "Swagger服务")
-public class SwaggerService extends HttpHandler {
+public class SwaggerService extends AbstractHttpHandler {
 	
 	@PostMapping("/echoHello")
 	@Operation(summary = "打印Hello",description = "post请求")
