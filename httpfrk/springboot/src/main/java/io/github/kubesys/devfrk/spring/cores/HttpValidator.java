@@ -17,7 +17,7 @@ import jakarta.validation.Validator;
 
 /**
  * @author  wuheng@iscas.ac.cn
- * @since   2.2.3
+ * @since   2.0.0
  */
 @Component
 public class HttpValidator {

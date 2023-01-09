@@ -5,13 +5,12 @@ package io.github.kubesys.devfrk.spring.defs;
 
 import java.util.logging.Logger;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.github.kubesys.devfrk.spring.cores.HttpContext;
-import io.github.kubesys.devfrk.spring.cores.HttpResponse;
+import io.github.kubesys.devfrk.spring.assists.HttpResponse;
+import jakarta.annotation.Resource;
 
 /**
  * @author  wuheng@iscas.ac.cn
@@ -28,8 +27,9 @@ public class DefaultHttpResponse implements HttpResponse {
 	 */
 	public static final Logger m_logger = Logger.getLogger(DefaultHttpResponse.class.getName());
 	
-	@Autowired
-	protected HttpContext context;
+	@Resource
+	protected ApplicationContext context;
+	
 	
 	@Override
 	public String success(Object obj) throws Exception {

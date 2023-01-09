@@ -12,13 +12,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import io.github.kubesys.devfrk.spring.cores.HttpCorsInterceptor;
-import io.github.kubesys.devfrk.spring.cores.HttpResponse;
+import io.github.kubesys.devfrk.spring.assists.HttpCorsInterceptor;
+import io.github.kubesys.devfrk.spring.assists.HttpResponse;
 import io.github.kubesys.devfrk.spring.defs.DefaultHttpResponse;
 
 /**
- * @author wuheng@otcaix.iscas.ac.cn
- * @since 1.1.0
+ * @author wuheng@iscas.ac.cn
+ * @since 2.0.0
  * 
  *        <p>
  *        The {@code ApplicationServer} class is used for starting web
@@ -36,7 +36,6 @@ public abstract class HttpServer implements WebMvcConfigurer {
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		// support cross-origin resource sharing
 		registry.addInterceptor(new HttpCorsInterceptor()).addPathPatterns("/**");
 	}
 

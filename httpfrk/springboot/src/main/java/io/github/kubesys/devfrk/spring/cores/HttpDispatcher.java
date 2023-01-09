@@ -10,12 +10,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.github.kubesys.devfrk.spring.assists.HttpResponse;
 import io.github.kubesys.devfrk.spring.cores.HttpValidator.ValidationResult;
 import io.github.kubesys.devfrk.spring.utils.JSONUtils;
 import io.github.kubesys.devfrk.spring.utils.JavaUtils;
@@ -40,27 +45,31 @@ import jakarta.servlet.http.HttpServletRequest;
  * related handler, if the handler is not found, it would throw an exception.
  */
 @RestController
-public class HttpController {
+@Component
+public class HttpDispatcher implements ApplicationContextAware {
 
 	/**
 	 * logger
 	 */
-	public static final Logger m_logger = Logger.getLogger(HttpController.class.getName());
+	public static final Logger m_logger = Logger.getLogger(HttpDispatcher.class.getName());
 
 	/**
 	 * handler means how to deal with the request for specified servletPath
 	 */
 	@Autowired
-	protected HttpHandlerManager handlers;
+	protected HttpHandlerRegistry handlers;
 	
-	@Autowired
-	protected HttpContext context;
 	
 	@Value("${server.servlet.context-path}")
     private String path;
 	
 	@Autowired
 	protected HttpValidator validator;
+	
+	/**
+	 * ctx
+	 */
+	protected ApplicationContext ctx;
 	
 	@Bean
 	public WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> servletContainer() {
@@ -160,12 +169,12 @@ public class HttpController {
 	@ExceptionHandler
 	@ResponseBody
 	public String invalidResponse(HttpServletRequest request, Exception e) throws Exception {
-		return ((HttpResponse) context.getBean("resp")).fail(e);
+		return ((HttpResponse) getBean("resp")).fail(e);
 	}
 	
 	@ResponseBody
 	public String invalidRequest(HttpServletRequest request, Exception e) throws Exception {
-		return ((HttpResponse) context.getBean("resp")).fail(e);
+		return ((HttpResponse) getBean("resp")).fail(e);
 	}
 	
 	/**
@@ -197,12 +206,11 @@ public class HttpController {
 		try {
 
 			Object[] params = getParameters(body, hanlder);
-			Object result = (params != null) ? hanlder.invoke(context.getInstance(servletPath), params)
-					: hanlder.invoke(context.getInstance(servletPath));
+			Object result = (params != null) ? hanlder.invoke(getInstance(servletPath), params)
+					: hanlder.invoke(getInstance(servletPath));
 
 			m_logger.info("Successfully deal with " + servletPath);
-			return ((HttpResponse) context.getBean("resp"))
-							.success(result);
+			return ((HttpResponse) getBean("resp")).success(result);
 		} catch (Exception ex) {
 			StringBuffer sb = new StringBuffer();
 			if (ex instanceof InvocationTargetException) {
@@ -264,4 +272,29 @@ public class HttpController {
 		}
 	}
 
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		if (ctx == null) {
+			ctx = applicationContext;
+		}
+	}
+
+	/**
+	 * @param servletPath                         path
+	 * @return                                    obj
+	 * @throws Exception                          exception
+	 */
+	public Object getInstance(String servletPath) throws BeansException {
+		String name = handlers.getHandler(servletPath).getDeclaringClass().getSimpleName();
+		return ctx.getBean(name.substring(0, 1).toLowerCase() + name.substring(1));
+	}
+	
+	/**
+	 * @param name                                name
+	 * @return                                    obj
+	 * @throws Exception                          exception
+	 */
+	public Object getBean(String name) throws BeansException {
+		return ctx.getBean(name);
+	}
 }

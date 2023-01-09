@@ -10,9 +10,11 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 
+import io.github.kubesys.devfrk.spring.assists.HttpConstants;
+
 /**
  * @author wuheng@iscas.ac.cn
- * @since  2.2.3
+ * @since  2.0.0
  * 
  * The {@code HttpHandler} class is used to register a servlet handler to {@code HttpHandlerManager}.
  */
@@ -21,14 +23,14 @@ public abstract class HttpHandler implements CommandLineRunner {
 	/**
 	 * logger
 	 */
-	public final static Logger m_logger = Logger.getLogger(HttpController.class.getName());
+	public final static Logger m_logger = Logger.getLogger(HttpDispatcher.class.getName());
 
 	
 	/**
 	 * handers
 	 */
 	@Autowired
-	protected HttpHandlerManager handlers;
+	protected HttpHandlerRegistry handlers;
 	
 	/**********************************************************
 	 * 
@@ -73,7 +75,7 @@ public abstract class HttpHandler implements CommandLineRunner {
 			}
 
 			// 2. filter duplicated services
-			if (HttpHandlerManager.services.contains(service.getName())) {
+			if (HttpHandlerRegistry.services.contains(service.getName())) {
 				m_logger.severe(HttpConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_POLYMORPHISM + classname
 						+ "." + service.getName());
 				throw new Exception(HttpConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_POLYMORPHISM + classname
@@ -83,7 +85,7 @@ public abstract class HttpHandler implements CommandLineRunner {
 								
 			// 3. register to <code>HttpHandlerManager.addHandler<code>
 			handlers.addHandler(serviceModule, service);
-			HttpHandlerManager.services.add(service.getName());
+			HttpHandlerRegistry.services.add(service.getName());
 			m_logger.info("servelet path '" + serviceModule 
 						+ "/" + service.getName() + "' registered sucessful.");
 				
