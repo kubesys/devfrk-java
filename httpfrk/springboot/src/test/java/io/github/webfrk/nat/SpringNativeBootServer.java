@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import io.github.kubesys.specs.httpfrk.HttpServer;
+import io.github.kubesys.devfrk.spring.HttpServer;
 
 /**
  * @author wuheng@iscas.ac.cn

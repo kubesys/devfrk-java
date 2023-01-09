@@ -1,7 +1,7 @@
 /**
  * Copyright (2018, ) Institute of Software, Chinese Academy of Sciences
  */
-package io.github.kubesys.specs.httpfrk.utils;
+package io.github.kubesys.devfrk.utils;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import io.github.kubesys.devfrk.spring.utils.JavaUtils;
 import junit.framework.Assert;
 
 /**

@@ -1,7 +1,7 @@
 /**
  * Copyright (2019, ) Institute of Software, Chinese Academy of Sciences
  */
-package io.github.kubesys.specs.httpfrk.utils;
+package io.github.kubesys.devfrk.spring.utils;
 
 import java.util.HashMap;
 import java.util.Map;

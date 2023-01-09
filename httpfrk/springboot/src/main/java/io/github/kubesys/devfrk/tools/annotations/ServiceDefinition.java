@@ -1,7 +1,7 @@
 /**
  * Copyrigt (2019, ) Institute of Software, Chinese Academy of Sciences
  */
-package io.github.kubesys.tools.annotations;
+package io.github.kubesys.devfrk.tools.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

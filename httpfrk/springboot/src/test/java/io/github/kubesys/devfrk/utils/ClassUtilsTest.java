@@ -1,11 +1,12 @@
 /**
  * Copyright (2018, ) Institute of Software, Chinese Academy of Sciences
  */
-package io.github.kubesys.specs.httpfrk.utils;
+package io.github.kubesys.devfrk.utils;
 
 import org.junit.Test;
 import org.springframework.context.annotation.ComponentScan;
 
+import io.github.kubesys.devfrk.spring.utils.ClassUtils;
 import junit.framework.Assert;
 
 /**

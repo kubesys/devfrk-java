@@ -1,7 +1,7 @@
 /**
  * Copyright (2019, ) Institute of Software, Chinese Academy of Sciences
  */
-package io.github.kubesys.specs.httpfrk.defs;
+package io.github.kubesys.devfrk.spring.defs;
 
 import java.util.logging.Logger;
 
@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.github.kubesys.specs.httpfrk.cores.HttpContext;
-import io.github.kubesys.specs.httpfrk.cores.HttpResponse;
+import io.github.kubesys.devfrk.spring.cores.HttpContext;
+import io.github.kubesys.devfrk.spring.cores.HttpResponse;
 
 /**
  * @author  wuheng@iscas.ac.cn

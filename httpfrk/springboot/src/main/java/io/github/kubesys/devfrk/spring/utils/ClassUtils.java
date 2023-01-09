@@ -1,7 +1,7 @@
 /**
  * Copyright (2018, ) Institute of Software, Chinese Academy of Sciences
  */
-package io.github.kubesys.specs.httpfrk.utils;
+package io.github.kubesys.devfrk.spring.utils;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;

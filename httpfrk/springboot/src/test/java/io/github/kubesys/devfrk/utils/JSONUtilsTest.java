@@ -1,13 +1,14 @@
 /**
  * Copyright (2018, ) Institute of Software, Chinese Academy of Sciences
  */
-package io.github.kubesys.specs.httpfrk.utils;
+package io.github.kubesys.devfrk.utils;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
 
+import io.github.kubesys.devfrk.spring.utils.JSONUtils;
 import junit.framework.Assert;
 
 /**

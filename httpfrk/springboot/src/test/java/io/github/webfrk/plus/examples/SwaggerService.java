@@ -3,8 +3,8 @@ package io.github.webfrk.plus.examples;
 
 import org.springframework.web.bind.annotation.RequestBody;
 
-import io.github.kubesys.specs.httpfrk.cores.HttpHandler;
-import io.github.kubesys.tools.annotations.ServiceDefinition;
+import io.github.kubesys.devfrk.spring.cores.HttpHandler;
+import io.github.kubesys.devfrk.tools.annotations.ServiceDefinition;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
