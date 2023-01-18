@@ -16,7 +16,6 @@
         <module>httpfrk</module>
         <module>datafrk</module>
         <module>testfrk</module>
-        <module>opsfrk</module>
     </modules>
 
     <properties>
