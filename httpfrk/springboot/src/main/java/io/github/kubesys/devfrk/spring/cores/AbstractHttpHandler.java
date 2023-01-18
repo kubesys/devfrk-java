@@ -34,66 +34,62 @@ public abstract class AbstractHttpHandler implements CommandLineRunner {
 	@Autowired
 	protected HttpHandlerRegistry registry;
 	
-	/**********************************************************
-	 * 
-	 * 
-	 * 
-	 **********************************************************/
-
 	
 	@Override
 	public void run(String... args) throws Exception {
 
+		// A class, which implements AbstractHttpHandler and 
+		// mark with ServiceDefinition, goes here. 
 		String simplename = getClass().getSimpleName();
 
-		// if a simplename ends with 'Service', the class includes some services
+		// Our rule is a class must be  ends with 'Service'
 		if (!simplename.endsWith(HttpConstants.SERVICE_CLASS_POSTFIX)) {
 			m_logger.log(Level.SEVERE, () -> HttpConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_WRONG_NAME + simplename);
 			throw new InvalidHttpHandlerException(HttpConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_WRONG_NAME + simplename);
 		}
 
-		// register http handler
+		// Class to HttpHandler 
 		registerHttpHandler(simplename);
 	}
 
 	/**
+	 * If a class named TestService, and has a method demo,
+	 * then the url is ../test/demo
+	 * 
 	 * @param classname                classname
 	 * @throws Exception               exception
 	 */
-	private void registerHttpHandler(String classname) throws Exception {
+	void registerHttpHandler(String classname) throws Exception {
 
-		// In our design, a method name of a class is a service name.
-		// Now we unsupport polymorphism to deal with duplicated method names 
-		String serviceModule = getServiceModule(classname);
+		// 
+		String servicePath = getServiceModule(classname);
 		
-		for (Method service : getClass().getDeclaredMethods()) {
+		for (Method serviceName : getClass().getDeclaredMethods()) {
 
-			// The rules (a method is a service) include
-			
-			// 1. it is a public method
-			if (!Modifier.isPublic(service.getModifiers())
-					|| Modifier.isStatic(service.getModifiers())) {
+			// The rules for a method is a service is
+			// 1. it is just a public method
+			if (!Modifier.isPublic(serviceName.getModifiers())
+					|| Modifier.isStatic(serviceName.getModifiers())) {
 				continue;
 			}
 
-			// 2. filter duplicated services
-			if (registry.contains(service.getName())) {
+			// 2. we do not support polymorphism because of duplicated service names 
+			if (registry.contains(serviceName.getName())) {
 				m_logger.log(Level.SEVERE, () -> HttpConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_POLYMORPHISM + classname
-						+ "." + service.getName());
+						+ "." + serviceName.getName());
 				throw new DuplicatedHttpHandlerException(HttpConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_POLYMORPHISM + classname
-						+ "." + service.getName());
+						+ "." + serviceName.getName());
 			}
 			
-								
-			// 3. register to <code>HttpHandlerManager.addHandler<code>
-			registry.addHttpHandler(serviceModule, service);
+			// 3. register to <code>HttpHandlerRegistry<code>
+			// this url is servicePath/serviceName
+			registry.addHttpHandler(servicePath, serviceName);
 		}
 	}
 
 	
-
 	/**
-	 * @param name object name
+	 * @param name        classname
 	 * @return lowercase
 	 */
 	String getServiceModule(String classname) {

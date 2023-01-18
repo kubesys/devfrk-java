@@ -36,6 +36,9 @@ public final class HttpHandlerRegistry  {
 	
 
 	/**
+	 * register a HttpHandler, and if it register a duplicated HttpHandler,
+	 * we may automatically delete the existing one.
+	 * 
 	 * @param serviceModule   service module
 	 * @param serviceName     service name
 	 */
@@ -46,6 +49,8 @@ public final class HttpHandlerRegistry  {
 	}
 
 	/**
+	 * get a HttpHandler
+	 * 
 	 * @param customPath   servlet
 	 * @return              the related method
 	 * @throws Exception    exception

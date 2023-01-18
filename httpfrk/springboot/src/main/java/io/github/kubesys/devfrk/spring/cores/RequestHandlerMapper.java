@@ -12,10 +12,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.github.kubesys.devfrk.spring.cores.HandlerParameterValidator.ValidationResult;
-import io.github.kubesys.devfrk.spring.utils.JavaUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -51,53 +47,14 @@ public class RequestHandlerMapper {
 		return request.getRequestURI().substring(request.getContextPath().length() + 1);
 	}
 
-	public Object getAndExecHttpHandler(String customPath, JsonNode body) throws Exception {
-		Method httpHanlder = registry.getHttpHandler(customPath);
-		Object[] params = getParameters(body, httpHanlder);
-		return (params != null) ? httpHanlder.invoke(getInstance(customPath), params)
-				: httpHanlder.invoke(getInstance(customPath));
+	public Method getHttpHandler(String customPath) throws Exception {
+		return registry.getHttpHandler(customPath);
 	}
 	
-	/**
-	 * @param body                             body
-	 * @param targetMethod                     target
-	 * @return                                 objects 
-	 * @throws Exception                       exception
-	 */
-	protected Object[] getParameters(JsonNode body, Method targetMethod) throws Exception {
-
-		int parameterCount = targetMethod.getParameterCount();
-		Object[] params = (parameterCount == 0) ? null : new Object[parameterCount];
-		for (int i = 0; i < parameterCount; i++) {
-			String name = targetMethod.getParameters()[i].getName();
-			if (!body.has(name)) {
-				String typeName = targetMethod.getParameters()[i].getType().getName();
-				if (JavaUtils.isPrimitive(typeName) && !typeName.equals(String.class.getName())) {
-					params[i] = 0;
-				} else {
-					params[i] = null;
-				}
-			} else {
-				params[i] = new ObjectMapper().readValue(body.get(name).toPrettyString(),
-					targetMethod.getParameterTypes()[i]);
-			}
-			
-			checkParameter(params, i);
-		}
-		return params;
-
-	}
-	
-	/**
-	 * @param params                              params
-	 * @param i                                   i
-	 * @throws Exception                          exception
-	 */
-	protected void checkParameter(Object[] params, int i) throws Exception {
-		ValidationResult result = validator.validateEntity(params[i]);
-		if (result.isHasErrors()) {
-			throw new Exception(new ObjectMapper().writeValueAsString(result.getErrorMsg()));
-		}
+	public Object execHttpHandler(Method httpHandler, String customPath, JsonNode body) throws Exception {
+		Object[] params = validator.validateParameters(body, httpHandler);
+		return (params != null) ? httpHandler.invoke(getInstance(customPath), params)
+				: httpHandler.invoke(getInstance(customPath));
 	}
 	
 	/**

@@ -15,7 +15,7 @@ import jakarta.validation.constraints.Size;
 public class SwaggerService extends AbstractHttpHandler {
 	
 	public String echoHello( /* 参数注解 */
-			@Valid @Size(min = 5) String name) {
+			@Valid @Size(min = 5, max = 20) String name) {
 		return "Hello " + name + "!";
 	}
 	
@@ -31,7 +31,7 @@ public class SwaggerService extends AbstractHttpHandler {
 	
 	public static class User {
 		
-		@Size(min = 1, max = 20)
+		@Size(min = 5, max = 20)
 		protected String name;
 		
 		@Min(0)

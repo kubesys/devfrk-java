@@ -14,6 +14,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -65,9 +67,11 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 * @return the {@code HttpBodyHandler} result. In fact, it may be an exception.
 	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
 	 */
-	@RequestMapping(method = RequestMethod.POST, value = { "/**/login*", "/**/logout*", "/**/add*", "/**/create*", "/**/new*",
+	@PostMapping(value = { "/**/login*", "/**/logout*", "/**/add*", "/**/create*", "/**/new*",
 			"/**/insert*", "/**/clone*", "/**/attach*", "/**/plug*", "/**/set*", "/**/bind*", "/**/solve*" })
-	public @ResponseBody String createTypeRequest(HttpServletRequest request, @RequestBody JsonNode body)
+	public @ResponseBody String createTypeRequest(
+			HttpServletRequest request, 
+			@RequestBody JsonNode body)
 			throws Exception {
 		return doResponse(mapper.getCustomPath(request), body);
 	}
@@ -80,7 +84,9 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 */
 	@RequestMapping(method = { RequestMethod.POST, RequestMethod.DELETE }, value = { "/**/delete*", "/**/remove*",
 			"/**/eject*", "/**/detach*", "/**/unplug*", "/**/unset*", "/**/unbind*" })
-	public @ResponseBody String deleteTypeRequest(HttpServletRequest request, @RequestBody JsonNode body)
+	public @ResponseBody String deleteTypeRequest(
+			HttpServletRequest request, 
+			@RequestBody JsonNode body)
 			throws Exception {
 		return doResponse(mapper.getCustomPath(request), body);
 	}
@@ -94,7 +100,9 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 */
 	@RequestMapping(method = { RequestMethod.POST, RequestMethod.PUT }, value = { "/**/update*", "/**/diff*", "/**/modify*",
 			"/**/replace*", "/**/change*", "/**/resize*", "/**/tune*", "/**/revert*", "/**/convert*" })
-	public @ResponseBody String updateTypeRequest(HttpServletRequest request, @RequestBody JsonNode body)
+	public @ResponseBody String updateTypeRequest(
+			HttpServletRequest request, 
+			@RequestBody JsonNode body)
 			throws Exception {
 		return doResponse(mapper.getCustomPath(request), body);
 	}
@@ -105,23 +113,27 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 * @return the {@code HttpBodyHandler} result. In fact, it may be an exception.
 	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
 	 */
-	@RequestMapping(method = { RequestMethod.POST }, value = { "/**/index*", "/**/mock*", "/**/user*",
+	@PostMapping(value = { "/**/index*", "/**/mock*", "/**/user*",
 			"/**/get*", "/**/list*", "/**/query*", "/**/describe*", "/**/retrieve*", "/**/echo*", "/**/exec*" })
-	public @ResponseBody String retrievePostTypeRequest(HttpServletRequest request, @RequestBody JsonNode body)
+	public @ResponseBody String retrieveTypeGetRequest(
+			HttpServletRequest request,
+			@RequestBody JsonNode body) 
 			throws Exception {
 		return doResponse(mapper.getCustomPath(request), body);
 	}
-
+	
 	/**
 	 * @param request servlet path should be startwith 'get', 'list', or 'describe'
 	 * @param body    just body
 	 * @return the {@code HttpBodyHandler} result. In fact, it may be an exception.
 	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
 	 */
-	@RequestMapping(method = { RequestMethod.GET }, value = { "/**/index*", "/**/mock*", "/**/user*",
+	@GetMapping(value = { "/**/index*", "/**/mock*", "/**/user*",
 			"/**/get*", "/**/list*", "/**/query*", "/**/describe*", "/**/retrieve*", "/**/echo*", "/**/exec*" })
-	public @ResponseBody String retrieveTypeGetRequest(HttpServletRequest request,
-			@RequestParam(required = false) Map<String, String> body) throws Exception {
+	public @ResponseBody String retrieveTypeGetRequest(
+			HttpServletRequest request,
+			@RequestParam(required = false) Map<String, String> body) 
+			throws Exception {
 		return doResponse(mapper.getCustomPath(request), JSONUtils.toJsonNode(body));
 	}
 	
@@ -172,7 +184,9 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 		long start = System.currentTimeMillis();
 		try {
 
-			Object result = mapper.getAndExecHttpHandler(customPath, body);
+			Object result = mapper.execHttpHandler(
+					mapper.getHttpHandler(customPath),
+					customPath, body);
 
 			m_logger.info("Successfully deal with " + customPath);
 			return ((HttpResponse) getBean("resp")).success(result);

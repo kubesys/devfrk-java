@@ -25,7 +25,7 @@ public class SwaggerService extends AbstractHttpHandler {
 	@Operation(summary = "打印Hello",description = "post请求")
 	@ResponseBody
 	public String echoHello( /* 参数注解 */
-			@Size(min = 5) String name) {
+			@Valid @Size(min = 5) String name) {
 		return "Hello " + name + "!";
 	}
 	
@@ -33,8 +33,8 @@ public class SwaggerService extends AbstractHttpHandler {
 	@Operation(summary = "打印Hello1",description = "get请求")
 	@ResponseBody
 	public String echoHello1( /* 参数注解 */
-			@Size(min = 5) String name,
-			@Size(min = 5) String habit) throws Exception {
+			@Valid @Size(min = 5) String name,
+			@Valid @Size(min = 5) String habit) throws Exception {
 		throw new Exception("assddd");
 	}
 	
@@ -47,7 +47,7 @@ public class SwaggerService extends AbstractHttpHandler {
 	
 	public static class User {
 		
-		@Size(min = 1, max = 20)
+		@Size(min = 5, max = 20)
 		protected String name;
 		
 		@Min(0)

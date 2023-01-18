@@ -36,6 +36,8 @@ class SpringPlusMockTest  {
 	
 	final static String VALID_POST_REQUEST_PATH = "/swagger/echoHello";
 	
+	final static String VALID_POST_REQUEST_PATH2 = "/swagger/echoHello2";
+	
 	final static String LESS_THAN_MIN_SIZE = "ab";
 	
 	final static String GREAT_THAN_MAX_SIZE = "abccccccccc";
@@ -58,17 +60,29 @@ class SpringPlusMockTest  {
 	}
 	
 	
-//	@Test
-//	void testInValidPostParameterBody() throws Exception {
-//		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
-//				.post(VALID_POST_REQUEST_PATH)
-//				.content("{ \"name\": \"hen\" }")
-//				.contentType(MediaType.APPLICATION_JSON)
-//				.accept(MediaType.APPLICATION_JSON);
-//		mvc.perform(builder)
-//				.andExpect(status().isOk())
-//				.andExpect(jsonPath("data").value("Hello henry!"));
-//	}
+	@Test
+	void testInValidPostParameterBody() throws Exception {
+		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+				.post(VALID_POST_REQUEST_PATH)
+				.content("{ \"name\": \"hen\" }")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON);
+		mvc.perform(builder)
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("code").value(50000));
+	}
+	
+	@Test
+	void testInValidPost2ParameterBody() throws Exception {
+		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+				.post(VALID_POST_REQUEST_PATH2)
+				.content("{ \"user\": { \"name\": \"hen\", \"age\": 23 }}")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON);
+		mvc.perform(builder)
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("code").value(50000));
+	}
 	
 	@Test
 	void testValidPostRequestBody() throws Exception {
@@ -82,4 +96,7 @@ class SpringPlusMockTest  {
 				.andExpect(jsonPath("data").value("Hello henry!"));
 	}
 	
+	public static void main(String[] args) {
+		System.out.println("{ \"user\": { \"name\": \"hen\", \"age\": 23 }}");
+	}
 }
