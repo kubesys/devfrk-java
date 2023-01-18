@@ -3,6 +3,8 @@
  */
 package io.github.kubesys.devfrk.utils;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,173 +13,171 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import io.github.kubesys.devfrk.spring.utils.JavaUtils;
-import junit.framework.Assert;
 
 /**
  * 
  * @author wuheng@iscas.ac.cn
  * @since 1.1.0
  */
-@SuppressWarnings("deprecation")
-public class JavaUtilsTest {
+class JavaUtilsTest {
 
 	
 	@Test
-	public void testPrimitiveString() {
-		Assert.assertEquals(true, JavaUtils.isPrimitive(String.class));
+	void testPrimitiveString() {
+		assertEquals(true, JavaUtils.isPrimitive(String.class));
 	}
 	
 	@Test
-	public void testPrimitiveBool() {
-		Assert.assertEquals(true, JavaUtils.isPrimitive(Boolean.class) && JavaUtils.isPrimitive("boolean"));
+	void testPrimitiveBool() {
+		assertEquals(true, JavaUtils.isPrimitive(Boolean.class) && JavaUtils.isPrimitive("boolean"));
 	}
 	
 	@Test
-	public void testPrimitiveChar() {
-		Assert.assertEquals(true, JavaUtils.isPrimitive(Character.class) && JavaUtils.isPrimitive("char"));
+	void testPrimitiveChar() {
+		assertEquals(true, JavaUtils.isPrimitive(Character.class) && JavaUtils.isPrimitive("char"));
 	}
 	
 	@Test
-	public void testPrimitiveByte() {
-		Assert.assertEquals(true, JavaUtils.isPrimitive(Byte.class) && JavaUtils.isPrimitive("byte"));
+	void testPrimitiveByte() {
+		assertEquals(true, JavaUtils.isPrimitive(Byte.class) && JavaUtils.isPrimitive("byte"));
 	}
 	
 	@Test
-	public void testPrimitiveShort() {
-		Assert.assertEquals(true, JavaUtils.isPrimitive(Short.class) && JavaUtils.isPrimitive("short"));
+	void testPrimitiveShort() {
+		assertEquals(true, JavaUtils.isPrimitive(Short.class) && JavaUtils.isPrimitive("short"));
 	}
 	
 	@Test
-	public void testPrimitiveInt() {
-		Assert.assertEquals(true, JavaUtils.isPrimitive(Integer.class) && JavaUtils.isPrimitive("int"));
+	void testPrimitiveInt() {
+		assertEquals(true, JavaUtils.isPrimitive(Integer.class) && JavaUtils.isPrimitive("int"));
 	}
 	
 	@Test
-	public void testPrimitiveLong() {
-		Assert.assertEquals(true, JavaUtils.isPrimitive(Long.class) && JavaUtils.isPrimitive("long"));
+	void testPrimitiveLong() {
+		assertEquals(true, JavaUtils.isPrimitive(Long.class) && JavaUtils.isPrimitive("long"));
 	}
 	
 	@Test
-	public void testPrimitiveFloat() {
-		Assert.assertEquals(true, JavaUtils.isPrimitive(Float.class) && JavaUtils.isPrimitive("float"));
+	void testPrimitiveFloat() {
+		assertEquals(true, JavaUtils.isPrimitive(Float.class) && JavaUtils.isPrimitive("float"));
 	}
 	
 	@Test
-	public void testPrimitiveDouble() {
-		Assert.assertEquals(true, JavaUtils.isPrimitive(Double.class) && JavaUtils.isPrimitive("double"));
+	void testPrimitiveDouble() {
+		assertEquals(true, JavaUtils.isPrimitive(Double.class) && JavaUtils.isPrimitive("double"));
 	}
 	
 	@Test
-	public void testMath() {
-		Assert.assertEquals(false, JavaUtils.isPrimitive(Math.class));
+	void testMath() {
+		assertEquals(false, JavaUtils.isPrimitive(Math.class));
 	}
 	
 	@Test
-	public void testMap() {
-		Assert.assertEquals(true, JavaUtils.isMap(Map.class));
+	void testMap() {
+		assertEquals(true, JavaUtils.isMap(Map.class));
 	}
 	
 	@Test
-	public void testHashMap() {
-		Assert.assertEquals(true, JavaUtils.isMap(HashMap.class));
+	void testHashMap() {
+		assertEquals(true, JavaUtils.isMap(HashMap.class));
 	}
 	
 	
 	
 	@Test
-	public void testNoMap() {
-		Assert.assertEquals(false, JavaUtils.isMap(Math.class));
+	void testNoMap() {
+		assertEquals(false, JavaUtils.isMap(Math.class));
 	}
 
-	public Type getType(String name) throws Exception {
+	Type getType(String name) throws Exception {
 		return JavaUtilsTest.class.getDeclaredField(name).getGenericType();
 	}
 	
-	public static Map<String, String> strStrMap = null;
+	static Map<String, String> strStrMap = null;
 	
 	@Test
-	public void testStringStringMap() throws Exception {
-		Assert.assertEquals(true, JavaUtils.isStringStringMap(getType("strStrMap")));
+	void testStringStringMap() throws Exception {
+		assertEquals(true, JavaUtils.isStringStringMap(getType("strStrMap")));
 	}
 	
-	public static Map<String, Math> strObjMap = null;
+	static Map<String, Math> strObjMap = null;
 	
 	@Test
-	public void testStringObjectMap() throws Exception {
-		Assert.assertEquals(true, JavaUtils.isStringObjectMap(getType("strObjMap")));
+	void testStringObjectMap() throws Exception {
+		assertEquals(true, JavaUtils.isStringObjectMap(getType("strObjMap")));
 	}
 	
 	
 	@Test
-	public void testList() {
-		Assert.assertEquals(true, JavaUtils.isList(List.class));
-	}
-	
-	@Test
-	public void testArrayList() {
-		Assert.assertEquals(true, JavaUtils.isList(ArrayList.class));
+	void testList() {
+		assertEquals(true, JavaUtils.isList(List.class));
 	}
 	
 	@Test
-	public void testNoList() {
-		Assert.assertEquals(false, JavaUtils.isList(Math.class));
-	}
-	
-	public static List<String> strList = null;
-	
-	@Test
-	public void testStringList() throws Exception {
-		Assert.assertEquals(true, JavaUtils.isStringList(getType("strList")));
-	}
-	
-	public static List<Math> objList = null;
-	
-	@Test
-	public void testObjectList() throws Exception {
-		Assert.assertEquals(true, JavaUtils.isObjectList(getType("objList")));
+	void testArrayList() {
+		assertEquals(true, JavaUtils.isList(ArrayList.class));
 	}
 	
 	@Test
-	public void testSet() {
-		Assert.assertEquals(true, JavaUtils.isSet(Set.class));
+	void testNoList() {
+		assertEquals(false, JavaUtils.isList(Math.class));
+	}
+	
+	static List<String> strList = null;
+	
+	@Test
+	void testStringList() throws Exception {
+		assertEquals(true, JavaUtils.isStringList(getType("strList")));
+	}
+	
+	static List<Math> objList = null;
+	
+	@Test
+	void testObjectList() throws Exception {
+		assertEquals(true, JavaUtils.isObjectList(getType("objList")));
 	}
 	
 	@Test
-	public void testHashSet() {
-		Assert.assertEquals(true, JavaUtils.isSet(HashSet.class));
+	void testSet() {
+		assertEquals(true, JavaUtils.isSet(Set.class));
 	}
 	
 	@Test
-	public void testNoSet() {
-		Assert.assertEquals(false, JavaUtils.isSet(Math.class));
+	void testHashSet() {
+		assertEquals(true, JavaUtils.isSet(HashSet.class));
 	}
-	
-	public static Set<String> strSet = null;
 	
 	@Test
-	public void testStrinSet() throws Exception {
-		Assert.assertEquals(true, JavaUtils.isStringSet(getType("strSet")));
+	void testNoSet() {
+		assertEquals(false, JavaUtils.isSet(Math.class));
 	}
 	
-	public static List<Math> objSet = null;
+	static Set<String> strSet = null;
 	
 	@Test
-	public void testObjectSet() throws Exception {
-		Assert.assertEquals(true, JavaUtils.isObjectSet(getType("objSet")));
+	void testStrinSet() throws Exception {
+		assertEquals(true, JavaUtils.isStringSet(getType("strSet")));
 	}
 	
-	public void testValueInMap() throws Exception {
-		Assert.assertEquals(Math.class.getName(), JavaUtils.getValueClassForGenericMap(getType("strObjMap")));
+	static List<Math> objSet = null;
+	
+	@Test
+	void testObjectSet() throws Exception {
+		assertEquals(true, JavaUtils.isObjectSet(getType("objSet")));
 	}
 	
-	public void testObjectInList() throws Exception {
-		Assert.assertEquals(Math.class.getName(), JavaUtils.getClassForGenericList(getType("objList")));
+	void testValueInMap() throws Exception {
+		assertEquals(Math.class.getName(), JavaUtils.getValueClassForGenericMap(getType("strObjMap")));
 	}
 	
-	public void testObjectInSet() throws Exception {
-		Assert.assertEquals(Math.class.getName(), JavaUtils.getClassForGenericSet(getType("objSet")));
+	void testObjectInList() throws Exception {
+		assertEquals(Math.class.getName(), JavaUtils.getClassForGenericList(getType("objList")));
+	}
+	
+	void testObjectInSet() throws Exception {
+		assertEquals(Math.class.getName(), JavaUtils.getClassForGenericSet(getType("objSet")));
 	}
 }

@@ -5,12 +5,15 @@ package io.github.kubesys.devfrk.spring.cores;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 
 import io.github.kubesys.devfrk.spring.assists.HttpConstants;
+import io.github.kubesys.devfrk.spring.exs.DuplicatedHttpHandlerException;
+import io.github.kubesys.devfrk.spring.exs.InvalidHttpHandlerException;
 
 /**
  * @author wuheng@iscas.ac.cn
@@ -44,9 +47,9 @@ public abstract class AbstractHttpHandler implements CommandLineRunner {
 		String simplename = getClass().getSimpleName();
 
 		// if a simplename ends with 'Service', the class includes some services
-		if (!simplename.endsWith(HttpConstants.POSTFIX_SERVICE)) {
-			m_logger.severe(HttpConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_WRONG_NAME + simplename);
-			throw new Exception(HttpConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_WRONG_NAME + simplename);
+		if (!simplename.endsWith(HttpConstants.SERVICE_CLASS_POSTFIX)) {
+			m_logger.log(Level.SEVERE, () -> HttpConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_WRONG_NAME + simplename);
+			throw new InvalidHttpHandlerException(HttpConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_WRONG_NAME + simplename);
 		}
 
 		// register http handler
@@ -75,18 +78,15 @@ public abstract class AbstractHttpHandler implements CommandLineRunner {
 
 			// 2. filter duplicated services
 			if (registry.contains(service.getName())) {
-				m_logger.severe(HttpConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_POLYMORPHISM + classname
+				m_logger.log(Level.SEVERE, () -> HttpConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_POLYMORPHISM + classname
 						+ "." + service.getName());
-				throw new Exception(HttpConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_POLYMORPHISM + classname
+				throw new DuplicatedHttpHandlerException(HttpConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_POLYMORPHISM + classname
 						+ "." + service.getName());
 			}
 			
 								
 			// 3. register to <code>HttpHandlerManager.addHandler<code>
 			registry.addHttpHandler(serviceModule, service);
-			m_logger.info("servelet path '" + serviceModule 
-						+ "/" + service.getName() + "' registered sucessful.");
-				
 		}
 	}
 
@@ -98,9 +98,8 @@ public abstract class AbstractHttpHandler implements CommandLineRunner {
 	 */
 	String getServiceModule(String classname) {
 		String name = classname.substring(0, classname.length() 
-				- HttpConstants.POSTFIX_SERVICE.length());
+				- HttpConstants.SERVICE_CLASS_POSTFIX.length());
 		return name.substring(0, 1).toLowerCase() + name.substring(1);
 	}
-	
 
 }

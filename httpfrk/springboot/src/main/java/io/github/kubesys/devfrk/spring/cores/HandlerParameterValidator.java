@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.hibernate.validator.HibernateValidator;
 import org.springframework.stereotype.Component;
 
 import jakarta.validation.ConstraintViolation;
@@ -22,21 +21,19 @@ import jakarta.validation.Validator;
 @Component
 public class HandlerParameterValidator {
 
-	/**********************************
-	 *  JSR 303
-	 **********************************/
 	
-	protected Validator validator = Validation.byProvider(HibernateValidator.class)
-				.configure().failFast(true).buildValidatorFactory().getValidator();
+	protected Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 	
 	public <T> ValidationResult validateEntity(T obj) {
+		
+		System.out.println(obj.getClass().getName());
 		ValidationResult result = new ValidationResult();
 		Set<ConstraintViolation<T>> set = validator.validate(obj);
 
-		if (set != null && set.size() != 0) {
+		if (set != null && !set.isEmpty()) {
 
 			result.setHasErrors(true);
-			Map<String, String> errorMsg = new HashMap<String, String>();
+			Map<String, String> errorMsg = new HashMap<>();
 
 			for (ConstraintViolation<T> cv : set) {
 				errorMsg.put(cv.getPropertyPath().toString(), cv.getMessage());

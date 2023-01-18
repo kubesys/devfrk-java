@@ -6,6 +6,7 @@ package io.github.kubesys.devfrk.spring.cores;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.beans.BeansException;
@@ -39,9 +40,9 @@ public final class HttpHandlerRegistry  {
 	 * @param serviceName     service name
 	 */
 	public void addHttpHandler(String serviceModule, Method serviceName) {
-		String customPath = serviceModule + "/" + 
-				serviceName.getName();
+		String customPath = serviceModule + HttpConstants.URL_PATH_SEPARATOR + serviceName.getName();
 		httpHandlers.put(customPath, serviceName);
+		m_logger.log(Level.INFO, () -> HttpConstants.SUCESSFUL_REGISTER_HTTPHANDLER + customPath);
 	}
 
 	/**
@@ -51,6 +52,7 @@ public final class HttpHandlerRegistry  {
 	 */
 	public Method getHttpHandler(String customPath) throws BeansException {
 		if (!httpHandlers.containsKey(customPath)) {
+			m_logger.log(Level.SEVERE, () -> HttpConstants.EXCEPTION_INVALID_REQUEST_URL);
 			throw new NoSuchBeanDefinitionException(HttpConstants.EXCEPTION_INVALID_REQUEST_URL);
 		}
 		return httpHandlers.get(customPath);

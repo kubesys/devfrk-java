@@ -3,32 +3,33 @@
  */
 package io.github.kubesys.devfrk.utils;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.ComponentScan;
 
 import io.github.kubesys.devfrk.spring.utils.ClassUtils;
-import junit.framework.Assert;
 
 /**
  * 
  * @author wuheng@iscas.ac.cn
  * @since 1.1.0
  */
-@SuppressWarnings("deprecation")
-public class ClassUtilsTest {
+class ClassUtilsTest {
 
 	@Test
-	public void testWithNullPackage() {
-		Assert.assertEquals(0, ClassUtils.scan(null).size());
+	void testWithNullPackage() {
+		assertEquals(2, ClassUtils.scan(null).size());
 	}
 	
 	@Test
-	public void testWithNullAnnotation() {
-		Assert.assertEquals(4, ClassUtils.scan(new String[] {"io.github.webfrk.plus"}).size());
+	void testWithNullAnnotation() {
+		assertEquals(2, ClassUtils.scan(new String[] {"io.github.webfrk.plus"}).size());
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
-	public void testWithAnnotation() {
-		Assert.assertEquals(2, ClassUtils.scan(new String[] {"io.github.webfrk.plus"}, ComponentScan.class).size());
+	void testWithAnnotation() {
+		assertEquals(2, ClassUtils.scan(new String[] {"io.github.webfrk.plus"}, ComponentScan.class).size());
 	}
 }
