@@ -4,7 +4,6 @@
 package io.github.kubesys.devfrk.spring.cores;
 
 import java.lang.reflect.Method;
-import java.util.logging.Logger;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +18,12 @@ import jakarta.servlet.http.HttpServletRequest;
  * @author wuheng@iscas.ac.cn
  * @since  2.0.0
  * 
- * The {@code HttpHandlerForwarder} class is used to dispatch request to the
+ * The {@code RequestHandlerMapper} class is used to dispatch request to the
  * related handler, if the handler is not found, it would throw an exception.
  */
 @Component
 public class RequestHandlerMapper {
 
-	/**
-	 * logger
-	 */
-	public static final Logger m_logger = Logger.getLogger(RequestHandlerMapper.class.getName());
 
 	/**
 	 * handler means how to deal with the request for specified servletPath

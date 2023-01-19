@@ -23,145 +23,140 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 
-
 /**
- * @author  wuheng@iscas.ac.cn
- * @since   2.0.0
+ * @author wuheng@iscas.ac.cn
+ * @since 2.0.0
  */
 @Component
 public class HandlerParameterValidator {
 
 	protected Validator objValidator = Validation.buildDefaultValidatorFactory().getValidator();
 	
-	
-	
+	protected StringValidator stringValidator = new StringValidator();
+
 	/**
-	 * @param body                             body
-	 * @param targetMethod                     target
-	 * @return                                 objects 
-	 * @throws Exception                       exception
+	 * @param body         body
+	 * @param targetMethod target
+	 * @return objects
+	 * @throws Exception exception
 	 */
 	public Object[] validateParameters(JsonNode body, Method targetMethod) throws Exception {
 
-		int parameterCount = targetMethod.getParameterCount();
-		Object[] params = (parameterCount == 0) ? null : new Object[parameterCount];
-		
-		for (int i = 0; i < parameterCount; i++) {
-			String name = targetMethod.getParameters()[i].getName();
-			if (!body.has(name)) {
-				String typeName = targetMethod.getParameters()[i].getType().getName();
-				if (JavaUtils.isPrimitive(typeName) && !typeName.equals(String.class.getName())) {
-					params[i] = 0;
-				} else {
-					params[i] = null;
-				}
-			} else {
-				params[i] = new ObjectMapper().readValue(body.get(name).toPrettyString(),
-					targetMethod.getParameterTypes()[i]);
-			}
-			
-			ValidationResult result = null;
-			if (JavaUtils.isPrimitive(params[i].getClass())) {
-				Annotation[] as = null;
-				try {
-					as = targetMethod.getAnnotatedParameterTypes()[i].getAnnotations();
-				} catch (Exception ex) {
-					
-				}
-				result = validatePrimitiveType(params[i], as);
-			} else {
-				result = validateObjectType(params[i]);
-			}
-			if (result.isHasErrors()) {
-				throw new Exception(new ObjectMapper().writeValueAsString(result.getErrorMsg()));
-			}
-		}
-		return params;
+		Object[] allParamsValue = getAllParamsFrom(targetMethod);
+		for (int i = 0; i < allParamsValue.length; i++) {
+			String thisParamName = getParamName(targetMethod, i);
+			Class<?> thisParamType = getParamType(targetMethod, i);
+			allParamsValue[i] = getParamValue(thisParamName, thisParamType, body);
+			Object thisParamValue = allParamsValue[i];
+			Annotation[] thisParamAnnos = getParamAnnos(targetMethod, i);
 
-	}
-	
-	private <T> ValidationResult validatePrimitiveType(T obj, Annotation[] as) {
-		ValidationResult result = new ValidationResult();
-		
-		Map<String, String> errorMsg = new HashMap<>();
-		if (!obj.getClass().isAssignableFrom(String.class)) {
-			result.setHasErrors(true);
-			errorMsg.put(obj + "is" + obj.getClass().getName(), "Only support String.class");
-			result.setErrorMsg(errorMsg);
-		} else {
-			for (Annotation a : as) {
-				int len = obj.toString().length();
-				if (a.annotationType().getTypeName().equals(Size.class.getName())) {
-					Size size = (Size) a;
-					if (size.min() > len || size.max() < len) {
-						result.setHasErrors(true);
-						errorMsg.put(obj + " is " + obj.getClass().getName(), "The length must be between " + size.min() + " and " + size.max());
-						result.setErrorMsg(errorMsg);
-					}
-				} else if (a.annotationType().getTypeName().equals(Min.class.getName())) {
-					Min min = (Min) a;
-					if (min.value() > len) {
-						result.setHasErrors(true);
-						errorMsg.put("len is invalid", "The length must be great than " +  min.value());
-						result.setErrorMsg(errorMsg);
-					} 
-				} else if (a.annotationType().getTypeName().equals(Max.class.getName())) {
-					Max max = (Max) a;
-					if (max.value() < len) {
-						result.setHasErrors(true);
-						errorMsg.put("len is invalid", "The length must be less than " +  max.value());
-						result.setErrorMsg(errorMsg);
-					} 
-				} else if (a.annotationType().getTypeName().equals(Valid.class.getName())) {
-					continue;
-				} else {
-					result.setHasErrors(true);
-					errorMsg.put("unsupport type", "only support jakarta.validation.Valid, jakarta.validation.constraints.Size, jakarta.validation.constraints.Min and jakarta.validation.constraints.Max");
-					result.setErrorMsg(errorMsg);
-				}
+			if (JavaUtils.isPrimitive(thisParamType)) {
+				validatePrimitiveType(thisParamValue, thisParamAnnos);
+			} else {
+				validateObjectType(thisParamValue);
 			}
+
 		}
-		return result;
+		return allParamsValue;
 	}
-	
-	private <T> ValidationResult validateObjectType(T obj) {
-		ValidationResult result = new ValidationResult();
+
+	private Annotation[] getParamAnnos(Method targetMethod, int i) {
+		try {
+			return targetMethod.getAnnotatedParameterTypes()[i].getAnnotations();
+		} catch (Exception ex) {
+			return new Annotation[0];
+		}
+	}
+
+	private Object getParamValue(String thisParamName, Class<?> thisParamType, JsonNode body) throws Exception {
+		if (thisParamType.isAssignableFrom(String.class)) {
+			return body.has(thisParamName) ? body.get(thisParamName).asText() : null;
+		} else if (JavaUtils.isPrimitive(thisParamType)) {
+			return body.has(thisParamName) ? body.get(thisParamName).asInt() : 0;
+		} else {
+			return body.has(thisParamName)
+					? new ObjectMapper().readValue(body.get(thisParamName).toPrettyString(), thisParamType)
+					: "{}";
+		}
+	}
+
+	private Class<?> getParamType(Method targetMethod, int i) {
+		return targetMethod.getParameters()[i].getType();
+	}
+
+	private String getParamName(Method targetMethod, int i) {
+		return targetMethod.getParameters()[i].getName();
+	}
+
+	private Object[] getAllParamsFrom(Method targetMethod) {
+		int parameterCount = targetMethod.getParameterCount();
+		return (parameterCount == 0) ? new Object[0] : new Object[parameterCount];
+	}
+
+	private <T> void validatePrimitiveType(T obj, Annotation[] as) throws Exception {
+		
+		String errMsg = null;
+		if (!obj.getClass().isAssignableFrom(String.class)) {
+			errMsg = "Only support String.class";
+		} else {
+			errMsg = stringValidator.validate(obj, as);
+		}
+		
+		if (errMsg != null) {
+			throw new Exception(obj.getClass().getName() + ":" + errMsg);
+		}
+	}
+
+	private <T> void validateObjectType(T obj) throws Exception {
 		Set<ConstraintViolation<T>> set = objValidator.validate(obj);
 
 		if (set != null && !set.isEmpty()) {
 
-			result.setHasErrors(true);
 			Map<String, String> errorMsg = new HashMap<>();
 
 			for (ConstraintViolation<T> cv : set) {
 				errorMsg.put(cv.getPropertyPath().toString(), cv.getMessage());
 			}
-			result.setErrorMsg(errorMsg);
+
+			throw new Exception(new ObjectMapper().writeValueAsString(errorMsg));
 		}
-		return result;
+
+	}
+
+	
+	/**
+	 * @author wuheng@iscas.ac.cn
+	 *
+	 */
+	public static class StringValidator {
+		
+		public <T> String validate(T obj, Annotation[] as) {
+			for (Annotation a : as) {
+				int len = obj.toString().length();
+				if (a.annotationType().getTypeName().equals(Size.class.getName())) {
+					Size size = (Size) a;
+					if (size.min() > len || size.max() < len) {
+						return "The length must be between " + size.min() + " and " + size.max();
+					}
+				} else if (a.annotationType().getTypeName().equals(Min.class.getName())) {
+					Min min = (Min) a;
+					if (min.value() > len) {
+						return "The length must be great than " + min.value();
+					}
+				} else if (a.annotationType().getTypeName().equals(Max.class.getName())) {
+					Max max = (Max) a;
+					if (max.value() < len) {
+						return "The length must be less than " + max.value();
+					}
+				} else if (a.annotationType().getTypeName().equals(Valid.class.getName())) {
+					continue;
+				} else {
+					return "only support jakarta.validation.Valid, jakarta.validation.constraints.Size, jakarta.validation.constraints.Min and jakarta.validation.constraints.Max";
+				}
+			}
+			
+			return null;
+		}
 	}
 	
-	public static class ValidationResult {
-		 
-	    private boolean             hasErrors;
-	 
-	    private Map<String, String> errorMsg;
-
-		public boolean isHasErrors() {
-			return hasErrors;
-		}
-
-		public void setHasErrors(boolean hasErrors) {
-			this.hasErrors = hasErrors;
-		}
-
-		public Map<String, String> getErrorMsg() {
-			return errorMsg;
-		}
-
-		public void setErrorMsg(Map<String, String> errorMsg) {
-			this.errorMsg = errorMsg;
-		}
-	    
-	}
 }

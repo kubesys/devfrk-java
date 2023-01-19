@@ -98,5 +98,6 @@ class SpringPlusMockTest  {
 	
 	public static void main(String[] args) {
 		System.out.println("{ \"user\": { \"name\": \"hen\", \"age\": 23 }}");
+		System.out.println(new Object[0].length);
 	}
 }

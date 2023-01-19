@@ -5,6 +5,7 @@ package io.github.kubesys.devfrk.spring.cores;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.beans.BeansException;
@@ -179,7 +180,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 */
 	protected String doResponse(String customPath, JsonNode body) throws Exception {
 
-		m_logger.info("Begin to deal with " + customPath);
+		m_logger.log(Level.INFO, () -> "Begin to deal with " + customPath);
 
 		long start = System.currentTimeMillis();
 		try {
@@ -188,7 +189,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 					mapper.getHttpHandler(customPath),
 					customPath, body);
 
-			m_logger.info("Successfully deal with " + customPath);
+			m_logger.log(Level.INFO, () -> "Successfully deal with " + customPath);
 			return ((HttpResponse) getBean("resp")).success(result);
 		} catch (Exception ex) {
 			StringBuilder sb = new StringBuilder();
@@ -203,7 +204,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 			throw new Exception(sb.toString());
 		} finally {
 			long end = System.currentTimeMillis();
-			m_logger.info(customPath + "," + (end - start) + "ms");
+			m_logger.log(Level.INFO, () -> customPath + "," + (end - start) + "ms");
 		}
 		
 	}

@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author wuheng@iscas.ac.cn
- * @since  2.2.3
+ * @since  2.0.0
  * 
  * The {@code HttpCorsInterceptor} class is used to support cross-origin resource sharing
  */
@@ -24,9 +24,10 @@ public class HttpCorsInterceptor implements HandlerInterceptor {
 	 */
 	public static final Logger m_logger = Logger.getLogger(HttpCorsInterceptor.class.getName());
 	
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+	@Override
+	public boolean preHandle(HttpServletRequest request, 
+			HttpServletResponse response, Object handler)
 			throws Exception {
-		
 		
 		String origin = request.getHeader("Origin");
 		response.setHeader("Access-Control-Allow-Origin", origin);
@@ -47,6 +48,4 @@ public class HttpCorsInterceptor implements HandlerInterceptor {
 		HandlerInterceptor.super.postHandle(request, response, handler, modelAndView);
 	}
 	
-	
-
 }
