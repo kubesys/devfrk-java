@@ -11,9 +11,11 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.github.kubesys.devfrk.spring.exs.InvalidParameterValueException;
 import io.github.kubesys.devfrk.spring.utils.JavaUtils;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
@@ -51,7 +53,7 @@ public class HandlerParameterValidator {
 			Annotation[] thisParamAnnos = getParamAnnos(targetMethod, i);
 
 			if (JavaUtils.isPrimitive(thisParamType)) {
-				validatePrimitiveType(thisParamValue, thisParamAnnos);
+				validatePrimitiveType(thisParamName, thisParamValue, thisParamAnnos);
 			} else {
 				validateObjectType(thisParamValue);
 			}
@@ -93,7 +95,7 @@ public class HandlerParameterValidator {
 		return (parameterCount == 0) ? new Object[0] : new Object[parameterCount];
 	}
 
-	private <T> void validatePrimitiveType(T obj, Annotation[] as) throws Exception {
+	private <T> void validatePrimitiveType(String name, T obj, Annotation[] as) throws InvalidParameterValueException {
 		
 		String errMsg = null;
 		if (!obj.getClass().isAssignableFrom(String.class)) {
@@ -103,11 +105,11 @@ public class HandlerParameterValidator {
 		}
 		
 		if (errMsg != null) {
-			throw new Exception(obj.getClass().getName() + ":" + errMsg);
+			throw new InvalidParameterValueException(name + ":" + errMsg);
 		}
 	}
 
-	private <T> void validateObjectType(T obj) throws Exception {
+	private <T> void validateObjectType(T obj) throws InvalidParameterValueException, JsonProcessingException {
 		Set<ConstraintViolation<T>> set = objValidator.validate(obj);
 
 		if (set != null && !set.isEmpty()) {
@@ -118,7 +120,7 @@ public class HandlerParameterValidator {
 				errorMsg.put(cv.getPropertyPath().toString(), cv.getMessage());
 			}
 
-			throw new Exception(new ObjectMapper().writeValueAsString(errorMsg));
+			throw new InvalidParameterValueException(new ObjectMapper().writeValueAsString(errorMsg));
 		}
 
 	}

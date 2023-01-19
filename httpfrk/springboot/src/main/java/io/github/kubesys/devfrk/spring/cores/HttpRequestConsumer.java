@@ -192,16 +192,14 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 			m_logger.log(Level.INFO, () -> "Successfully deal with " + customPath);
 			return ((HttpResponse) getBean("resp")).success(result);
 		} catch (Exception ex) {
-			StringBuilder sb = new StringBuilder();
 			if (ex instanceof InvocationTargetException) {
+				StringBuilder sb = new StringBuilder();
 				sb.append(((InvocationTargetException) ex).getTargetException());
+				throw new InvocationTargetException(ex, sb.toString());
 			} else {
-				sb.append(ex.getMessage()).append("\n");
-				for (StackTraceElement ste : ex.getStackTrace()) {
-					sb.append("\t").append(ste.getClassName() + "." + ste.getMethodName() + ":" + ste.getLineNumber()).append("\n");
-				}
+				throw ex;
 			}
-			throw new Exception(sb.toString());
+			
 		} finally {
 			long end = System.currentTimeMillis();
 			m_logger.log(Level.INFO, () -> customPath + "," + (end - start) + "ms");

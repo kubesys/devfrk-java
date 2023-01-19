@@ -32,38 +32,32 @@ import io.github.kubesys.devfrk.spring.assists.HttpConstants;
 @ComponentScan(basePackages= {"io.github.kubesys.httpfrk", "io.github.webfrk.plus.examples"})
 class SpringPlusMockTest  {
 
-	final static String INVALID_GET_REQUEST_PATH = "/mock/listMock8";
-	
-	final static String VALID_POST_REQUEST_PATH = "/swagger/echoHello";
-	
-	final static String VALID_POST_REQUEST_PATH2 = "/swagger/echoHello2";
-	
-	final static String LESS_THAN_MIN_SIZE = "ab";
-	
-	final static String GREAT_THAN_MAX_SIZE = "abccccccccc";
-	
-	final static String VALID_SIZE = "abc";
 	
 	@Autowired
 	private MockMvc mvc;
 
+	//-----------------------------------------------------------------------
+	final static String INVALID_GET_REQUEST_PATH = "/mock/listMock8";
+	
 	@Test
 	void testInvalidGetRequestBody() throws Exception {
 		@SuppressWarnings("deprecation")
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(
 							INVALID_GET_REQUEST_PATH)
-				.param("name", LESS_THAN_MIN_SIZE)
+				.param("name", "test")
 				.accept(MediaType.APPLICATION_JSON_UTF8);
 		mvc.perform(builder)
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("code").value(HttpConstants.HTTP_RESPONSE_STATUS_FAILED));
 	}
 	
+	//-----------------------------------------------------------------------
+	final static String VALID_POST_STR_REQUEST_PATH = "/swagger/echoString";
 	
 	@Test
-	void testInValidPostParameterBody() throws Exception {
+	void testInValidPostStringParameterBody() throws Exception {
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
-				.post(VALID_POST_REQUEST_PATH)
+				.post(VALID_POST_STR_REQUEST_PATH)
 				.content("{ \"name\": \"hen\" }")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON);
@@ -72,11 +66,40 @@ class SpringPlusMockTest  {
 				.andExpect(jsonPath("code").value(50000));
 	}
 	
+	
 	@Test
-	void testInValidPost2ParameterBody() throws Exception {
+	void testValidPostStringRequestBody() throws Exception {
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
-				.post(VALID_POST_REQUEST_PATH2)
+				.post(VALID_POST_STR_REQUEST_PATH)
+				.content("{ \"name\": \"henry\" }")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON);
+		mvc.perform(builder)
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("data").value("Hello henry!"));
+	}
+	
+	//-----------------------------------------------------------------------
+	final static String VALID_POST_OBJ_REQUEST_PATH = "/swagger/echoObject";
+	
+	
+	@Test
+	void testInvalidPostObjStringParameterBody() throws Exception {
+		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+				.post(VALID_POST_OBJ_REQUEST_PATH)
 				.content("{ \"user\": { \"name\": \"hen\", \"age\": 23 }}")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON);
+		mvc.perform(builder)
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("code").value(50000));
+	}
+//	
+	@Test
+	void testInvalidPostObjIntParameterBody() throws Exception {
+		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+				.post(VALID_POST_OBJ_REQUEST_PATH)
+				.content("{ \"user\": { \"name\": \"henry\", \"age\": 120 }}")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON);
 		mvc.perform(builder)
@@ -85,15 +108,27 @@ class SpringPlusMockTest  {
 	}
 	
 	@Test
-	void testValidPostRequestBody() throws Exception {
+	void testInvalidPostNullObjBody() throws Exception {
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
-				.post(VALID_POST_REQUEST_PATH)
-				.content("{ \"name\": \"henry\" }")
+				.post(VALID_POST_OBJ_REQUEST_PATH)
+				.content("")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON);
 		mvc.perform(builder)
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("data").value("Hello henry!"));
+				.andExpect(jsonPath("code").value(50000));
+	}
+	
+	@Test
+	void testInvalidPostObjFormatBody() throws Exception {
+		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+				.post(VALID_POST_OBJ_REQUEST_PATH)
+				.content("This is a test")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON);
+		mvc.perform(builder)
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("code").value(50000));
 	}
 	
 	public static void main(String[] args) {

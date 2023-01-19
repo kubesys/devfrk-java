@@ -14,18 +14,12 @@ import jakarta.validation.constraints.Size;
 @ServiceDefinition
 public class SwaggerService extends AbstractHttpHandler {
 	
-	public String echoHello( /* 参数注解 */
+	public String echoString( /* 参数注解 */
 			@Valid @Size(min = 5, max = 20) String name) {
 		return "Hello " + name + "!";
 	}
 	
-	public String echoHello1( /* 参数注解 */
-			String name,
-			String habit) throws Exception {
-		throw new Exception("assddd");
-	}
-	
-	public User echoHello2(@RequestBody @Valid User user) {
+	public User echoObject(@RequestBody @Valid User user) {
 		return user;
 	}
 	
