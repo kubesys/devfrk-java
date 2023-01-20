@@ -1,0 +1,13 @@
+# General configuration
+server:
+  port: 9080
+  servlet:
+    context-path: /httpfrk
+    
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  
+swagger:
+  enabled: true

@@ -13,9 +13,8 @@
 	<description>devfrk</description>
 
 	<modules>
-        <module>httpfrk</module>
-        <module>datafrk</module>
-        <module>testfrk</module>
+        <module>springboot</module>
+        <module>springboot-orm</module>
     </modules>
 
     <properties>
