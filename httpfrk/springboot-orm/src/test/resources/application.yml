@@ -1,0 +1,28 @@
+# General configuration
+server:
+  port: 9080
+  servlet:
+    context-path: /httpfrk
+    
+spring:
+  datasource:
+    url: jdbc:postgresql://120.46.180.58:30306/test
+    username: postgres
+    password: onceas
+    driverClassName: org.postgresql.Driver
+  jackson:
+    time-zone: GMT+8
+  jpa:
+    hibernate:
+      generate_ddl: true
+      ddl_auto: update
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+    database: postgresql
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  
+swagger:
+  enabled: true
+  
+  
