@@ -1,13 +1,14 @@
 /**
  * Copyright (2019, ) Institute of Software, Chinese Academy of Sciences
  */
-package io.github.webfrk.nat;
+package io.github.webfrk.current;
 
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 import io.github.kubesys.devfrk.spring.HttpServer;
+
 
 /**
  * @author wuheng@iscas.ac.cn
@@ -20,12 +21,12 @@ import io.github.kubesys.devfrk.spring.HttpServer;
  *        src/main/resources/application.yml src/main/resources/log4j.properties
  * 
  */
-
-@ComponentScan(basePackages = { "io.github.webfrk.nat.exampls" })
-public class SpringNativeBootServer extends HttpServer  {
+@ComponentScan(value = { "io.github.webfrk.current.examples" })
+public class SpringPlusBootServer extends HttpServer  {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SpringNativeBootServer.class, args);
+		SpringApplication.run(SpringPlusBootServer.class, args);
 	}
 
+	
 }

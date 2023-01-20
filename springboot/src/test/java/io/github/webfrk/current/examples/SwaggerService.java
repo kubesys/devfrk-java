@@ -1,4 +1,4 @@
-package io.github.webfrk.plus.examples;
+package io.github.webfrk.current.examples;
 
 
 import org.springframework.web.bind.annotation.RequestBody;

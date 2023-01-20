@@ -1,4 +1,4 @@
-package io.github.webfrk.nat.exampls;
+package io.github.webfrk.previous.exampls;
 
 
 import org.springframework.stereotype.Controller;

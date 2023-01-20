@@ -39,7 +39,7 @@ class SpringORMMockTest  {
 	void testValidPostObjParameterBody() throws Exception {
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
 				.post(VALID_POST_REQUEST_PATH)
-				.content("{ \"user\": { \"name\": \"wuheng\", \"email\": \"wuheng@otcaix.iscas.ac.cn\" }}")
+				.content("{ \"user\": { \"name\": \"wuheng\", \"email\": \"wuheng@iecas.cn\" }}")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON);
 		mvc.perform(builder)

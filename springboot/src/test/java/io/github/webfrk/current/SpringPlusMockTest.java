@@ -1,7 +1,7 @@
 /**
  * Copyright (2019, ) Institute of Software, Chinese Academy of Sciences
  */
-package io.github.webfrk.plus;
+package io.github.webfrk.current;
 
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;

@@ -1,4 +1,4 @@
-package io.github.webfrk.orm.examples;
+package io.github.webfrk.orm.previous.examples;
 
 
 import org.springframework.data.repository.CrudRepository;
