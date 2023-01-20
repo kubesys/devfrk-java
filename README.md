@@ -1,23 +1,23 @@
-devfrk
+# devfrk
 
-# 1. Introduction
+## 1. Introduction
 
 The project's goal is to simply develop spring-based app with automated unit testing and various data access.
 
 
-## 1.1 Authors
+### 1.1 Authors
 
 - wuheng@iscas.ac.cn
 
-## 1.2 Supported
+### 1.2 Supported
 
 - ShanDong Provincial Key Research and Development Program, China (2021CXGC010101)
  
-# 2. Quick start
+## 2. Quick start
 
 We assume your IDE supports Maven.
 
-## 2.1 pom.xml
+### 2.1 pom.xml
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>
@@ -47,7 +47,7 @@ We assume your IDE supports Maven.
 </project>
 ```
 
-## 2.2 application.yml
+### 2.2 application.yml
 
 ```
 # General configuration
@@ -65,7 +65,7 @@ swagger:
   enabled: true
 ```
 
-## 2.3 DemoService.Java
+### 2.3 DemoService.Java
 
 ```
 package demo;
@@ -87,7 +87,7 @@ public class DemoService extends AbstractHttpHandler {
 }
 ```
 
-## 2.4 DemoServer.java
+### 2.4 DemoServer.java
 
 ```
 import org.springframework.boot.SpringApplication;
@@ -106,7 +106,7 @@ public class DemoServer extends HttpServer  {
 }
 ```
 
-## 2.4 Test
+### 2.4 Test
 
 - Run DemoServer.java in your IDE
 - Open your browser and access   http://localhost:9080/httpfrk/demo/echoString?name=123456
