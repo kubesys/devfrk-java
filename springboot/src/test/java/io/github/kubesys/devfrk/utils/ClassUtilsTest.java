@@ -19,17 +19,17 @@ class ClassUtilsTest {
 
 	@Test
 	void testWithNullPackage() {
-		assertEquals(2, ClassUtils.scan(null).size());
+		assertEquals(1, ClassUtils.scan(null).size());
 	}
 	
 	@Test
 	void testWithNullAnnotation() {
-		assertEquals(2, ClassUtils.scan(new String[] {"io.github.webfrk.plus"}).size());
+		assertEquals(1, ClassUtils.scan(new String[] {"io.github.webfrk.plus"}).size());
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Test
 	void testWithAnnotation() {
-		assertEquals(2, ClassUtils.scan(new String[] {"io.github.webfrk.plus"}, ComponentScan.class).size());
+		assertEquals(1, ClassUtils.scan(new String[] {"io.github.webfrk.plus"}, ComponentScan.class).size());
 	}
 }

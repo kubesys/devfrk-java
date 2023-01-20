@@ -5,10 +5,15 @@ package io.github.webfrk.orm;
 
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
 import io.github.kubesys.devfrk.spring.HttpServer;
-import io.github.webfrk.orm.SpringORMBootServer;
+import io.github.kubesys.devfrk.spring.assists.HttpResponse;
+import io.github.kubesys.devfrk.spring.defs.DefaultHttpResponse;
 
 
 /**
@@ -22,20 +27,20 @@ import io.github.webfrk.orm.SpringORMBootServer;
  *        src/main/resources/application.yml src/main/resources/log4j.properties
  * 
  */
-//@Configuration
-//@SpringBootApplication
-//@EnableAutoConfiguration
-//@ComponentScan(basePackages = { "io.github" })
-@ComponentScan(basePackages = { "io.github.webfrk.orm" })
+@Configuration
+@SpringBootApplication
+@EnableAutoConfiguration
+@ComponentScan(basePackages = { "io.github.webfrk.orm.examples" })
+//@ComponentScan(value = { "io.github" })
 public class SpringORMBootServer extends HttpServer  {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringORMBootServer.class, args);
 	}
 
-//	@Bean(name = "resp")
-//	public HttpResponse getResponse() {
-//		return new DefaultHttpResponse();
-//	}
+	@Bean(name = "resp")
+	public HttpResponse getResponse() {
+		return new DefaultHttpResponse();
+	}
 	
 }

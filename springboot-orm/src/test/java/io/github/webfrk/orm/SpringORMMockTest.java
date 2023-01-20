@@ -12,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,7 +26,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = SpringORMBootServer.class)
 @AutoConfigureMockMvc
-@ComponentScan(basePackages= {"io.github.kubesys.httpfrk", "io.github.webfrk.orm.examples"})
 class SpringORMMockTest  {
 
 	
@@ -41,7 +39,7 @@ class SpringORMMockTest  {
 	void testValidPostObjParameterBody() throws Exception {
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
 				.post(VALID_POST_REQUEST_PATH)
-				.content("{ \"user\": { \"name\": \"wuheng\", \"email\": \"wuheng@iscas.ac.cn\" }}")
+				.content("{ \"user\": { \"name\": \"wuheng\", \"email\": \"wuheng@otcaix.iscas.ac.cn\" }}")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON);
 		mvc.perform(builder)

@@ -31,7 +31,7 @@ import io.github.kubesys.devfrk.spring.defs.DefaultHttpResponse;
 @Configuration
 @SpringBootApplication
 @EnableAutoConfiguration
-@ComponentScan(basePackages = { "io.github.kubesys.devfrk.spring" })
+@ComponentScan(value = { "io.github.kubesys.devfrk.spring" })
 public abstract class HttpServer implements WebMvcConfigurer {
 
 	@Override
