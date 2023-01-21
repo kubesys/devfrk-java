@@ -1,11 +1,10 @@
 /**
- * Copyright (2019, ) Institute of Software, Chinese Academy of Sciences
+ * Copyright (2023, ) Institute of Software, Chinese Academy of Sciences
  */
-package io.github.webfrk.orm.previous.examples;
+package io.github.webfrk.orm.current.examples;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 
@@ -15,7 +14,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserOrm extends CrudRepository<User, Long>, PagingAndSortingRepository<User, Long> {
-
-	<S extends User> S save(@Param("user") User user);
 
 }

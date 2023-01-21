@@ -1,7 +1,7 @@
 /**
  * Copyright (2019, ) Institute of Software, Chinese Academy of Sciences
  */
-package io.github.webfrk.orm;
+package io.github.webfrk.orm.current;
 
 
 import org.springframework.boot.SpringApplication;
@@ -30,7 +30,7 @@ import io.github.kubesys.devfrk.spring.defs.DefaultHttpResponse;
 @Configuration
 @SpringBootApplication
 @EnableAutoConfiguration
-@ComponentScan(value = { "io.github.webfrk.orm.previous.examples" })
+@ComponentScan(value = { "io.github.webfrk.orm.current.examples" })
 public class SpringORMBootServer extends HttpServer  {
 
 	public static void main(String[] args) {

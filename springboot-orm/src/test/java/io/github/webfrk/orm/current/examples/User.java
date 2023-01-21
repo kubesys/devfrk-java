@@ -1,6 +1,7 @@
-package io.github.webfrk.orm.previous.examples;
+package io.github.webfrk.orm.current.examples;
 
 
+import io.github.kubesys.devfrk.spring.orm.OrmEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,7 +14,7 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "user_tb")
-public class User {
+public class User implements OrmEntity {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

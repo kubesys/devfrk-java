@@ -1,7 +1,7 @@
 /**
  * Copyright (2019, ) Institute of Software, Chinese Academy of Sciences
  */
-package io.github.webfrk.orm;
+package io.github.webfrk.orm.current;
 
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -39,7 +39,7 @@ class SpringORMMockTest  {
 	void testValidPostObjParameterBody() throws Exception {
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
 				.post(VALID_POST_REQUEST_PATH)
-				.content("{ \"user\": { \"name\": \"wuheng\", \"email\": \"wuheng@iecas.cn\" }}")
+				.content("{ \"user\": { \"name\": \"wuheng\", \"email\": \"wuheng09@gmail.com\" }}")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON);
 		mvc.perform(builder)
