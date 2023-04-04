@@ -98,9 +98,7 @@ public class HandlerParameterValidator {
 	private <T> void validatePrimitiveType(String name, T obj, Annotation[] as) throws InvalidParameterValueException {
 		
 		String errMsg = null;
-		if (!obj.getClass().isAssignableFrom(String.class)) {
-			errMsg = "Only support String.class";
-		} else {
+		if (obj.getClass().isAssignableFrom(String.class)) {
 			errMsg = stringValidator.validate(obj, as);
 		}
 		
