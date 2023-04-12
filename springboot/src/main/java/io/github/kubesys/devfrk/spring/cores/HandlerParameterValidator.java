@@ -49,8 +49,8 @@ public class HandlerParameterValidator {
 			String thisParamName = getParamName(targetMethod, i);
 			Class<?> thisParamType = getParamType(targetMethod, i);
 			allParamsValue[i] = getParamValue(thisParamName, thisParamType, body);
-			Object thisParamValue = allParamsValue[i];
-			Annotation[] thisParamAnnos = getParamAnnos(targetMethod, i);
+//			Object thisParamValue = allParamsValue[i];
+//			Annotation[] thisParamAnnos = getParamAnnos(targetMethod, i);
 
 //			if (JavaUtils.isPrimitive(thisParamType)) {
 //				validatePrimitiveType(thisParamName, thisParamValue, thisParamAnnos);
