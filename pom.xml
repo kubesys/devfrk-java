@@ -14,7 +14,7 @@
 
 	<modules>
         <module>springboot</module>
-        <module>springboot-orm</module>
+        <module>springboot-data</module>
     </modules>
 
     <properties>
