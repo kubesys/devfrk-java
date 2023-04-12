@@ -52,11 +52,11 @@ public class HandlerParameterValidator {
 			Object thisParamValue = allParamsValue[i];
 			Annotation[] thisParamAnnos = getParamAnnos(targetMethod, i);
 
-			if (JavaUtils.isPrimitive(thisParamType)) {
-				validatePrimitiveType(thisParamName, thisParamValue, thisParamAnnos);
-			} else {
-				validateObjectType(thisParamValue);
-			}
+//			if (JavaUtils.isPrimitive(thisParamType)) {
+//				validatePrimitiveType(thisParamName, thisParamValue, thisParamAnnos);
+//			} else {
+//				validateObjectType(thisParamValue);
+//			}
 
 		}
 		return allParamsValue;
@@ -78,7 +78,7 @@ public class HandlerParameterValidator {
 		} else {
 			return body.has(thisParamName)
 					? new ObjectMapper().readValue(body.get(thisParamName).toPrettyString(), thisParamType)
-					: "{}";
+					: null;
 		}
 	}
 
