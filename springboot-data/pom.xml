@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.kubesys</groupId>
-	<artifactId>httpfrk-springboot-orm</artifactId>
+	<artifactId>httpfrk-springboot-data</artifactId>
 	<version>2.1.0</version>
 	<packaging>jar</packaging>
 	<name>httpfrk-springboot-data</name>
@@ -16,25 +16,15 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<properties>
+		<spring.version>3.0.5</spring.version>
 		<spring.httpfrk.version>2.1.0</spring.httpfrk.version>
+		<postgresql.version>42.6.0</postgresql.version>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>io.github.kubesys</groupId>
 			<artifactId>httpfrk-springboot</artifactId>
 			<version>${spring.httpfrk.version}</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-core -->
-		<dependency>
-			<groupId>org.hibernate.orm</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>6.1.6.Final</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>42.5.1</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
 		<dependency>
@@ -47,6 +37,31 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<version>${spring.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgresql.version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.26</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-core -->
+		<dependency>
+			<groupId>org.hibernate.orm</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>6.1.7.Final</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter -->
+		<dependency>
+			<groupId>org.mybatis.spring.boot</groupId>
+			<artifactId>mybatis-spring-boot-starter</artifactId>
+			<version>3.0.1</version>
 		</dependency>
 	</dependencies>
 	<build>

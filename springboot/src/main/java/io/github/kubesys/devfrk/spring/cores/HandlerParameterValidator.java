@@ -73,8 +73,18 @@ public class HandlerParameterValidator {
 	private Object getParamValue(String thisParamName, Class<?> thisParamType, JsonNode body) throws Exception {
 		if (thisParamType.isAssignableFrom(String.class)) {
 			return body.has(thisParamName) ? body.get(thisParamName).asText() : null;
-		} else if (JavaUtils.isPrimitive(thisParamType)) {
+		} else if (JavaUtils.isInt(thisParamType)) {
 			return body.has(thisParamName) ? body.get(thisParamName).asInt() : 0;
+		} else if (JavaUtils.isShort(thisParamType)) {
+			return body.has(thisParamName) ? body.get(thisParamName).asInt() : 0;
+		} else if (JavaUtils.isLong(thisParamType)) {
+			return body.has(thisParamName) ? body.get(thisParamName).asLong() : 0;
+		} else if (JavaUtils.isBool(thisParamType)) {
+			return body.has(thisParamName) ? body.get(thisParamName).asBoolean() : 0;
+		} else if (JavaUtils.isDouble(thisParamType)) {
+			return body.has(thisParamName) ? body.get(thisParamName).asDouble() : 0;
+		} else if (JavaUtils.isFloat(thisParamType)) {
+			return body.has(thisParamName) ? body.get(thisParamName).asDouble() : 0;
 		} else {
 			return body.has(thisParamName)
 					? new ObjectMapper().readValue(body.get(thisParamName).toPrettyString(), thisParamType)

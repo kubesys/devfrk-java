@@ -59,6 +59,46 @@ public class JavaUtils {
 		m_primitive.add("float");
 	}
 
+	public static boolean isString(Class<?> clazz) {
+		String typename = clazz.getTypeName();
+		return typename.equals(String.class.getName());
+	}
+	
+	public static boolean isInt(Class<?> clazz) {
+		String typename = clazz.getTypeName();
+		return typename.equals("int") || typename.equals(Integer.class.getName());
+	}
+	
+	public static boolean isLong(Class<?> clazz) {
+		String typename = clazz.getTypeName();
+		return typename.equals("long") || typename.equals(Long.class.getName());
+	}
+	
+	public static boolean isFloat(Class<?> clazz) {
+		String typename = clazz.getTypeName();
+		return typename.equals("float") || typename.equals(Float.class.getName());
+	}
+	
+	public static boolean isDouble(Class<?> clazz) {
+		String typename = clazz.getTypeName();
+		return typename.equals("double") || typename.equals(Double.class.getName());
+	}
+	
+	public static boolean isShort(Class<?> clazz) {
+		String typename = clazz.getTypeName();
+		return typename.equals("short") || typename.equals(Short.class.getName());
+	}
+	
+	public static boolean isChar(Class<?> clazz) {
+		String typename = clazz.getTypeName();
+		return typename.equals("char") || typename.equals(Character.class.getName());
+	}
+	
+	public static boolean isBool(Class<?> clazz) {
+		String typename = clazz.getTypeName();
+		return typename.equals("boolean") || typename.equals(Boolean.class.getName());
+	}
+	
 	/**
 	 * @param clazz class
 	 * @return return true if the typename is primitive, otherwise return false
