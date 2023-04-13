@@ -1,12 +1,12 @@
 /**
  * Copyright (2019, ) Institute of Software, Chinese Academy of Sciences
  */
-package io.github.devfrk.data.services;
+package io.github.devfrk.data.jdbc.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import io.github.devfrk.data.daos.UserDao;
-import io.github.devfrk.data.models.User;
+import io.github.devfrk.data.jdbc.daos.UserDao;
+import io.github.devfrk.data.jdbc.models.User;
 import io.github.kubesys.devfrk.spring.cores.AbstractHttpHandler;
 import io.github.kubesys.devfrk.tools.annotations.ServiceDefinition;
 

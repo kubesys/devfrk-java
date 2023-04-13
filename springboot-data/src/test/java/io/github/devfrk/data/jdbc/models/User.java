@@ -1,7 +1,7 @@
 /**
  * Copyright (2019, ) Institute of Software, Chinese Academy of Sciences
  */
-package io.github.devfrk.data.models;
+package io.github.devfrk.data.jdbc.models;
 
 import java.io.Serializable;
 

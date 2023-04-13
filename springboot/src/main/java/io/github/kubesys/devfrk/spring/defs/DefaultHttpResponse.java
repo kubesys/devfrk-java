@@ -10,6 +10,7 @@ import org.springframework.context.ApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.kubesys.devfrk.spring.assists.HttpResponse;
+import io.github.kubesys.devfrk.spring.utils.JavaUtils;
 import jakarta.annotation.Resource;
 
 /**
@@ -45,8 +46,7 @@ public class DefaultHttpResponse implements HttpResponse {
 	
 	public String unwrap(String status, Object value) throws Exception {
 		HttpResponseData response = "fail".equals(status) ?
-				new HttpResponseData(50000, value.toString().indexOf(":") == -1 ? value.toString() 
-								: value.toString().substring(value.toString().indexOf(":"))) 
+				new HttpResponseData(50000, value.toString().substring(value.toString().indexOf(":") + 1)) 
 				: new HttpResponseData(20000, value);
 		return new ObjectMapper().writeValueAsString(response);
 	}
