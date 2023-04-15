@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import io.github.devfrk.data.graph.dto.MovieRepository;
+import io.github.devfrk.data.graph.daos.MovieRepository;
 import io.github.devfrk.data.graph.models.Movie;
 import io.github.kubesys.devfrk.spring.cores.AbstractHttpHandler;
 import io.github.kubesys.devfrk.tools.annotations.ServiceDefinition;

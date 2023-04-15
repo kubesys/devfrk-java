@@ -1,4 +1,4 @@
-package io.github.devfrk.data.graph.dto;
+package io.github.devfrk.data.graph.daos;
 
 import java.util.List;
 

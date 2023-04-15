@@ -17,11 +17,19 @@
 	</parent>
 	<properties>
 		<spring.version>3.0.5</spring.version>
+		<lombok.version>1.18.26</lombok.version>
+		<!-- JDBC -->
 		<spring.mybatis.version>3.0.1</spring.mybatis.version>
 		<spring.httpfrk.version>2.1.0</spring.httpfrk.version>
 		<hibernate.version>6.1.7.Final</hibernate.version>
 		<postgresql.version>42.6.0</postgresql.version>
-		<lombok.version>1.18.26</lombok.version>
+		<!-- Neo4j -->
+		<neo4j.version>5.6.0</neo4j.version>
+		<neo4j.ogm.version>4.0.5</neo4j.ogm.version>
+		<neo4j.ogm.driver.version>3.2.39</neo4j.ogm.driver.version>
+		<!-- Elastic -->
+		<elasticsearch.client.version>7.17.9</elasticsearch.client.version>
+		<elasticsearch.restclient.version>8.7.0</elasticsearch.restclient.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -82,25 +90,44 @@
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-ogm-core</artifactId>
-			<version>4.0.5</version>
+			<version>${neo4j.ogm.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.neo4j/neo4j-ogm-bolt-driver -->
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-ogm-bolt-driver</artifactId>
-			<version>4.0.5</version>
+			<version>${neo4j.ogm.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.neo4j/neo4j-ogm-embedded-driver -->
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-ogm-embedded-driver</artifactId>
-			<version>3.2.39</version>
+			<version>${neo4j.ogm.driver.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.neo4j/neo4j -->
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j</artifactId>
-			<version>5.6.0</version>
+			<version>${neo4j.version}</version>
+		</dependency>
+		<!-- 
+		             config Elastic Search  
+		-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.elasticsearch.client</groupId>
+			<artifactId>elasticsearch-rest-high-level-client</artifactId>
+			<version>${elasticsearch.client.version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.elasticsearch.client/elasticsearch-rest-client -->
+		<dependency>
+			<groupId>org.elasticsearch.client</groupId>
+			<artifactId>elasticsearch-rest-client</artifactId>
+			<version>${elasticsearch.restclient.version}</version>
 		</dependency>
 		<!-- 
 		             config Mathpix  
