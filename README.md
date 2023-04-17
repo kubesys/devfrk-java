@@ -34,16 +34,24 @@ We assume your IDE supports Maven.
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.0.1</version>
+		<version>3.0.5</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<dependencies>
 		<dependency>
 			<groupId>io.github.kubesys</groupId>
 			<artifactId>httpfrk-springboot</artifactId>
-			<version>2.0.0</version>
+			<version>2.1.5</version>
 		</dependency>
 	</dependencies>
+	
+	<repositories>
+		<repository>
+			<id>pdos-repos</id>
+			<name>PDOS Releases</name>
+			<url>https://nexus3.iecas.cn/repository/maven-public/</url>
+		</repository>
+	</repositories>
 </project>
 ```
 
