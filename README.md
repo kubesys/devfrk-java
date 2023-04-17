@@ -112,5 +112,10 @@ public class DemoServer extends HttpServer  {
 - Open your browser and access   http://localhost:9080/httpfrk/demo/echoString?name=123456
 
 ## Roadmap
+- 2.1.0 support postgres, neo4j and elastic
+- 2.2.0 support JSR303 validator
+- 2.3.0 support generating testcases
+- 2.4.0 support apifox docs
+- 2.5.0 support test report
 
 
