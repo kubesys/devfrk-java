@@ -145,6 +145,14 @@
 			<version>3.0.3</version>
 		</dependency>
 	</dependencies>
+	<repositories>
+		<repository>
+			<id>pdos-repos</id>
+			<name>PDOS Releases</name>
+			<url>https://nexus3.iecas.cn/repository/maven-public/</url>
+		</repository>
+	</repositories>
+	
 	<build>
 		<plugins>
 			<plugin>
