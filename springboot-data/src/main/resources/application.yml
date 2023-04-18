@@ -17,6 +17,12 @@ spring:
       dialect: org.hibernate.dialect.PostgreSQLDialect
     database: postgresql
     show-sql: true
+  neo4j:
+    uri: neo4j+s://2ae546da.databases.neo4j.io:7687
+    authentication:
+      username: neo4j
+      password: YmLG0fI5kctlveT1yRk0BBtr2ad0Qk6Gaonhndv5XQo
+    database: Instance01
   jackson:
     time-zone: GMT+8
   mvc:

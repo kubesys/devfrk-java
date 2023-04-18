@@ -1,12 +1,11 @@
-package io.github.kubesys.devfrk.spring.data.services;
+package com.github.kubesys.devfrk.spring.rda.services;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import io.github.kubesys.devfrk.spring.cores.AbstractHttpHandler;
-import io.github.kubesys.devfrk.spring.data.daos.BookDao;
-import io.github.kubesys.devfrk.spring.data.models.Book;
+import io.github.kubesys.devfrk.spring.data.RelationalDataAccess;
 import io.github.kubesys.devfrk.tools.annotations.ServiceDefinition;
 
 /**
@@ -16,12 +15,12 @@ import io.github.kubesys.devfrk.tools.annotations.ServiceDefinition;
  * @author Michael J. Simons
  */
 @ServiceDefinition
-public class BookService extends AbstractHttpHandler {
+public class RDAService extends AbstractHttpHandler  {
 
 	@Autowired
-	private BookDao bookDao;
+	private RelationalDataAccess rda;
 
-	public List<Book> listBooks() {
-		return bookDao.findAll();
+	public List<Object> list(String tableName) {
+		return rda.list(tableName);
 	}
 }
