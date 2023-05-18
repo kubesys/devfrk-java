@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * @since  2.2.0
  * 
  */
-@Component
+//@Component
 public class GraphDataAccess  {
 
 	private Neo4jTemplate neo4jTemplate;

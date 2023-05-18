@@ -6,7 +6,7 @@ server:
     
 spring:
   datasource:
-    url: jdbc:postgresql://120.46.180.58:30306/authing
+    url: jdbc:postgresql://120.46.180.58:30306/education
     username: postgres
     password: onceas
     driverClassName: org.postgresql.Driver
@@ -17,17 +17,17 @@ spring:
       dialect: org.hibernate.dialect.PostgreSQLDialect
     database: postgresql
     show-sql: true
-  neo4j:
-    uri: neo4j+s://2ae546da.databases.neo4j.io:7687
-    authentication:
-      username: neo4j
-      password: YmLG0fI5kctlveT1yRk0BBtr2ad0Qk6Gaonhndv5XQo
-    database: Instance01
-  elasticsearch:
-    schema: http
-    uris: 172.16.0.237:39200
-    username: elastic
-    password: dw7DfIVkphOAA3pRXpwW
+#  neo4j:
+#    uri: neo4j+s://2ae546da.databases.neo4j.io:7687
+#    authentication:
+#      username: neo4j
+#      password: YmLG0fI5kctlveT1yRk0BBtr2ad0Qk6Gaonhndv5XQo
+#    database: Instance01
+#  elasticsearch:
+#    schema: http
+#    uris: 172.16.0.237:39200
+#    username: elastic
+#    password: dw7DfIVkphOAA3pRXpwW
   jackson:
     time-zone: GMT+8
   mvc:

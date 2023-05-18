@@ -4,10 +4,17 @@
 package io.github.kubesys.devfrk.spring.cores;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +35,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import io.github.kubesys.devfrk.spring.assists.HttpResponse;
 import io.github.kubesys.devfrk.spring.utils.JSONUtils;
+import io.github.kubesys.devfrk.tools.annotations.Description;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
@@ -146,6 +154,39 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 //	public @ResponseBody String openAPI() throws Exception {
 //		return apiDoc.getAPIDoc();
 //	}
+	
+	
+	@RequestMapping(value = { "/changelog" })
+	public String changelog() throws Exception {
+		StringBuffer sb = new StringBuffer();
+		
+		MultiValuedMap<String, String> multiMap = new HashSetValuedHashMap<>();
+		for (Method method : HttpHandlerRegistry.httpHandlers.values()) {
+			Description desc = method.getDeclaredAnnotation(Description.class);
+			multiMap.put(desc.date(), desc.desc());
+		}
+		
+		List<String> list = new ArrayList<>(multiMap.keySet());
+		
+		Collections.sort(list, new Comparator<String>() {
+            @Override
+            public int compare(String str1, String str2) {
+                return str2.compareTo(str1);
+            }
+        });
+
+		sb.append("# Changelog").append("\n\n");
+		
+        for (String str : list) {
+        	sb.append("\n\n## " + str).append("\n\n");
+            
+        	for (String value : multiMap.get(str)) {
+        		sb.append("- " + value).append("\n");
+        	}
+        }
+        
+		return sb.toString();
+	}
 
 	
 	/**

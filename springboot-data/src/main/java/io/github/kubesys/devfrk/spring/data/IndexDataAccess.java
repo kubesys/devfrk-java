@@ -18,7 +18,7 @@ import jakarta.persistence.Query;
  * @since  2.2.0
  * 
  */
-@Component
+//@Component
 public class IndexDataAccess  {
 
 	@Autowired

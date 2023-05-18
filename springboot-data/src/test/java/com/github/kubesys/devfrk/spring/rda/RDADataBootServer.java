@@ -23,7 +23,7 @@ import io.github.kubesys.devfrk.spring.HttpServer;
  * 
  */
 @ComponentScan(value = { "com.github.kubesys.devfrk.spring.rda.services" })
-@EntityScan("com.github.kubesys.devfrk.spring.data.models")
+@EntityScan("com.github.kubesys.devfrk.spring.rda.models")
 public class RDADataBootServer extends HttpServer  {
 
 	public static void main(String[] args) {

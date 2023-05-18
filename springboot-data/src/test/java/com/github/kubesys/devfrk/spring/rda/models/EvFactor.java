@@ -1,0 +1,66 @@
+package com.github.kubesys.devfrk.spring.rda.models;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.OffsetDateTime;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "ev_factor")
+public class EvFactor {
+    @Id
+    @Column(name = "id", nullable = false)
+    private Long id;
+
+    @Size(max = 50)
+    @Column(name = "create_name", length = 50)
+    private String createName;
+
+    @NotNull
+    @Column(name = "create_time", nullable = false)
+    private OffsetDateTime createTime;
+
+    @Size(max = 50)
+    @Column(name = "update_name", length = 50)
+    private String updateName;
+
+    @Column(name = "update_time")
+    private OffsetDateTime updateTime;
+
+    @NotNull
+    @Column(name = "is_valid", nullable = false)
+    private Boolean isValid = false;
+
+    @NotNull
+    @Column(name = "seq", nullable = false)
+    private Integer seq;
+
+    @Column(name = "rank_start")
+    private Integer rankStart;
+
+    @Column(name = "rank_end")
+    private Integer rankEnd;
+
+    @NotNull
+    @Column(name = "factor_type", nullable = false)
+    private Integer factorType;
+
+    @Column(name = "value")
+    private Double value;
+
+    @Column(name = "scheme_id")
+    private Long schemeId;
+
+    @NotNull
+    @Column(name = "value_type", nullable = false)
+    private Integer valueType;
+
+}
