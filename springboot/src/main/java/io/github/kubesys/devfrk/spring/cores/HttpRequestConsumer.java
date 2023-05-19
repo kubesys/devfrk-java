@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -81,7 +82,8 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
 	 */
 	@PostMapping(value = { "/**/login*", "/**/logout*", "/**/add*", "/**/create*", "/**/new*",
-			"/**/insert*", "/**/clone*", "/**/attach*", "/**/plug*", "/**/set*", "/**/bind*", "/**/solve*" })
+			"/**/insert*", "/**/clone*", "/**/attach*", "/**/plug*", "/**/set*", "/**/bind*", "/**/solve*" },
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String createTypeRequest(
 			HttpServletRequest request, 
 			@RequestBody JsonNode body)
@@ -96,7 +98,8 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
 	 */
 	@RequestMapping(method = { RequestMethod.POST, RequestMethod.DELETE }, value = { "/**/delete*", "/**/remove*",
-			"/**/eject*", "/**/detach*", "/**/unplug*", "/**/unset*", "/**/unbind*" })
+			"/**/eject*", "/**/detach*", "/**/unplug*", "/**/unset*", "/**/unbind*" },
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String deleteTypeRequest(
 			HttpServletRequest request, 
 			@RequestBody JsonNode body)
@@ -112,7 +115,8 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
 	 */
 	@RequestMapping(method = { RequestMethod.POST, RequestMethod.PUT }, value = { "/**/update*", "/**/diff*", "/**/modify*",
-			"/**/replace*", "/**/change*", "/**/resize*", "/**/tune*", "/**/revert*", "/**/convert*" })
+			"/**/replace*", "/**/change*", "/**/resize*", "/**/tune*", "/**/revert*", "/**/convert*" },
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String updateTypeRequest(
 			HttpServletRequest request, 
 			@RequestBody JsonNode body)
@@ -127,7 +131,8 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
 	 */
 	@PostMapping(value = { "/**/index*", "/**/mock*", "/**/user*",
-			"/**/get*", "/**/list*", "/**/query*", "/**/describe*", "/**/retrieve*", "/**/echo*", "/**/exec*" })
+			"/**/get*", "/**/list*", "/**/query*", "/**/describe*", "/**/retrieve*", "/**/echo*", "/**/exec*" },
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String retrieveTypeGetRequest(
 			HttpServletRequest request,
 			@RequestBody JsonNode body) 
@@ -142,7 +147,8 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
 	 */
 	@GetMapping(value = { "/**/index*", "/**/mock*", "/**/user*",
-			"/**/get*", "/**/list*", "/**/query*", "/**/describe*", "/**/retrieve*", "/**/echo*", "/**/exec*" })
+			"/**/get*", "/**/list*", "/**/query*", "/**/describe*", "/**/retrieve*", "/**/echo*", "/**/exec*" },
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String retrieveTypeGetRequest(
 			HttpServletRequest request,
 			@RequestParam(required = false) Map<String, String> body) 
@@ -165,7 +171,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 * 
 	 **************************************************/
 	
-	@RequestMapping(value = { "/apis" })
+	@RequestMapping(value = { "/apis" }, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String apis() throws Exception {
 		
 		ObjectNode apis = new ObjectMapper().createObjectNode();
@@ -209,7 +215,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 		return apis.toPrettyString();
 	}
 	
-	@RequestMapping(value = { "/changelog" })
+	@RequestMapping(value = { "/changelog" }, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String changelog() throws Exception {
 		
 		MultiValuedMap<String, Description> changelogDesc = getChangelogDesc();
