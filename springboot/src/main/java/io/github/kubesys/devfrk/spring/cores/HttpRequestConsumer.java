@@ -5,6 +5,7 @@ package io.github.kubesys.devfrk.spring.cores;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,6 +33,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.github.kubesys.devfrk.spring.assists.HttpResponse;
 import io.github.kubesys.devfrk.spring.utils.JSONUtils;
@@ -155,37 +159,107 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 //		return apiDoc.getAPIDoc();
 //	}
 	
+	/**************************************************
+	 * 
+	 * APIs and Changelog
+	 * 
+	 **************************************************/
+	
+	@RequestMapping(value = { "/apis" })
+	public String apis() throws Exception {
+		
+		ObjectNode apis = new ObjectMapper().createObjectNode();
+		
+		ArrayNode supported = new ObjectMapper().createArrayNode();
+		
+		ArrayNode unsupported = new ObjectMapper().createArrayNode();
+		
+		MultiValuedMap<String, Description> descMap = new HashSetValuedHashMap<>();
+		for (String url : HttpHandlerRegistry.httpHandlers.keySet()) {
+			try {
+				
+				Method apiMethod = HttpHandlerRegistry.httpHandlers.get(url);
+				Description apiDesc = apiMethod.getDeclaredAnnotation(Description.class);
+				
+				ObjectNode apiJson = new ObjectMapper().createObjectNode();
+				apiJson.put("请求名称", apiDesc.desc());
+				apiJson.put("请求路径", url);
+				
+				ArrayNode paramArrayJson = new ObjectMapper().createArrayNode();
+				
+				for (Parameter param: apiMethod.getParameters()) {
+					Description paramDesc = param.getDeclaredAnnotation(Description.class);
+					ObjectNode paramJson = new ObjectMapper().createObjectNode();
+					paramJson.put("参数名称", param.getName());
+					paramJson.put("参数类型", param.getType().getName());
+					paramJson.put("参数必填", paramDesc.required());
+					paramJson.put("参数描述", paramDesc.desc());
+					paramJson.put("参数正则", paramDesc.regexp());
+					paramArrayJson.add(paramJson);
+				}
+				apiJson.set("参数", paramArrayJson);
+				supported.add(apiJson);
+			} catch (Exception ex) {
+				unsupported.add(url);
+			}
+		}
+		
+		apis.set("正常APIs列表", supported);
+		apis.set("异常APIs列表", unsupported);
+		return apis.toPrettyString();
+	}
 	
 	@RequestMapping(value = { "/changelog" })
 	public String changelog() throws Exception {
-		StringBuffer sb = new StringBuffer();
 		
-		MultiValuedMap<String, String> multiMap = new HashSetValuedHashMap<>();
-		for (Method method : HttpHandlerRegistry.httpHandlers.values()) {
-			Description desc = method.getDeclaredAnnotation(Description.class);
-			multiMap.put(desc.date(), desc.desc());
-		}
+		MultiValuedMap<String, Description> changelogDesc = getChangelogDesc();
 		
-		List<String> list = new ArrayList<>(multiMap.keySet());
+		List<String> sortByDate = sortChangelogDate(changelogDesc);
+
+		return createChangelogJSON(changelogDesc, sortByDate).toPrettyString();
+	}
+
+	private ObjectNode createChangelogJSON(MultiValuedMap<String, Description> descMap, List<String> sortByDate) {
+		ObjectNode changelog = new ObjectMapper().createObjectNode();
+        for (String date : sortByDate) {
+        	
+        	ArrayNode dateLogs = new ObjectMapper().createArrayNode();
+        	
+        	for (Description desc : descMap.get(date)) {
+        		ObjectNode oneLog = new ObjectMapper().createObjectNode();
+        		oneLog.put("说明", desc.desc());
+        		oneLog.put("作者", desc.author());
+        		dateLogs.add(oneLog);
+        	}
+        	
+        	changelog.set(date, dateLogs);
+        }
+		return changelog;
+	}
+
+	private List<String> sortChangelogDate(MultiValuedMap<String, Description> descMap) {
+		List<String> sortByDate = new ArrayList<>(descMap.keySet());
 		
-		Collections.sort(list, new Comparator<String>() {
+		Collections.sort(sortByDate, new Comparator<String>() {
             @Override
-            public int compare(String str1, String str2) {
-                return str2.compareTo(str1);
+            public int compare(String date1, String date2) {
+                return date2.compareTo(date1);
             }
         });
+		return sortByDate;
+	}
 
-		sb.append("# Changelog").append("\n\n");
-		
-        for (String str : list) {
-        	sb.append("\n\n## " + str).append("\n\n");
-            
-        	for (String value : multiMap.get(str)) {
-        		sb.append("- " + value).append("\n");
-        	}
-        }
-        
-		return sb.toString();
+	private MultiValuedMap<String, Description> getChangelogDesc() {
+		MultiValuedMap<String, Description> descMap = new HashSetValuedHashMap<>();
+		for (Method method : HttpHandlerRegistry.httpHandlers.values()) {
+			try {
+				Description desc = method.getDeclaredAnnotation(Description.class);
+				descMap.put(desc.date(), desc);
+			} catch (Exception ex) {
+				// developer can ignore Description 
+			}
+		}
+		return descMap;
 	}
 
 	

@@ -29,9 +29,14 @@ public @interface Description {
 	 * to be turned into a Spring bean in case of an auto-detected component.
 	 * @return the suggested component name, if any (or empty String otherwise)
 	 */
+	
+	boolean required() default true;
+	
 	String desc() default "";
 	
 	String regexp() default "";
 	
 	String date() default "";
+	
+	String author() default "";
 }
