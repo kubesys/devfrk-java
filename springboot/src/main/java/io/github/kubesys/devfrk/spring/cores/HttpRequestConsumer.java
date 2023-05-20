@@ -98,7 +98,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
 	 */
 	@RequestMapping(method = { RequestMethod.POST, RequestMethod.DELETE }, value = { "/**/delete*", "/**/remove*",
-			"/**/eject*", "/**/detach*", "/**/unplug*", "/**/unset*", "/**/unbind*" },
+			"/**/eject*", "/**/detach*", "/**/unplug*", "/**/unset*", "/**/unbind*"},
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String deleteTypeRequest(
 			HttpServletRequest request, 
@@ -130,7 +130,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 * @return the {@code HttpBodyHandler} result. In fact, it may be an exception.
 	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
 	 */
-	@PostMapping(value = { "/**/index*", "/**/mock*", "/**/user*",
+	@PostMapping(value = { "/**/index*", "/**/mock*", "/**/user*",  "/**/ask*",
 			"/**/get*", "/**/list*", "/**/query*", "/**/describe*", "/**/retrieve*", "/**/echo*", "/**/exec*" },
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String retrieveTypeGetRequest(
@@ -146,7 +146,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 * @return the {@code HttpBodyHandler} result. In fact, it may be an exception.
 	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
 	 */
-	@GetMapping(value = { "/**/index*", "/**/mock*", "/**/user*",
+	@GetMapping(value = { "/**/index*", "/**/mock*", "/**/user*", "/**/ask*",
 			"/**/get*", "/**/list*", "/**/query*", "/**/describe*", "/**/retrieve*", "/**/echo*", "/**/exec*" },
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String retrieveTypeGetRequest(
