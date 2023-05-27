@@ -41,7 +41,7 @@ public class DefaultHttpResponse implements HttpResponse {
 	public String fail(Exception ex) throws Exception {
 		m_logger.warning("cannot handle request: " + ex);
 		return ((DefaultHttpResponse) context.getBean("resp"))
-				.unwrap("fail", String.valueOf(ex.getMessage()));
+				.unwrap("fail", String.valueOf(ex));
 	}
 	
 	public String unwrap(String status, Object value) throws Exception {

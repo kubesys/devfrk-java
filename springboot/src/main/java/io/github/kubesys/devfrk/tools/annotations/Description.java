@@ -39,4 +39,6 @@ public @interface Description {
 	String date() default "";
 	
 	String author() default "";
+	
+	String group() default "";
 }

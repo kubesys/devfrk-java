@@ -81,7 +81,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 * @return the {@code HttpBodyHandler} result. In fact, it may be an exception.
 	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
 	 */
-	@PostMapping(value = { "/**/login*", "/**/logout*", "/**/add*", "/**/create*", "/**/new*",
+	@PostMapping(value = { "/**/login*", "/**/logout*", "/**/add*", "/**/create*", "/**/new*", "/**/generate*",
 			"/**/insert*", "/**/clone*", "/**/attach*", "/**/plug*", "/**/set*", "/**/bind*", "/**/solve*" },
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String createTypeRequest(
