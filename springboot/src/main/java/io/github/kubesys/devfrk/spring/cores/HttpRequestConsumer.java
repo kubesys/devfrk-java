@@ -130,7 +130,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 * @return the {@code HttpBodyHandler} result. In fact, it may be an exception.
 	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
 	 */
-	@PostMapping(value = { "/**/index*", "/**/mock*", "/**/user*",  "/**/ask*",
+	@PostMapping(value = { "/**/index*", "/**/mock*", "/**/user*",  "/**/ask*", "/**/upload*",
 			"/**/get*", "/**/list*", "/**/query*", "/**/describe*", "/**/retrieve*", "/**/echo*", "/**/exec*" },
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String retrieveTypeGetRequest(
@@ -146,7 +146,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 * @return the {@code HttpBodyHandler} result. In fact, it may be an exception.
 	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
 	 */
-	@GetMapping(value = { "/**/index*", "/**/mock*", "/**/user*", "/**/ask*",
+	@GetMapping(value = { "/**/index*", "/**/mock*", "/**/user*", "/**/ask*", "/**/upload*",
 			"/**/get*", "/**/list*", "/**/query*", "/**/describe*", "/**/retrieve*", "/**/echo*", "/**/exec*" },
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String retrieveTypeGetRequest(
