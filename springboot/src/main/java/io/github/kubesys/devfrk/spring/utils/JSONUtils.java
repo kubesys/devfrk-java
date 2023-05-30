@@ -9,6 +9,7 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 /**
  * @author  wuheng@iscas.ac.cn
@@ -21,7 +22,9 @@ public class JSONUtils {
 	 * @return json
 	 */
 	public static JsonNode toJsonNode(Map<String, String> map) {
-		ObjectNode json = new ObjectMapper().createObjectNode();
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new JavaTimeModule());
+		ObjectNode json = objectMapper.createObjectNode();
 		for (String key : map != null ? map.keySet() : new HashMap<String, String>().keySet()) {
 			json.put(key, map.get(key));
 		}

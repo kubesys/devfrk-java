@@ -10,7 +10,6 @@ import org.springframework.context.ApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.kubesys.devfrk.spring.assists.HttpResponse;
-import io.github.kubesys.devfrk.spring.utils.JavaUtils;
 import jakarta.annotation.Resource;
 
 /**
