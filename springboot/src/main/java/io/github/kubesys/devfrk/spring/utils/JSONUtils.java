@@ -25,7 +25,8 @@ public class JSONUtils {
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.registerModule(new JavaTimeModule());
 		ObjectNode json = objectMapper.createObjectNode();
-		for (String key : map != null ? map.keySet() : new HashMap<String, String>().keySet()) {
+		for (String key : map != null ? map.keySet() 
+				: new HashMap<String, String>().keySet()) {
 			json.put(key, map.get(key));
 		}
 		return json;

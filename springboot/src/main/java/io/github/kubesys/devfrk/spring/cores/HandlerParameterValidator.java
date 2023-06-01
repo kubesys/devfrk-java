@@ -23,6 +23,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 /**
@@ -49,14 +50,14 @@ public class HandlerParameterValidator {
 			String thisParamName = getParamName(targetMethod, i);
 			Class<?> thisParamType = getParamType(targetMethod, i);
 			allParamsValue[i] = getParamValue(thisParamName, thisParamType, body);
-//			Object thisParamValue = allParamsValue[i];
-//			Annotation[] thisParamAnnos = getParamAnnos(targetMethod, i);
+			Object thisParamValue = allParamsValue[i];
+			Annotation[] thisParamAnnos = getParamAnnos(targetMethod, i);
 
-//			if (JavaUtils.isPrimitive(thisParamType)) {
-//				validatePrimitiveType(thisParamName, thisParamValue, thisParamAnnos);
-//			} else {
-//				validateObjectType(thisParamValue);
-//			}
+			if (JavaUtils.isPrimitive(thisParamType)) {
+				validatePrimitiveType(thisParamName, thisParamValue, thisParamAnnos);
+			} else {
+				validateObjectType(thisParamValue);
+			}
 
 		}
 		return allParamsValue;
@@ -74,20 +75,28 @@ public class HandlerParameterValidator {
 		if (thisParamType.isAssignableFrom(String.class)) {
 			return body.has(thisParamName) ? body.get(thisParamName).asText() : null;
 		} else if (JavaUtils.isInt(thisParamType)) {
-			return body.has(thisParamName) ? body.get(thisParamName).asInt() : 0;
-		} else if (JavaUtils.isShort(thisParamType)) {
-			return body.has(thisParamName) ? body.get(thisParamName).asInt() : 0;
+			if (!body.has(thisParamName)) {
+				return Integer.valueOf(-1);
+			}
+			JsonNode value = body.get(thisParamName);
+			return value.isTextual() ? Integer.valueOf(value.asText()) : value.asInt();
 		} else if (JavaUtils.isLong(thisParamType)) {
-			return body.has(thisParamName) ? body.get(thisParamName).asLong() : 0;
+			if (!body.has(thisParamName)) {
+				return Long.valueOf(-1);
+			}
+			JsonNode value = body.get(thisParamName);
+			return value.isTextual() ? Long.valueOf(value.asText()) : value.asLong();
 		} else if (JavaUtils.isBool(thisParamType)) {
-			return body.has(thisParamName) ? body.get(thisParamName).asBoolean() : 0;
-		} else if (JavaUtils.isDouble(thisParamType)) {
-			return body.has(thisParamName) ? body.get(thisParamName).asDouble() : 0;
-		} else if (JavaUtils.isFloat(thisParamType)) {
-			return body.has(thisParamName) ? body.get(thisParamName).asDouble() : 0;
-		} else {
+			if (!body.has(thisParamName)) {
+				return false;
+			}
+			JsonNode value = body.get(thisParamName);
+			return value.isTextual() ? Boolean.valueOf(value.asText()) : value.asBoolean();
+		}  else {
 			return body.has(thisParamName)
-					? new ObjectMapper().readValue(body.get(thisParamName).toPrettyString(), thisParamType)
+					? new ObjectMapper().readValue(
+							body.get(thisParamName).toPrettyString(), 
+							thisParamType)
 					: null;
 		}
 	}
@@ -158,7 +167,7 @@ public class HandlerParameterValidator {
 					if (max.value() < len) {
 						return "The length must be less than " + max.value();
 					}
-				} else if (a.annotationType().getTypeName().equals(Valid.class.getName())) {
+				} else if (a.annotationType().getTypeName().equals(Pattern.class.getName())) {
 					continue;
 				} else {
 					return "only support jakarta.validation.Valid, jakarta.validation.constraints.Size, jakarta.validation.constraints.Min and jakarta.validation.constraints.Max";
