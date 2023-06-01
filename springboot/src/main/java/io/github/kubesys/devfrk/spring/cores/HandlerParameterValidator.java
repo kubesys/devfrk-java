@@ -5,7 +5,9 @@ package io.github.kubesys.devfrk.spring.cores;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,8 +19,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.kubesys.devfrk.spring.exs.InvalidParameterValueException;
 import io.github.kubesys.devfrk.spring.utils.JavaUtils;
+import jakarta.annotation.Nullable;
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Valid;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.constraints.Max;
@@ -35,7 +37,7 @@ public class HandlerParameterValidator {
 
 	protected Validator objValidator = Validation.buildDefaultValidatorFactory().getValidator();
 	
-	protected StringValidator stringValidator = new StringValidator();
+	protected PrimitiveValidator primitiveValidator = new PrimitiveValidator();
 
 	/**
 	 * @param body         body
@@ -116,10 +118,7 @@ public class HandlerParameterValidator {
 
 	private <T> void validatePrimitiveType(String name, T obj, Annotation[] as) throws InvalidParameterValueException {
 		
-		String errMsg = null;
-		if (obj.getClass().isAssignableFrom(String.class)) {
-			errMsg = stringValidator.validate(obj, as);
-		}
+		String errMsg = primitiveValidator.validate(obj, as);
 		
 		if (errMsg != null) {
 			throw new InvalidParameterValueException(name + ":" + errMsg);
@@ -147,34 +146,63 @@ public class HandlerParameterValidator {
 	 * @author wuheng@iscas.ac.cn
 	 *
 	 */
-	public static class StringValidator {
+	public static class PrimitiveValidator {
 		
 		public <T> String validate(T obj, Annotation[] as) {
+			
+			List<String> errMgs = new ArrayList<>();
+			
 			for (Annotation a : as) {
+				if (!a.annotationType().getTypeName().startsWith("jakarta.")) {
+					continue;
+				}
+				
 				int len = obj.toString().length();
 				if (a.annotationType().getTypeName().equals(Size.class.getName())) {
 					Size size = (Size) a;
 					if (size.min() > len || size.max() < len) {
-						return "The length must be between " + size.min() + " and " + size.max();
+						errMgs.add("E401: The length must be between " + size.min() + " and " + size.max());
 					}
 				} else if (a.annotationType().getTypeName().equals(Min.class.getName())) {
 					Min min = (Min) a;
 					if (min.value() > len) {
-						return "The length must be great than " + min.value();
+						errMgs.add("E401: The length must be great than " + min.value());
 					}
 				} else if (a.annotationType().getTypeName().equals(Max.class.getName())) {
 					Max max = (Max) a;
 					if (max.value() < len) {
-						return "The length must be less than " + max.value();
+						errMgs.add("E401: The length must be less than " + max.value());
 					}
 				} else if (a.annotationType().getTypeName().equals(Pattern.class.getName())) {
-					continue;
-				} else {
-					return "only support jakarta.validation.Valid, jakarta.validation.constraints.Size, jakarta.validation.constraints.Min and jakarta.validation.constraints.Max";
+					String pattern = ((Pattern) a).regexp();
+					java.util.regex.Pattern regex = java.util.regex.Pattern.compile(pattern);
+					java.util.regex.Matcher matcher = regex.matcher(obj.toString());
+					boolean isMatched = matcher.find();
+			        if (!isMatched) {
+			            errMgs.add("E401" + ((Pattern) a).message());
+			        }
+				} else if (a.annotationType().getTypeName().equals(Nullable.class.getName())) {
+					if (String.class.getName().equals(obj.getClass().getName())) {
+						if (obj == null || "".equals(obj)) {
+							errMgs.clear();
+							break;
+						}
+					} else if (Integer.class.getName().equals(obj.getClass().getName())
+							|| Long.class.getName().equals(obj.getClass().getName())) {
+						int val = (int) obj;
+						if (val == -1) {
+							errMgs.clear();
+							break;
+						}
+					} 
+				}  else {
+					errMgs.add("E401: only support jakarta.validation.constraints.Size, jakarta.validation.constraints.Min "
+							+ "and jakarta.validation.constraints.Max, and jakarta.validation.constraints.Pattern");
 				}
+				
 			}
 			
-			return null;
+			return errMgs.size() != 0 ? errMgs.toString() : null;
 		}
 	}
 	
