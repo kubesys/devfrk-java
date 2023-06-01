@@ -75,7 +75,7 @@ public class HandlerParameterValidator {
 
 	private Object getParamValue(String thisParamName, Class<?> thisParamType, JsonNode body) throws Exception {
 		if (thisParamType.isAssignableFrom(String.class)) {
-			return body.has(thisParamName) ? body.get(thisParamName).asText() : null;
+			return body.has(thisParamName) ? body.get(thisParamName).asText() : "";
 		} else if (JavaUtils.isInt(thisParamType)) {
 			if (!body.has(thisParamName)) {
 				return Integer.valueOf(-1);

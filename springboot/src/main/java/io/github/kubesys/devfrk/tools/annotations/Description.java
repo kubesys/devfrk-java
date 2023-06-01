@@ -3,7 +3,6 @@
  */
 package io.github.kubesys.devfrk.tools.annotations;
 
-import static java.lang.annotation.ElementType.FIELD;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -41,4 +40,5 @@ public @interface Description {
 	String author() default "";
 	
 	String group() default "";
+	
 }
