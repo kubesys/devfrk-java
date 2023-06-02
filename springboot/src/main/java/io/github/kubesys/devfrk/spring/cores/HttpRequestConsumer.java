@@ -181,6 +181,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 		ArrayNode unsupported = new ObjectMapper().createArrayNode();
 		
 		MultiValuedMap<String, Description> descMap = new HashSetValuedHashMap<>();
+		
 		for (String url : HttpHandlerRegistry.httpHandlers.keySet()) {
 			try {
 				
