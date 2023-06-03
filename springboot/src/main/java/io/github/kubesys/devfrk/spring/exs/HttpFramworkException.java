@@ -9,7 +9,7 @@ package io.github.kubesys.devfrk.spring.exs;
  * @since  2.0.0
  * 
  */
-public class HttpFramworkException extends Exception {
+public class HttpFramworkException extends RuntimeException {
 
 
 	/**
