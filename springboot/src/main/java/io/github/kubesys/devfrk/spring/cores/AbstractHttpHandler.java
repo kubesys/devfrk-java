@@ -12,8 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 
 import io.github.kubesys.devfrk.spring.assists.HttpConstants;
-import io.github.kubesys.devfrk.spring.exs.DuplicatedHttpHandlerException;
-import io.github.kubesys.devfrk.spring.exs.InvalidHttpHandlerException;
+import io.github.kubesys.devfrk.spring.exs.HttpFramworkException;
 
 /**
  * @author wuheng@iscas.ac.cn
@@ -45,7 +44,7 @@ public abstract class AbstractHttpHandler implements CommandLineRunner {
 		// Our rule is a class must be  ends with 'Service'
 		if (!simplename.endsWith(HttpConstants.SERVICE_CLASS_POSTFIX)) {
 			m_logger.log(Level.SEVERE, () -> HttpConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_WRONG_NAME + simplename);
-			throw new InvalidHttpHandlerException(HttpConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_WRONG_NAME + simplename);
+			throw new HttpFramworkException(300, "注册服务的类型名必须以'Service'结尾" + simplename);
 		}
 
 		// Class to HttpHandler 
@@ -77,7 +76,7 @@ public abstract class AbstractHttpHandler implements CommandLineRunner {
 			if (registry.contains(serviceName.getName())) {
 				m_logger.log(Level.SEVERE, () -> HttpConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_POLYMORPHISM + classname
 						+ "." + serviceName.getName());
-				throw new DuplicatedHttpHandlerException(HttpConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_POLYMORPHISM + classname
+				throw new HttpFramworkException(301, "服务重复注册" + classname
 						+ "." + serviceName.getName());
 			}
 			

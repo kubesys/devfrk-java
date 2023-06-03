@@ -13,11 +13,10 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.github.kubesys.devfrk.spring.exs.InvalidParameterValueException;
+import io.github.kubesys.devfrk.spring.exs.HttpFramworkException;
 import io.github.kubesys.devfrk.spring.utils.JavaUtils;
 import jakarta.annotation.Nullable;
 import jakarta.validation.ConstraintViolation;
@@ -116,16 +115,16 @@ public class HandlerParameterValidator {
 		return (parameterCount == 0) ? new Object[0] : new Object[parameterCount];
 	}
 
-	private <T> void validatePrimitiveType(String name, T obj, Annotation[] as) throws InvalidParameterValueException {
+	private <T> void validatePrimitiveType(String name, T obj, Annotation[] as) throws Exception {
 		
 		String errMsg = primitiveValidator.validate(obj, as);
 		
 		if (errMsg != null) {
-			throw new InvalidParameterValueException(name + ":" + errMsg);
+			throw new HttpFramworkException(401, "参数" + name + "取值错误:" + errMsg);
 		}
 	}
 
-	private <T> void validateObjectType(T obj) throws InvalidParameterValueException, JsonProcessingException {
+	private <T> void validateObjectType(T obj) throws Exception {
 		Set<ConstraintViolation<T>> set = objValidator.validate(obj);
 
 		if (set != null && !set.isEmpty()) {
@@ -136,7 +135,8 @@ public class HandlerParameterValidator {
 				errorMsg.put(cv.getPropertyPath().toString(), cv.getMessage());
 			}
 
-			throw new InvalidParameterValueException(new ObjectMapper().writeValueAsString(errorMsg));
+			throw new HttpFramworkException(401, "对象参数" + obj + "取值错误：" 
+						+ new ObjectMapper().writeValueAsString(errorMsg));
 		}
 
 	}

@@ -10,6 +10,7 @@ import org.springframework.context.ApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.kubesys.devfrk.spring.assists.HttpResponse;
+import io.github.kubesys.devfrk.spring.exs.HttpFramworkException;
 import jakarta.annotation.Resource;
 
 /**
@@ -33,19 +34,24 @@ public class DefaultHttpResponse implements HttpResponse {
 	
 	@Override
 	public String success(Object obj) throws Exception {
-		return ((DefaultHttpResponse) context.getBean("resp")).unwrap("success", obj);
+		return ((DefaultHttpResponse) context.getBean("resp")).unwrap("success", -1, obj);
 	}
 	
 	@Override
 	public String fail(Exception ex) throws Exception {
 		m_logger.warning("cannot handle request: " + ex);
+		if (ex instanceof HttpFramworkException) {
+			HttpFramworkException hex = (HttpFramworkException) ex;
+			return ((DefaultHttpResponse) context.getBean("resp"))
+					.unwrap("fail", hex.getCode(), String.valueOf(hex));
+		}
 		return ((DefaultHttpResponse) context.getBean("resp"))
-				.unwrap("fail", String.valueOf(ex));
+				.unwrap("fail", 400, String.valueOf(ex));
 	}
 	
-	public String unwrap(String status, Object value) throws Exception {
+	public String unwrap(String status, int id, Object value) throws Exception {
 		HttpResponseData response = "fail".equals(status) ?
-				new HttpResponseData(50000, value.toString().substring(value.toString().indexOf(":") + 1)) 
+				new HttpResponseData(50000, id, value.toString().substring(value.toString().indexOf(":") + 1)) 
 				: new HttpResponseData(20000, value);
 		return new ObjectMapper().writeValueAsString(response);
 	}
@@ -63,14 +69,21 @@ public class DefaultHttpResponse implements HttpResponse {
 		 */
 		protected String message;
 		
+		
+		/**
+		 * Exception Id
+		 */
+		protected int exId;
+		
 		/**
 		 * if it is not an exception, the response
 		 * is the object.
 		 */
 		protected Object data;
 		
-		public HttpResponseData(int code, String message) {
+		public HttpResponseData(int code, int exId, String message) {
 			this.code = code;
+			this.exId = exId;
 			this.message = message;
 		}
 
@@ -102,6 +115,15 @@ public class DefaultHttpResponse implements HttpResponse {
 		public void setData(Object data) {
 			this.data = data;
 		}
+
+		public int getExId() {
+			return exId;
+		}
+
+		public void setExId(int exId) {
+			this.exId = exId;
+		}
+		
 	}
 
 }

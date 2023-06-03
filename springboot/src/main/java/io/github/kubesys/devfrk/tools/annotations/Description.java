@@ -41,4 +41,6 @@ public @interface Description {
 	
 	String group() default "";
 	
+	String time() default "2小时";
+	
 }
