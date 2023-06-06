@@ -3,6 +3,7 @@
  */
 package io.github.kubesys.devfrk.spring.cores;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -42,8 +43,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.github.kubesys.devfrk.spring.assists.HttpResponse;
 import io.github.kubesys.devfrk.spring.exs.HttpFramworkException;
+import io.github.kubesys.devfrk.spring.utils.ClassUtils;
 import io.github.kubesys.devfrk.spring.utils.JSONUtils;
 import io.github.kubesys.devfrk.tools.annotations.Description;
+import jakarta.annotation.Nullable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
@@ -127,7 +134,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
 	 */
 	@PostMapping(value = { "/**/index*", "/**/mock*", "/**/user*", "/**/ask*", "/**/upload*", "/**/from*", "/**/get*",
-			"/**/list*", "/**/query*", "/**/describe*", "/**/retrieve*", "/**/echo*",
+			"/**/list*", "/**/query*", "/**/describe*", "/**/retrieve*", "/**/echo*", "/**/complete*",
 			"/**/exec*" }, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String retrieveTypeGetRequest(HttpServletRequest request, @RequestBody JsonNode body)
 			throws Exception {
@@ -141,7 +148,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
 	 */
 	@GetMapping(value = { "/**/index*", "/**/mock*", "/**/user*", "/**/ask*", "/**/upload*", "/**/from*", "/**/get*",
-			"/**/list*", "/**/query*", "/**/describe*", "/**/retrieve*", "/**/echo*",
+			"/**/list*", "/**/query*", "/**/describe*", "/**/retrieve*", "/**/echo*", "/**/complete*",
 			"/**/exec*" }, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String retrieveTypeGetRequest(HttpServletRequest request,
 			@RequestParam(required = false) Map<String, String> body) throws Exception {
@@ -163,8 +170,8 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 * 
 	 **************************************************/
 
-	@RequestMapping(value = { "/apis" }, produces = MediaType.APPLICATION_JSON_VALUE)
-	public String apis() throws Exception {
+	@RequestMapping(value = { "/apis-json" }, produces = MediaType.APPLICATION_JSON_VALUE)
+	public String apisJson() throws Exception {
 		
 		ObjectNode apis = new ObjectMapper().createObjectNode();
 		
@@ -206,7 +213,145 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 		return apis.toPrettyString();
 	}
 
-	@RequestMapping(value = { "/changelog" }, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = { "/models" }, produces = MediaType.TEXT_MARKDOWN_VALUE)
+	public String models() throws Exception {
+		
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("# 数据模型").append("\n\n");
+		
+		if (ctx.containsBean("model")) {
+			String pkg = (String) ctx.getBean("model");
+			for (Class<?> cls : ClassUtils.scan(new String[] {pkg})) {
+				Entity entity = cls.getAnnotation(Entity.class);
+				if (entity == null) {
+					continue;
+				}
+				
+				Table table = cls.getAnnotation(Table.class);
+				
+				sb.append("\n\n## 数据表").append(table == null ? 
+						cls.getSimpleName().toLowerCase() : table.name()).append("\n");
+				
+				Description dd = cls.getAnnotation(Description.class);
+				
+				sb.append("\n 实现类:").append(cls.getName()).append("\n");
+				sb.append("\n 作  用:").append(dd.desc()).append("\n");
+				sb.append("\n 表描述:").append(cls.getName()).append("\n");
+				
+				sb.append("\n| 列名  | 类型 | 描述 | 约束 | 主键 | 必填 |");
+				sb.append("\n| ----  | ---- | ---- | ---- | ---- | --- |");
+				for (Field field : cls.getDeclaredFields()) {
+					sb.append("\n| ");
+					Column column = field.getAnnotation(Column.class);
+					if (column == null) {
+						sb.append(field.getName()).append(" |");
+					} else {
+						sb.append(column.name()).append(" |");
+					}
+					sb.append(field.getType().getSimpleName()).append(" |");
+					Description desc = field.getAnnotation(Description.class);
+					
+					sb.append(desc.desc()).append(" |");
+					jakarta.validation.constraints.Pattern pattern = 
+							field.getAnnotation(jakarta.validation.constraints.Pattern.class);
+					if (pattern == null) {
+						sb.append("满足" + field.getType().getSimpleName() + "约束").append(" |");
+					} else {
+						sb.append(pattern.message()).append(" ");
+					}
+					Id id = field.getAnnotation(Id.class);
+					sb.append(id == null ? false : true).append(" |");
+					Nullable na = field.getAnnotation(Nullable.class);
+					sb.append(na == null ? true : false).append(" |");
+				}
+			}
+		}
+		
+		return sb.toString();
+	}
+	
+	@RequestMapping(value = { "/apis" }, produces = MediaType.TEXT_MARKDOWN_VALUE)
+	public String apis() throws Exception {
+		
+		ObjectNode apis = new ObjectMapper().createObjectNode();
+		
+		ArrayNode supported = new ObjectMapper().createArrayNode();
+		
+		ArrayNode unsupported = new ObjectMapper().createArrayNode();
+		
+		for (String url : HttpHandlerRegistry.httpHandlers.keySet()) {
+			try {
+				
+				Method apiMethod = HttpHandlerRegistry.httpHandlers.get(url);
+				Description apiDesc = apiMethod.getDeclaredAnnotation(Description.class);
+				
+				ObjectNode apiJson = new ObjectMapper().createObjectNode();
+				apiJson.put("请求名称", apiDesc.desc());
+				apiJson.put("请求路径", url);
+				
+				ArrayNode paramArrayJson = new ObjectMapper().createArrayNode();
+					
+				for (Parameter param: apiMethod.getParameters()) {
+					Description paramDesc = param.getDeclaredAnnotation(Description.class);
+					ObjectNode paramJson = new ObjectMapper().createObjectNode();
+					paramJson.put("参数名称", param.getName());
+					paramJson.put("参数类型", param.getType().getName());
+					paramJson.put("参数必填", paramDesc.required());
+					paramJson.put("参数描述", paramDesc.desc());
+					paramJson.put("参数正则", paramDesc.regexp());
+					paramArrayJson.add(paramJson);
+				}
+				apiJson.set("参数", paramArrayJson);
+				supported.add(apiJson);
+			} catch (Exception ex) {
+				unsupported.add(url);
+			}
+		}
+		
+		apis.set("正常APIs列表", supported);
+		apis.set("异常APIs列表", unsupported);
+		return apis.toPrettyString();
+	}
+	
+	@RequestMapping(value = { "/resources" }, produces = MediaType.TEXT_MARKDOWN_VALUE)
+	public String resource() throws Exception {
+
+		LocalDate startDate = ctx.containsBean("projStart") ? (LocalDate) ctx.getBean("projStart") : LocalDate.now();
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append("# *资源采集周报*\n\n");
+
+		
+		
+		int weekCount = (int) ((LocalDate.now().toEpochDay() - startDate.toEpochDay()) / 7) + 1;
+		for (int i = weekCount - 1; i >=0 ; i--) {
+			LocalDate weekStartDate = startDate.plusWeeks(i);
+			LocalDate weekEndDate = weekStartDate.plusDays(6);
+
+			String formattedStartDate = weekStartDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+			String formattedEndDate = weekEndDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+			
+			sb.append("\n\n## " + formattedStartDate + " - " + formattedEndDate).append("\n\n");
+			
+			ArrayNode json = ctx.containsBean("resource") ? 
+								(ArrayNode) ctx.getBean("resource") : 
+									new ObjectMapper().createArrayNode();
+			
+			try {
+				for (JsonNode text : json.get(i)) {
+					sb.append("- ").append(text.asText()).append("\n");
+				}
+			} catch (Exception ex) {
+				
+			}
+		}
+
+		return sb.toString();
+
+	}
+	
+	@RequestMapping(value = { "/changelog" }, produces = MediaType.TEXT_MARKDOWN_VALUE)
 	public String changelog() throws Exception {
 
 		LocalDate startDate = ctx.containsBean("projStart") ? (LocalDate) ctx.getBean("projStart") : LocalDate.now();
