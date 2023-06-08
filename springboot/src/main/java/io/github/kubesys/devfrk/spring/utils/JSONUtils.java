@@ -6,6 +6,7 @@ package io.github.kubesys.devfrk.spring.utils;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -17,6 +18,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
  */
 public class JSONUtils {
 
+	
 	/**
 	 * @param map   map
 	 * @return json

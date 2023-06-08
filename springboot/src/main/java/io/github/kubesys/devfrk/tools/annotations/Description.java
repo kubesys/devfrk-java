@@ -43,4 +43,6 @@ public @interface Description {
 	
 	String time() default "2小时";
 	
+	boolean visible() default true;
+	
 }

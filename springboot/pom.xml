@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.kubesys</groupId>
 	<artifactId>httpfrk-springboot</artifactId>
-	<version>2.2.1.5</version>
+	<version>2.2.1.6</version>
 	<packaging>jar</packaging>
 	<name>httpfrk-springboot</name>
 	<description>httpfrk-springboot</description>
@@ -20,13 +20,27 @@
 		<openapi.version>1.7.0</openapi.version>
 		<validator.version>8.0.0.Final</validator.version>
 		<collections4.version>4.4</collections4.version>
+		<jakarta.version>3.1.0</jakarta.version>
+		<commonmark.version>0.21.0</commonmark.version>
 	</properties>
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark -->
+		<dependency>
+			<groupId>org.commonmark</groupId>
+			<artifactId>commonmark</artifactId>
+			<version>${commonmark.version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.commonmark/commonmark-ext-gfm-tables -->
+		<dependency>
+			<groupId>org.commonmark</groupId>
+			<artifactId>commonmark-ext-gfm-tables</artifactId>
+			<version>${commonmark.version}</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/jakarta.persistence/jakarta.persistence-api -->
 		<dependency>
 			<groupId>jakarta.persistence</groupId>
 			<artifactId>jakarta.persistence-api</artifactId>
-			<version>3.1.0</version>
+			<version>${jakarta.version}</version>
 		</dependency>
 		<!-- ######################################################## -->
 		<!-- Spring framework -->

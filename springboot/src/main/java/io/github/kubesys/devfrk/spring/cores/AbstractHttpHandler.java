@@ -5,6 +5,8 @@ package io.github.kubesys.devfrk.spring.cores;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,6 +34,20 @@ public abstract class AbstractHttpHandler implements CommandLineRunner {
 	 */
 	@Autowired
 	protected HttpHandlerRegistry registry;
+	
+	
+	public static final Set<String> ignores = new HashSet<>();
+	
+	static {
+		ignores.add("run");
+		ignores.add("wait");
+		ignores.add("notify");
+		ignores.add("equals");
+		ignores.add("toString");
+		ignores.add("notifyAll");
+		ignores.add("hashCode");
+		ignores.add("getClass");
+	}
 	
 	
 	@Override
@@ -63,14 +79,16 @@ public abstract class AbstractHttpHandler implements CommandLineRunner {
 		// 
 		String servicePath = getServiceModule(classname);
 		
-		for (Method serviceName : getClass().getDeclaredMethods()) {
+		for (Method serviceName : getClass().getMethods()) {
 
 			// The rules for a method is a service is
 			// 1. it is just a public method
 			if (!Modifier.isPublic(serviceName.getModifiers())
-					|| Modifier.isStatic(serviceName.getModifiers())) {
+					|| Modifier.isStatic(serviceName.getModifiers())
+					|| ignores.contains(serviceName.getName())) {
 				continue;
 			}
+			
 
 			// 2. we do not support polymorphism because of duplicated service names 
 			if (registry.contains(serviceName.getName())) {

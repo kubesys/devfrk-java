@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,11 @@ import java.util.logging.Logger;
 
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
+import org.commonmark.Extension;
+import org.commonmark.ext.gfm.tables.TablesExtension;
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -170,6 +176,25 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 * 
 	 **************************************************/
 
+	@RequestMapping(value = { "/" }, produces = MediaType.TEXT_HTML_VALUE)
+	public String index() throws Exception {
+		StringBuilder markdown = new StringBuilder();
+		
+		markdown.append("## 文档目录\n\n");
+		
+		markdown.append("- [开发周报](").append(toUrl("/changelogs")).append(")\n");
+		markdown.append("- [资源周报](").append(toUrl("/resources")).append(")\n");
+		markdown.append("- [数据模型](").append(toUrl("/models")).append(")\n");
+		markdown.append("- [接口文档](").append(toUrl("/apis")).append(")\n");
+		markdown.append("- [用例文档](").append(toUrl("/cases")).append(")\n");
+		
+		return toHtml(markdown.toString());
+	}
+	
+	private String toUrl(String path) {
+		return System.getenv("host") + "/examhub/" + path;
+	}
+	
 	@RequestMapping(value = { "/apis-json" }, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String apisJson() throws Exception {
 		
@@ -213,13 +238,12 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 		return apis.toPrettyString();
 	}
 
-	@RequestMapping(value = { "/models" }, produces = MediaType.TEXT_MARKDOWN_VALUE)
-	public String models() throws Exception {
+	@RequestMapping(value = { "/models" }, produces = MediaType.TEXT_HTML_VALUE)
+	public String model() throws Exception {
 		
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append("# 数据模型").append("\n\n");
-		
+		StringBuilder menuMd = new StringBuilder();
+		StringBuilder contentMd = new StringBuilder();
+		int i = 0;
 		if (ctx.containsBean("model")) {
 			String pkg = (String) ctx.getBean("model");
 			for (Class<?> cls : ClassUtils.scan(new String[] {pkg})) {
@@ -229,46 +253,62 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 				}
 				
 				Table table = cls.getAnnotation(Table.class);
-				
-				sb.append("\n\n## 数据表").append(table == null ? 
+				menuMd.append("- [").append(table == null ? cls.getSimpleName()
+						.toLowerCase() : table.name()).append("](#"+ i + ")").append("\n\n");
+				contentMd.append("\n\n### <a id=\"" + i + "\"></a>数据表").append(table == null ? 
 						cls.getSimpleName().toLowerCase() : table.name()).append("\n");
 				
 				Description dd = cls.getAnnotation(Description.class);
 				
-				sb.append("\n 实现类:").append(cls.getName()).append("\n");
-				sb.append("\n 作  用:").append(dd.desc()).append("\n");
-				sb.append("\n 表描述:").append(cls.getName()).append("\n");
+				contentMd.append("\n 实现类:").append(cls.getName()).append("\n");
+				contentMd.append("\n 作  用:").append(dd.desc()).append("\n");
+				contentMd.append("\n 表描述:").append(cls.getName()).append("\n\n");
 				
-				sb.append("\n| 列名  | 类型 | 描述 | 约束 | 主键 | 必填 |");
-				sb.append("\n| ----  | ---- | ---- | ---- | ---- | --- |");
-				for (Field field : cls.getDeclaredFields()) {
-					sb.append("\n| ");
-					Column column = field.getAnnotation(Column.class);
-					if (column == null) {
-						sb.append(field.getName()).append(" |");
-					} else {
-						sb.append(column.name()).append(" |");
-					}
-					sb.append(field.getType().getSimpleName()).append(" |");
-					Description desc = field.getAnnotation(Description.class);
-					
-					sb.append(desc.desc()).append(" |");
-					jakarta.validation.constraints.Pattern pattern = 
-							field.getAnnotation(jakarta.validation.constraints.Pattern.class);
-					if (pattern == null) {
-						sb.append("满足" + field.getType().getSimpleName() + "约束").append(" |");
-					} else {
-						sb.append(pattern.message()).append(" ");
-					}
-					Id id = field.getAnnotation(Id.class);
-					sb.append(id == null ? false : true).append(" |");
-					Nullable na = field.getAnnotation(Nullable.class);
-					sb.append(na == null ? true : false).append(" |");
-				}
+				StringBuilder tb = createModelTable(cls, dd);
+				
+				contentMd.append(toTable(tb.toString()));
+				i++;
 			}
 		}
 		
-		return sb.toString();
+		StringBuilder sb = new StringBuilder();
+		sb.append("## 数据库模型").append("\n\n");
+		sb.append(menuMd).append(contentMd);
+		m_logger.info(sb.toString());
+		return toHtml(sb.toString());
+	}
+
+	private StringBuilder createModelTable(Class<?> cls, Description dd) {
+		StringBuilder tb= new StringBuilder();
+		
+		tb.append("| 列名  | 类型 | 描述 | 约束 | 主键 | 必填 |\n");
+		tb.append("| ----  | ---- | ---- | ---- | ---- | --- |\n");
+		for (Field field : cls.getDeclaredFields()) {
+			tb.append("| ");
+			Column column = field.getAnnotation(Column.class);
+			if (column == null) {
+				tb.append(field.getName()).append(" |" );
+			} else {
+				tb.append(column.name()).append(" | ");
+			}
+			tb.append(field.getType().getSimpleName()).append(" | ");
+			Description desc = field.getAnnotation(Description.class);
+			
+			tb.append(desc.desc()).append(" | ");
+			jakarta.validation.constraints.Pattern pattern = 
+					field.getAnnotation(jakarta.validation.constraints.Pattern.class);
+			if (pattern == null) {
+				tb.append("满足" + field.getType().getSimpleName() + "约束").append(" | ");
+			} else {
+				tb.append(pattern.message()).append(" | ");
+			}
+			Id id = field.getAnnotation(Id.class);
+			tb.append(id == null ? false : true).append(" | ");
+			Nullable na = field.getAnnotation(Nullable.class);
+			tb.append(na == null ? true : false).append(" |\n");
+		}
+		tb.deleteCharAt(tb.length() - 1);
+		return tb;
 	}
 	
 	@RequestMapping(value = { "/apis" }, produces = MediaType.TEXT_MARKDOWN_VALUE)
@@ -314,15 +354,13 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 		return apis.toPrettyString();
 	}
 	
-	@RequestMapping(value = { "/resources" }, produces = MediaType.TEXT_MARKDOWN_VALUE)
+	@RequestMapping(value = { "/resources" }, produces = MediaType.TEXT_HTML_VALUE)
 	public String resource() throws Exception {
 
 		LocalDate startDate = ctx.containsBean("projStart") ? (LocalDate) ctx.getBean("projStart") : LocalDate.now();
 		
-		StringBuilder sb = new StringBuilder();
-		sb.append("# *资源采集周报*\n\n");
-
-		
+		StringBuilder contentMd = new StringBuilder();
+		StringBuilder menuMd = new StringBuilder();
 		
 		int weekCount = (int) ((LocalDate.now().toEpochDay() - startDate.toEpochDay()) / 7) + 1;
 		for (int i = weekCount - 1; i >=0 ; i--) {
@@ -332,7 +370,8 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 			String formattedStartDate = weekStartDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
 			String formattedEndDate = weekEndDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
 			
-			sb.append("\n\n## " + formattedStartDate + " - " + formattedEndDate).append("\n\n");
+			menuMd.append("- [" + formattedStartDate + " - " + formattedEndDate).append("](#"+ i + ")").append("\n\n");
+			contentMd.append("\n### <a id=\"" + i + "\"></a>").append(formattedStartDate + " - " + formattedEndDate).append("\n\n");
 			
 			ArrayNode json = ctx.containsBean("resource") ? 
 								(ArrayNode) ctx.getBean("resource") : 
@@ -340,19 +379,25 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 			
 			try {
 				for (JsonNode text : json.get(i)) {
-					sb.append("- ").append(text.asText()).append("\n");
+					contentMd.append("- ").append(text.asText()).append("\n");
 				}
 			} catch (Exception ex) {
 				
 			}
 		}
 
-		return sb.toString();
+		StringBuilder md = new StringBuilder();
+		md.append("## *资源采集周报*\n\n");
+		md.append("*注意：*以下是代码自动生成，随着抓取资源的增加，看到的数据持续更新\n\n");
+		md.append(menuMd.toString());
+		md.append(contentMd.toString());
+		m_logger.info(md.toString());
+		return toHtml(md.toString());
 
 	}
 	
-	@RequestMapping(value = { "/changelog" }, produces = MediaType.TEXT_MARKDOWN_VALUE)
-	public String changelog() throws Exception {
+	@RequestMapping(value = { "/changelogs" }, produces = MediaType.TEXT_HTML_VALUE)
+	public String changelogs() throws Exception {
 
 		LocalDate startDate = ctx.containsBean("projStart") ? (LocalDate) ctx.getBean("projStart") : LocalDate.now();
 		
@@ -366,14 +411,28 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 		for (int i = 0; i < urls.size(); i++) {
 
 			Method method = urls.get(i);
-			Description desc = method.getAnnotation(Description.class);
-			if (desc == null) {
-				continue;
+			
+			Description desc1 = method.getDeclaringClass().getAnnotation(Description.class);
+			Description desc2 = method.getAnnotation(Description.class);
+			if (desc2 == null) {
+				
+				try {
+					Class<?> superclass = method.getDeclaringClass().getSuperclass();
+					
+					desc2 = superclass.getMethod(method.getName(), 
+							method.getParameterTypes()).getAnnotation(Description.class);
+				} catch (Exception ex) {
+					
+				}
+				
+				if (desc2 == null) {
+					continue;
+				}
 			}
 
 			StringBuilder sb = new StringBuilder();
-			sb.append("- ").append(desc.desc()).append("(")
-				.append(desc.author()).append(",").append(desc.time());
+			sb.append("- ").append(desc1 == null ? "" : desc1.desc() + ": ").append(desc2.desc()).append("(")
+				.append(desc2.author()).append(",").append(desc2.time());
 			
 			if (method.getAnnotation(Deprecated.class) == null) {
 				sb.append("):");
@@ -383,7 +442,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 			
 			sb.append(urlsMap.get(method)).append("\n");
 			
-			String dateString = desc.date();
+			String dateString = desc2.date();
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 			LocalDate thisDate = LocalDate.parse(dateString, formatter);
 			Period period = startDate.until(thisDate);
@@ -406,33 +465,66 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 
 			weekMap.put(i, formattedStartDate + " - " + formattedEndDate);
 		}
-
 		
 		// markdown
-		StringBuilder allMarkdown = new StringBuilder();
-		allMarkdown.append("# *开发周报*\n\n");
+		StringBuilder contentMd = new StringBuilder();
+		StringBuilder menuMd = new StringBuilder();
 		for (int week = weekMap.size() - 1; week >= 0; week--) {
 			
-			allMarkdown.append("\n## ").append(weekMap.get(week));
+			menuMd.append("-" + weekMap.get(week)).append("(#"+ week + ")").append("\n\n");
+			contentMd.append("\n### <a id=\"" + week + "\"></a>").append(weekMap.get(week));
 			if (plan.size() > week) {
-				allMarkdown.append(",").append(plan.get(week));
+				contentMd.append("\n\n **Tasks:**,").append(plan.get(week));
 			}
 			
-			allMarkdown.append("\n\n");
+			contentMd.append("\n\n");
 			
 			if (!urlMarkdown.containsKey(week)) {
 				continue;
 			}
 			
 			for (String urlDesc : urlMarkdown.get(week)) {
-				allMarkdown.append(urlDesc);
+				contentMd.append(urlDesc);
 			}
 		}
 		
-		return allMarkdown.toString();
+		StringBuilder md = new StringBuilder();
+		
+		md.append("## 开发周报\n\n");
+		md.append("*注意：*以下是代码自动生成，随着开发任务的进行，看到的数据持续更新\n\n");
+		md.append(menuMd.toString());
+		md.append(contentMd.toString());
+		m_logger.info(md.toString());
+		return toHtml(md.toString());
 
 	}
 
+	private String toHtml(String md) {
+		Parser parser = Parser.builder().build();
+        Node document = parser.parse(md);
+        HtmlRenderer renderer = HtmlRenderer.builder().build();
+        return renderer.render(document);
+	}
+	
+	private String toTable(String md) {
+		List<Extension> extensions = Arrays.asList(TablesExtension.create());
+        Parser parser = Parser.builder().extensions(extensions).build();
+        Node document = parser.parse(md);
+        HtmlRenderer renderer = HtmlRenderer.builder().extensions(extensions).build();
+        return "<style>"
+                + "table {"
+                + "    border-collapse: collapse;"
+                + "    width: 100%;"
+                + "}"
+                + "th, td {"
+                + "    border: 1px solid black;"
+                + "    padding: 8px;"
+                + "    text-align: left;"
+                + "}"
+                + "</style>" 
+                + renderer.render(document);
+	}
+	
 	private Map<Method, String> _getAllUrls() {
 		Map<Method, String> map = new HashMap<>();
 		
