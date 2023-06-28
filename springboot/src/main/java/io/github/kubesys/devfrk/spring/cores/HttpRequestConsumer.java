@@ -47,7 +47,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import io.github.kubesys.devfrk.spring.assists.HttpResponse;
+import io.github.kubesys.devfrk.spring.HttpResponse;
+import io.github.kubesys.devfrk.spring.constants.BeanConstants;
 import io.github.kubesys.devfrk.spring.exs.HttpFramworkException;
 import io.github.kubesys.devfrk.spring.utils.ClassUtils;
 import io.github.kubesys.devfrk.spring.utils.JSONUtils;
@@ -548,12 +549,12 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	@ExceptionHandler
 	@ResponseBody
 	public String invalidResponse(HttpServletRequest request, Exception e) throws Exception {
-		return ((HttpResponse) getBean("resp")).fail(e);
+		return ((HttpResponse) getBean(BeanConstants.RESPONSE)).fail(e);
 	}
 
 	@ResponseBody
 	public String invalidRequest(HttpServletRequest request, Exception e) throws Exception {
-		return ((HttpResponse) getBean("resp")).fail(e);
+		return ((HttpResponse) getBean(BeanConstants.RESPONSE)).fail(e);
 	}
 
 	/**************************************************
@@ -579,7 +580,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 			Object result = mapper.execHttpHandler(mapper.getHttpHandler(customPath), customPath, body);
 
 			m_logger.log(Level.INFO, () -> "Successfully deal with " + customPath);
-			return ((HttpResponse) getBean("resp")).success(result);
+			return ((HttpResponse) getBean(BeanConstants.RESPONSE)).success(result);
 		} catch (Exception ex) {
 			if (ex instanceof InvocationTargetException) {
 				StringBuilder sb = new StringBuilder();

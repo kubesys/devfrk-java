@@ -1,7 +1,7 @@
 /**
  * Copyright (2019, ) Institute of Software, Chinese Academy of Sciences
  */
-package io.github.kubesys.devfrk.spring.assists;
+package io.github.kubesys.devfrk.spring.addons;
 
 import java.util.logging.Logger;
 

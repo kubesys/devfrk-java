@@ -13,7 +13,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.stereotype.Component;
 
-import io.github.kubesys.devfrk.spring.assists.HttpConstants;
+import io.github.kubesys.devfrk.spring.constants.HttpConstants;
 
 /**
  * @author wuheng@iscas.ac.cn

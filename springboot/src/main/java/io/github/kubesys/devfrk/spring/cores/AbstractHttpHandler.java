@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 
-import io.github.kubesys.devfrk.spring.assists.HttpConstants;
+import io.github.kubesys.devfrk.spring.constants.HttpConstants;
 import io.github.kubesys.devfrk.spring.exs.HttpFramworkException;
 
 /**

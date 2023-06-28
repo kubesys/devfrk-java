@@ -9,7 +9,8 @@ import org.springframework.context.ApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.github.kubesys.devfrk.spring.assists.HttpResponse;
+import io.github.kubesys.devfrk.spring.HttpResponse;
+import io.github.kubesys.devfrk.spring.constants.BeanConstants;
 import io.github.kubesys.devfrk.spring.exs.HttpFramworkException;
 import jakarta.annotation.Resource;
 
@@ -34,7 +35,7 @@ public class DefaultHttpResponse implements HttpResponse {
 	
 	@Override
 	public String success(Object obj) throws Exception {
-		return ((DefaultHttpResponse) context.getBean("resp")).unwrap("success", -1, obj);
+		return ((DefaultHttpResponse) context.getBean(BeanConstants.RESPONSE)).unwrap("success", -1, obj);
 	}
 	
 	@Override
@@ -42,10 +43,10 @@ public class DefaultHttpResponse implements HttpResponse {
 		m_logger.warning("cannot handle request: " + ex);
 		if (ex instanceof HttpFramworkException) {
 			HttpFramworkException hex = (HttpFramworkException) ex;
-			return ((DefaultHttpResponse) context.getBean("resp"))
+			return ((DefaultHttpResponse) context.getBean(BeanConstants.RESPONSE))
 					.unwrap("fail", hex.getCode(), String.valueOf(hex));
 		}
-		return ((DefaultHttpResponse) context.getBean("resp"))
+		return ((DefaultHttpResponse) context.getBean(BeanConstants.RESPONSE))
 				.unwrap("fail", 400, String.valueOf(ex));
 	}
 	

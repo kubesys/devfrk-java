@@ -12,19 +12,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import io.github.kubesys.devfrk.spring.assists.HttpCorsInterceptor;
-import io.github.kubesys.devfrk.spring.assists.HttpResponse;
+import io.github.kubesys.devfrk.spring.addons.HttpCorsInterceptor;
+import io.github.kubesys.devfrk.spring.constants.BeanConstants;
 import io.github.kubesys.devfrk.spring.defs.DefaultHttpResponse;
 
 /**
- * @author wuheng@iscas.ac.cn
- * @since 2.0.0
+ * @author  wuheng@iscas.ac.cn
+ * @version 2.3.0
+ * @since   2023/06/28
  * 
- *        <p>
- *        The {@code ApplicationServer} class is used for starting web
- *        applications. Please configure
+ *  
+ * 服务启动框架，进一步配置可参见
  * 
- *        src/main/resources/application.yml src/main/resources/log4j.properties
+ * <li><code>src/main/resources/application.yml<code>
+ * <li><code>src/main/resources/log4j.properties<code>
  * 
  */
 
@@ -34,12 +35,20 @@ import io.github.kubesys.devfrk.spring.defs.DefaultHttpResponse;
 @ComponentScan(value = { "io.github.kubesys.devfrk.spring" })
 public abstract class HttpServer implements WebMvcConfigurer {
 
+	/**
+	 * 支持跨域
+	 */
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(new HttpCorsInterceptor()).addPathPatterns("/**");
 	}
 
-	@Bean(name = "resp")
+	/**
+	 * 可以通过Bean(name = "resp")自定义
+	 * 
+	 * @return 默认请求响应实现
+	 */
+	@Bean(name = BeanConstants.RESPONSE)
 	public HttpResponse getResponse() {
 		return new DefaultHttpResponse();
 	}

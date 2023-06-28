@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import io.github.kubesys.devfrk.spring.assists.HttpConstants;
+import io.github.kubesys.devfrk.spring.constants.HttpConstants;
 
 
 /**
