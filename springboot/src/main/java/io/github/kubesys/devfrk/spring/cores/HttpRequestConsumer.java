@@ -187,6 +187,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 		markdown.append("- [数据模型](").append(toUrl("/models")).append(")\n");
 		markdown.append("- [接口文档](").append(toUrl("/apis")).append(")\n");
 		markdown.append("- [用例文档](").append(toUrl("/cases")).append(")\n");
+		markdown.append("- [规范文档](").append(toUrl("/specs")).append(")\n");
 		
 		return toHtml(markdown.toString());
 	}
@@ -314,11 +315,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	@RequestMapping(value = { "/apis" }, produces = MediaType.TEXT_MARKDOWN_VALUE)
 	public String apis() throws Exception {
 		
-		ObjectNode apis = new ObjectMapper().createObjectNode();
-		
-		ArrayNode supported = new ObjectMapper().createArrayNode();
-		
-		ArrayNode unsupported = new ObjectMapper().createArrayNode();
+		StringBuilder contentMd = new StringBuilder();
 		
 		for (String url : HttpHandlerRegistry.httpHandlers.keySet()) {
 			try {
@@ -326,32 +323,39 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 				Method apiMethod = HttpHandlerRegistry.httpHandlers.get(url);
 				Description apiDesc = apiMethod.getDeclaredAnnotation(Description.class);
 				
-				ObjectNode apiJson = new ObjectMapper().createObjectNode();
-				apiJson.put("请求名称", apiDesc.desc());
-				apiJson.put("请求路径", url);
+				contentMd.append("*请求名称*").append(apiDesc.desc());
+				contentMd.append("\n请求路径:").append(url);
+				contentMd.append("\n请求方法:").append("POST");
 				
-				ArrayNode paramArrayJson = new ObjectMapper().createArrayNode();
-					
-				for (Parameter param: apiMethod.getParameters()) {
-					Description paramDesc = param.getDeclaredAnnotation(Description.class);
-					ObjectNode paramJson = new ObjectMapper().createObjectNode();
-					paramJson.put("参数名称", param.getName());
-					paramJson.put("参数类型", param.getType().getName());
-					paramJson.put("参数必填", paramDesc.required());
-					paramJson.put("参数描述", paramDesc.desc());
-					paramJson.put("参数正则", paramDesc.regexp());
-					paramArrayJson.add(paramJson);
-				}
-				apiJson.set("参数", paramArrayJson);
-				supported.add(apiJson);
+				contentMd.append("\n\n")
+						.append(createParamTable(
+								apiMethod.getParameters(), apiDesc));
+				
 			} catch (Exception ex) {
-				unsupported.add(url);
+//				unsupported.add(url);
 			}
 		}
 		
-		apis.set("正常APIs列表", supported);
-		apis.set("异常APIs列表", unsupported);
-		return apis.toPrettyString();
+//		apis.set("正常APIs列表", supported);
+//		apis.set("异常APIs列表", unsupported);
+		return null;
+	}
+	
+	private StringBuilder createParamTable(Parameter[] params, Description dd) {
+		StringBuilder tb= new StringBuilder();
+		
+		tb.append("| 参数名称  | 参数类型 | 参数必填 | 参数描述 | 参数正则 |\n");
+		tb.append("| ----  | ---- | ---- | ---- | ---- |\n");
+		for (Parameter param :params) {
+			tb.append("| ").append(param.getName())
+				.append(" | ").append(param.getName())
+				.append(" | ").append(dd.required())
+				.append(" | ").append(dd.date())
+				.append(" | ").append(dd.regexp())
+				.append(" | ");
+		}
+		tb.deleteCharAt(tb.length() - 1);
+		return tb;
 	}
 	
 	@RequestMapping(value = { "/resources" }, produces = MediaType.TEXT_HTML_VALUE)

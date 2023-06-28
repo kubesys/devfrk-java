@@ -21,29 +21,14 @@ import org.springframework.stereotype.Component;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Component
-public @interface Description {
+public @interface Exception {
 
 	/**
 	 * The value may indicate a suggestion for a logical component name,
 	 * to be turned into a Spring bean in case of an auto-detected component.
 	 * @return the suggested component name, if any (or empty String otherwise)
 	 */
-	
-	boolean required() default true;
+	int id() default 0;
 	
 	String desc() default "";
-	
-	String regexp() default "";
-	
-	String date() default "";
-	
-	String author() default "";
-	
-	String group() default "";
-	
-	String time() default "1小时";
-	
-	boolean visible() default true;
-	
-	int id() default 0;
 }

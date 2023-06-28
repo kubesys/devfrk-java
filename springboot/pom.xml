@@ -5,18 +5,19 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.kubesys</groupId>
 	<artifactId>httpfrk-springboot</artifactId>
-	<version>2.2.1.6</version>
+	<version>2.2.1.7</version>
 	<packaging>jar</packaging>
 	<name>httpfrk-springboot</name>
 	<description>httpfrk-springboot</description>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.0.5</version>
+		<version>3.1.1</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<properties>
-		<jackson.version>2.15.1</jackson.version>
+		<jackson.version>2.15.2</jackson.version>
+		<spring.version>6.0.10</spring.version>
 		<openapi.version>1.7.0</openapi.version>
 		<validator.version>8.0.0.Final</validator.version>
 		<collections4.version>4.4</collections4.version>
@@ -24,6 +25,18 @@
 		<commonmark.version>0.21.0</commonmark.version>
 	</properties>
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark -->
 		<dependency>
 			<groupId>org.commonmark</groupId>
@@ -45,6 +58,11 @@
 		<!-- ######################################################## -->
 		<!-- Spring framework -->
 		<!-- ######################################################## -->
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

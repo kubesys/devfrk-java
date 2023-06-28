@@ -4,7 +4,7 @@
 package io.github.kubesys.devfrk.spring.cores;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,7 +32,7 @@ public final class HttpHandlerRegistry  {
 	/**
 	 * handlers
 	 */
-	protected static Map<String, Method> httpHandlers = new HashMap<>();
+	protected static Map<String, Method> httpHandlers = new LinkedHashMap<>();
 	
 
 	/**
