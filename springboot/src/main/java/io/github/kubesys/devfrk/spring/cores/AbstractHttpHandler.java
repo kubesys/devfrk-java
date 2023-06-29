@@ -13,14 +13,16 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 
+import io.github.kubesys.devfrk.spring.constants.ExceptionConstants;
 import io.github.kubesys.devfrk.spring.constants.HttpConstants;
 import io.github.kubesys.devfrk.spring.exs.HttpFramworkException;
 
 /**
- * @author wuheng@iscas.ac.cn
- * @since  2.0.0
+ * @author   wuheng@iscas.ac.cn
+ * @version  2.3.0
+ * @since    2023/06/28
  * 
- * The {@code AbstractHttpHandler} class is used to register a servlet handler to {@code HttpHandlerManager}.
+ * 注册Http服务
  */
 public abstract class AbstractHttpHandler implements CommandLineRunner {
 
@@ -59,7 +61,7 @@ public abstract class AbstractHttpHandler implements CommandLineRunner {
 
 		// Our rule is a class must be  ends with 'Service'
 		if (!simplename.endsWith(HttpConstants.SERVICE_CLASS_POSTFIX)) {
-			m_logger.log(Level.SEVERE, () -> HttpConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_WRONG_NAME + simplename);
+			m_logger.log(Level.SEVERE, () -> ExceptionConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_WRONG_NAME + simplename);
 			throw new HttpFramworkException(300, "注册服务的类型名必须以'Service'结尾" + simplename);
 		}
 
@@ -92,7 +94,7 @@ public abstract class AbstractHttpHandler implements CommandLineRunner {
 
 			// 2. we do not support polymorphism because of duplicated service names 
 			if (registry.contains(serviceName.getName())) {
-				m_logger.log(Level.SEVERE, () -> HttpConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_POLYMORPHISM + classname
+				m_logger.log(Level.SEVERE, () -> ExceptionConstants.EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_POLYMORPHISM + classname
 						+ "." + serviceName.getName());
 				throw new HttpFramworkException(301, "服务重复注册" + classname
 						+ "." + serviceName.getName());

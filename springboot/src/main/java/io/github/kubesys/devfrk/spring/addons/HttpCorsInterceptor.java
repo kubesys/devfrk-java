@@ -38,7 +38,7 @@ public class HttpCorsInterceptor implements HandlerInterceptor {
 		response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE");
 		response.setHeader("Access-Control-Allow-Credentials", "true");
 		response.setContentType("application/json;charset=UTF-8");
-		m_logger.info("Target URL:" + request.getRequestURI());
+		m_logger.info("forwarding: " + request.getRequestURI());
 		return true;
 	}
 

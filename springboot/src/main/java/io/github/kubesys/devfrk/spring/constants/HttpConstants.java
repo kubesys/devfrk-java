@@ -3,6 +3,8 @@
  */
 package io.github.kubesys.devfrk.spring.constants;
 
+import io.github.kubesys.devfrk.tools.annotations.Document;
+
 /**
  * @author wuheng@iscas.ac.cn
  * @since  2.0.0
@@ -19,45 +21,13 @@ public class HttpConstants {
 	 * HTTP Response
 	 * 
 	 *****************************************************************/
+	@Document("{\"code\": 20000}表示业务系统正常响应，注意：其生效仅针对系统未自定义Bean: " + BeanConstants.RESPONSE)
 	public static final int HTTP_RESPONSE_STATUS_OK     = 20000;
 
+	@Document("{\"code\": 50000}表示业务系统非正常响应，细分异常信息默认参见exId和message字段，注意：其生效仅针对系统未自定义Bean: " + BeanConstants.RESPONSE)
 	public static final int HTTP_RESPONSE_STATUS_FAILED = 50000;
 	
-	/*****************************************************************
-	 * 
-	 * Postfix
-	 * 
-	 *****************************************************************/
-	
+	@Document("用户自定义服务的类名必须是以Service结尾，参见[服务开发规范]{/docs/spec}")
 	public static final String SERVICE_CLASS_POSTFIX = "Service";
 	
-	public static final String URL_PATH_SEPARATOR    = "/";
-	
-	/******************************************************************
-	 * 
-	 * Sucessful
-	 * 
-	 ******************************************************************/
-	
-	public static final String SUCESSFUL_REGISTER_HTTPHANDLER                             = "Register http handler for path: ";
-	
-	/******************************************************************
-	 * 
-	 * Exceptions
-	 * 
-	 ******************************************************************/
-	
-	public static final String EXCEPTION_INVALID_REQUEST_URL                             = "Invalid servlet path, or invalid parameters was requested";
-	
-	public static final String EXCEPTION_INVALID_SERVICE_ANOTATION                       = "Invalid ServiceDefinition was requested";
-	
-	public static final String EXCEPTION_UNABLE_TO_REGISTER_SERVICE_FROM_INNER_CLASS     = "Unable to resgiter service from an inner class ";
-	
-	public static final String EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_WRONG_NAME      = "Unable to register service from a class does not endwith 'Service' ";
-	
-	public static final String EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_POLYMORPHISM    = "Unable to register the service with duplicated names ";
-	
-	public static final String EXCEPTION_UNABLE_TO_REGISTER_SERVICE_WITH_UNKNOWN_REASON  = "Unable to register the service with unknown reason, please try again ";
-	
-	public static final String EXCEPTION_HTTPCONTROLLER_UNSUPPORT                        = "Unable to register the service becasue HttpController does not support it, please modify RequestMapping to support ";
 }

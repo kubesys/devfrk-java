@@ -5,13 +5,15 @@ package io.github.kubesys.devfrk.spring.defs;
 
 import java.util.logging.Logger;
 
+import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.kubesys.devfrk.spring.HttpResponse;
 import io.github.kubesys.devfrk.spring.constants.BeanConstants;
-import io.github.kubesys.devfrk.spring.exs.HttpFramworkException;
+import io.github.kubesys.devfrk.tools.annotations.Description;
 import jakarta.annotation.Resource;
 
 /**
@@ -29,35 +31,70 @@ public class DefaultHttpResponse implements HttpResponse {
 	 */
 	public static final Logger m_logger = Logger.getLogger(DefaultHttpResponse.class.getName());
 	
+	/**
+	 * 上下文信息
+	 */
 	@Resource
 	protected ApplicationContext context;
 	
 	
-	@Override
-	public String success(Object obj) throws Exception {
-		return ((DefaultHttpResponse) context.getBean(BeanConstants.RESPONSE)).unwrap("success", -1, obj);
-	}
+	/**
+	 * 正常响应
+	 */
+	static final String SUCESS = "success";
+	
+	/**
+	 * 异常响应
+	 */
+	static final String FAIL   = "fail";
+
+	/**
+	 * 正常ID
+	 */
+	static final int SUCESS_ID = -1;
 	
 	@Override
-	public String fail(Exception ex) throws Exception {
-		m_logger.warning("cannot handle request: " + ex);
-		if (ex instanceof HttpFramworkException) {
-			HttpFramworkException hex = (HttpFramworkException) ex;
-			return ((DefaultHttpResponse) context.getBean(BeanConstants.RESPONSE))
-					.unwrap("fail", hex.getCode(), String.valueOf(hex));
+	public String success(Object obj) {
+		try {
+			return ((DefaultHttpResponse) context
+							.getBean(BeanConstants.RESPONSE))
+						.unwrap(SUCESS, SUCESS_ID, obj);
+		} catch (JsonProcessingException | BeansException e) {
+			return null;
 		}
-		return ((DefaultHttpResponse) context.getBean(BeanConstants.RESPONSE))
-				.unwrap("fail", 400, String.valueOf(ex));
 	}
 	
-	public String unwrap(String status, int id, Object value) throws Exception {
-		HttpResponseData response = "fail".equals(status) ?
-				new HttpResponseData(50000, id, value.toString().substring(value.toString().indexOf(":") + 1)) 
+	@Override
+	public String fail(Exception ex) {
+		m_logger.warning("handle request error: " + ex);
+		try {
+			return ((DefaultHttpResponse) context.getBean(BeanConstants.RESPONSE))
+					.unwrap("fail", ex.getClass().getAnnotationsByType(
+								Description.class)[0].id(), ex);
+		} catch (Exception e) {
+			try {
+				return ((DefaultHttpResponse) context.getBean(BeanConstants.RESPONSE))
+						.unwrap("fail", 300, e);
+			} catch (JsonProcessingException | BeansException e1) {
+				return fail(e1);
+			}
+		}
+		
+	}
+	
+	public String unwrap(String status, int id, Object value) throws JsonProcessingException {
+		
+		if (value instanceof Exception ex) {
+			value = ex.toString();
+		}
+		
+		HttpResponseData response = FAIL.equals(status) ?
+				new HttpResponseData(50000, id, value.toString()) 
 				: new HttpResponseData(20000, value);
+		
 		return new ObjectMapper().writeValueAsString(response);
 	}
 	
-
 	public static class HttpResponseData {
 		/**
 		 * neither Success or Failure
@@ -69,7 +106,6 @@ public class DefaultHttpResponse implements HttpResponse {
 		 * otherwise it should be null
 		 */
 		protected String message;
-		
 		
 		/**
 		 * Exception Id

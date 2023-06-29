@@ -49,7 +49,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.github.kubesys.devfrk.spring.HttpResponse;
 import io.github.kubesys.devfrk.spring.constants.BeanConstants;
-import io.github.kubesys.devfrk.spring.exs.HttpFramworkException;
 import io.github.kubesys.devfrk.spring.utils.ClassUtils;
 import io.github.kubesys.devfrk.spring.utils.JSONUtils;
 import io.github.kubesys.devfrk.tools.annotations.Description;
@@ -159,7 +158,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 			"/**/exec*" }, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String retrieveTypeGetRequest(HttpServletRequest request,
 			@RequestParam(required = false) Map<String, String> body) throws Exception {
-		return doResponse(mapper.getCustomPath(request), JSONUtils.toJsonNode(body));
+		return doResponse(mapper.getCustomPath(request), JSONUtils.from(body));
 	}
 
 	/**
@@ -548,12 +547,12 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 */
 	@ExceptionHandler
 	@ResponseBody
-	public String invalidResponse(HttpServletRequest request, Exception e) throws Exception {
+	public String invalidResponse(Exception e) {
 		return ((HttpResponse) getBean(BeanConstants.RESPONSE)).fail(e);
 	}
 
 	@ResponseBody
-	public String invalidRequest(HttpServletRequest request, Exception e) throws Exception {
+	public String invalidRequest(Exception e)  {
 		return ((HttpResponse) getBean(BeanConstants.RESPONSE)).fail(e);
 	}
 
@@ -582,10 +581,8 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 			m_logger.log(Level.INFO, () -> "Successfully deal with " + customPath);
 			return ((HttpResponse) getBean(BeanConstants.RESPONSE)).success(result);
 		} catch (Exception ex) {
-			if (ex instanceof InvocationTargetException) {
-				StringBuilder sb = new StringBuilder();
-				sb.append(((InvocationTargetException) ex).getTargetException());
-				throw new HttpFramworkException(402, sb.toString());
+			if (ex instanceof InvocationTargetException ite) {
+				return invalidResponse((Exception) ite.getTargetException());
 			} else {
 				throw ex;
 			}

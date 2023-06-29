@@ -5,7 +5,8 @@ package io.github.kubesys.devfrk.spring;
 
 /**
  * @author  wuheng@iscas.ac.cn
- * @since   2.2.3
+ * @version 2.3.0
+ * @since   2023/06/28
  * 
  * <p>
  * The {@code HttpResponse} class represents the return
@@ -13,8 +14,15 @@ package io.github.kubesys.devfrk.spring;
  */
 public interface HttpResponse {
 
-	public String success(Object obj) throws Exception;
+	/**
+	 * @param obj 具体数据
+	 * @return    正确的Http响应
+	 */
+	public String success(Object obj);
 	
-	public String fail(Exception ex) throws Exception;
-	
+	/**
+	 * @param ex 具体异常
+	 * @return   错误的Http响应
+	 */
+	public String fail(Exception ex);
 }

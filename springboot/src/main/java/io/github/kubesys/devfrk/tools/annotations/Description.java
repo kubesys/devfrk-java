@@ -33,6 +33,8 @@ public @interface Description {
 	
 	String desc() default "";
 	
+	String see() default "";
+	
 	String regexp() default "";
 	
 	String date() default "";
@@ -42,8 +44,6 @@ public @interface Description {
 	String group() default "";
 	
 	String time() default "1小时";
-	
-	boolean visible() default true;
 	
 	int id() default 0;
 }

@@ -21,7 +21,7 @@ class JSONUtilsTest {
 
 	@Test
 	void testNull() {
-		assertEquals(0, JSONUtils.toJsonNode(null).size());
+		assertEquals(0, JSONUtils.from(null).size());
 	}
 	
 	@Test
@@ -29,10 +29,10 @@ class JSONUtilsTest {
 		Map<String, String> map = new HashMap<>();
 		map.put("a", "a");
 		map.put("b", "b");
-		assertEquals(2, JSONUtils.toJsonNode(map).size());
+		assertEquals(2, JSONUtils.from(map).size());
 		assertEquals("{\r\n"
 				+ "  \"a\" : \"a\",\r\n"
 				+ "  \"b\" : \"b\"\r\n"
-				+ "}", JSONUtils.toJsonNode(map).toPrettyString());
+				+ "}", JSONUtils.from(map).toPrettyString());
 	}
 }
