@@ -1,7 +1,7 @@
 /**
  * Copyright (2019, ) Institute of Software, Chinese Academy of Sciences
  */
-package io.github.kubesys.devfrk.spring.defs;
+package io.github.kubesys.devfrk.spring.resp;
 
 import java.util.logging.Logger;
 
@@ -11,7 +11,6 @@ import org.springframework.context.ApplicationContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.github.kubesys.devfrk.spring.HttpResponse;
 import io.github.kubesys.devfrk.spring.constants.BeanConstants;
 import io.github.kubesys.devfrk.tools.annotations.Description;
 import jakarta.annotation.Resource;

@@ -11,7 +11,7 @@ import io.github.kubesys.devfrk.tools.annotations.Description;
  * @since  2.0.0
  * 
  */
-@Description(desc = "参数不正确", id = 302, see = ExceptionConstants.INVALID_REQUEST_PARAMS)
+@Description(desc = "参数不正确，请访问getHandlers查询所有支持的HttpHandlers、参数和返回值类型", id = 302, see = ExceptionConstants.INVALID_REQUEST_PARAMS)
 public class InternalInvalidParamsException extends RuntimeException {
 
 

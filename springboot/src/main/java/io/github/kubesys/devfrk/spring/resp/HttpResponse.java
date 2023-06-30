@@ -1,7 +1,7 @@
 /**
  * Copyright (2019, ) Institute of Software, Chinese Academy of Sciences
  */
-package io.github.kubesys.devfrk.spring;
+package io.github.kubesys.devfrk.spring.resp;
 
 /**
  * @author  wuheng@iscas.ac.cn

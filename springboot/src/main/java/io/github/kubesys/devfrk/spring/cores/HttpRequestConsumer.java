@@ -33,8 +33,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -47,10 +45,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import io.github.kubesys.devfrk.spring.HttpResponse;
+import io.github.kubesys.devfrk.spring.config.LocalConfigServer;
 import io.github.kubesys.devfrk.spring.constants.BeanConstants;
+import io.github.kubesys.devfrk.spring.constants.ExceptionConstants;
+import io.github.kubesys.devfrk.spring.exs.InternalInvalidUrlException;
+import io.github.kubesys.devfrk.spring.resp.HttpResponse;
 import io.github.kubesys.devfrk.spring.utils.ClassUtils;
 import io.github.kubesys.devfrk.spring.utils.JSONUtils;
+import io.github.kubesys.devfrk.spring.utils.RegexpUtils;
 import io.github.kubesys.devfrk.tools.annotations.Description;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
@@ -79,10 +81,20 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	@Value("${server.servlet.context-path}")
 	private String path;
 
+	/**
+	 * HttpHandler映射器
+	 */
 	@Autowired
 	protected RequestHandlerMapper mapper;
 
+	@Autowired
+	protected LocalConfigServer configServer;
+	
+	/**
+	 * 应用上下文
+	 */
 	protected ApplicationContext ctx;
+	
 
 	/**************************************************
 	 * 
@@ -90,86 +102,24 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 * 
 	 **************************************************/
 
-	/**
-	 * @param request servlet path should be startwith 'add', 'create', or 'new'
-	 * @param body    just body
-	 * @return the {@code HttpBodyHandler} result. In fact, it may be an exception.
-	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
-	 */
-	@PostMapping(value = { "/**/login*", "/**/logout*", "/**/add*", "/**/create*", "/**/new*", "/**/generate*",
-			"/**/insert*", "/**/clone*", "/**/attach*", "/**/plug*", "/**/set*", "/**/bind*",
-			"/**/solve*" }, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody String createTypeRequest(HttpServletRequest request, @RequestBody JsonNode body)
-			throws Exception {
-		return doResponse(mapper.getCustomPath(request), body);
-	}
-
-	/**
-	 * @param request servlet path should be startwith 'delete', or 'remove'
-	 * @param body    just body
-	 * @return the {@code HttpBodyHandler} result. In fact, it may be an exception.
-	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
-	 */
-	@RequestMapping(method = { RequestMethod.POST, RequestMethod.DELETE }, value = { "/**/delete*", "/**/remove*",
-			"/**/eject*", "/**/detach*", "/**/unplug*", "/**/unset*",
-			"/**/unbind*" }, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody String deleteTypeRequest(HttpServletRequest request, @RequestBody JsonNode body)
-			throws Exception {
-		return doResponse(mapper.getCustomPath(request), body);
-	}
-
-	/**
-	 * @param request servlet path should be startwith 'update', 'modify', or
-	 *                'replace'
-	 * @param body    just body
-	 * @return the {@code HttpBodyHandler} result. In fact, it may be an exception.
-	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
-	 */
-	@RequestMapping(method = { RequestMethod.POST, RequestMethod.PUT }, value = { "/**/update*", "/**/diff*",
-			"/**/modify*", "/**/replace*", "/**/change*", "/**/resize*", "/**/tune*", "/**/revert*",
-			"/**/convert*" }, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody String updateTypeRequest(HttpServletRequest request, @RequestBody JsonNode body)
-			throws Exception {
-		return doResponse(mapper.getCustomPath(request), body);
-	}
-
-	/**
-	 * @param request servlet path should be startwith 'get', 'list', or 'describe'
-	 * @param body    just body
-	 * @return the {@code HttpBodyHandler} result. In fact, it may be an exception.
-	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
-	 */
-	@PostMapping(value = { "/**/index*", "/**/mock*", "/**/user*", "/**/ask*", "/**/upload*", "/**/from*", "/**/get*",
-			"/**/list*", "/**/query*", "/**/describe*", "/**/retrieve*", "/**/echo*", "/**/complete*",
-			"/**/exec*" }, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody String retrieveTypeGetRequest(HttpServletRequest request, @RequestBody JsonNode body)
-			throws Exception {
-		return doResponse(mapper.getCustomPath(request), body);
-	}
-
-	/**
-	 * @param request servlet path should be startwith 'get', 'list', or 'describe'
-	 * @param body    just body
-	 * @return the {@code HttpBodyHandler} result. In fact, it may be an exception.
-	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
-	 */
-	@GetMapping(value = { "/**/index*", "/**/mock*", "/**/user*", "/**/ask*", "/**/upload*", "/**/from*", "/**/get*",
-			"/**/list*", "/**/query*", "/**/describe*", "/**/retrieve*", "/**/echo*", "/**/complete*",
-			"/**/exec*" }, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody String retrieveTypeGetRequest(HttpServletRequest request,
+	
+	@RequestMapping(method = { RequestMethod.GET}, value = {"/**/**"}, produces = MediaType.APPLICATION_JSON_VALUE )
+	public @ResponseBody String getRequest(HttpServletRequest request,
 			@RequestParam(required = false) Map<String, String> body) throws Exception {
-		return doResponse(mapper.getCustomPath(request), JSONUtils.from(body));
+		return allRequest(request, JSONUtils.from(body));
+	}
+	
+	@RequestMapping(method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE}, value = {"/**/**"}, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody String allRequest(HttpServletRequest request,
+			@RequestParam(required = false) @RequestBody JsonNode body) throws Exception {
+		String regexp = configServer.getString(this.getClass().getSimpleName(), request.getMethod());
+		if (!RegexpUtils.startWith(regexp, request.getServletPath())) {
+			throw new InternalInvalidUrlException(ExceptionConstants.INVALID_REQUEST_URL);
+		}
+		return doResponse(mapper.getCustomPath(request), body);
 	}
 
-	/**
-	 * @return the {@code HttpBodyHandler} result. In fact, it may be an exception.
-	 * @throws Exception it can be any exception that {@code HttpBodyHandler} throws
-	 */
-//	@RequestMapping(value = { "/v3/api" })
-//	public @ResponseBody String openAPI() throws Exception {
-//		return apiDoc.getAPIDoc();
-//	}
-
+	
 	/**************************************************
 	 * 
 	 * APIs and Changelog

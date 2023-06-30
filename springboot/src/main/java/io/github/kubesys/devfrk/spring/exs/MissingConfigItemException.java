@@ -11,8 +11,8 @@ import io.github.kubesys.devfrk.tools.annotations.Description;
  * @since  2.0.0
  * 
  */
-@Description(desc = "参数不正确", id = 401, see = ExceptionConstants.INVALID_REQUEST_PARAMS)
-public class InternalInvalidAuthingException extends RuntimeException {
+@Description(desc = "缺少配置项", id = 501, see = ExceptionConstants.MISSING_CONFIG_ITEM)
+public class MissingConfigItemException extends RuntimeException {
 
 
 	/**
@@ -21,13 +21,13 @@ public class InternalInvalidAuthingException extends RuntimeException {
 	private static final long serialVersionUID = -1057346529882181459L;
 
 	
-	public InternalInvalidAuthingException() {
+	public MissingConfigItemException() {
 		super();
 	}
 
 
 
-	public InternalInvalidAuthingException(String message) {
+	public MissingConfigItemException(String message) {
 		super(message);
 	}
 	

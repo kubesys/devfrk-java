@@ -11,7 +11,7 @@ import io.github.kubesys.devfrk.tools.annotations.Description;
  * @since  2.0.0
  * 
  */
-@Description(desc = "返回值错误", id = 303, see = ExceptionConstants.INVALID_REQUEST_RESULT)
+@Description(desc = "返回值错误，请访问getHandlers查询所有支持的HttpHandlers、参数和返回值类型", id = 303, see = ExceptionConstants.INVALID_REQUEST_RESULT)
 public class InternalInvalidResultException extends RuntimeException {
 
 	/**

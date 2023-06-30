@@ -11,21 +11,24 @@ import io.github.kubesys.devfrk.tools.annotations.Description;
  * @since  2.0.0
  * 
  */
-@Description(desc = "未注册的Url，请访问getHandlers查询所有支持的HttpHandlers、参数和返回值类型", id = 301, see = ExceptionConstants.INVALID_REQUEST_URL)
-public class InternalInvalidUrlException extends RuntimeException {
+@Description(desc = "错误的用户名密码", id = 401, see = ExceptionConstants.WRONG_USERNAME_OR_PASSWORD)
+public class WrongUserOrPasswordException extends RuntimeException {
 
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -1057346529882181459L;
+
 	
-	public InternalInvalidUrlException() {
+	public WrongUserOrPasswordException() {
 		super();
 	}
 
-	public InternalInvalidUrlException(String message) {
+
+
+	public WrongUserOrPasswordException(String message) {
 		super(message);
 	}
-
+	
 }

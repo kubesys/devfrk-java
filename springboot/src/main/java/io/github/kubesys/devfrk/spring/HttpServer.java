@@ -14,7 +14,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import io.github.kubesys.devfrk.spring.addons.HttpCorsInterceptor;
 import io.github.kubesys.devfrk.spring.constants.BeanConstants;
-import io.github.kubesys.devfrk.spring.defs.DefaultHttpResponse;
+import io.github.kubesys.devfrk.spring.resp.DefaultHttpResponse;
+import io.github.kubesys.devfrk.spring.resp.HttpResponse;
 
 /**
  * @author  wuheng@iscas.ac.cn
