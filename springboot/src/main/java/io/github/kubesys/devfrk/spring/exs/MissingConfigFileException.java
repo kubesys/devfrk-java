@@ -11,7 +11,7 @@ import io.github.kubesys.devfrk.tools.annotations.Description;
  * @since  2.0.0
  * 
  */
-@Description(desc = "缺少配置文件", id = 502, see = ExceptionConstants.MISSING_CONFIG_FILE)
+@Description(desc = "缺少配置文件", id = 502, group= "配置错误", see = ExceptionConstants.MISSING_CONFIG_FILE)
 public class MissingConfigFileException extends RuntimeException {
 
 

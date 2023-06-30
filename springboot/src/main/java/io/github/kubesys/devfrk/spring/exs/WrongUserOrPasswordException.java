@@ -11,7 +11,7 @@ import io.github.kubesys.devfrk.tools.annotations.Description;
  * @since  2.0.0
  * 
  */
-@Description(desc = "错误的用户名密码", id = 401, see = ExceptionConstants.WRONG_USERNAME_OR_PASSWORD)
+@Description(desc = "错误的用户名密码", id = 401, group= "权限错误", see = ExceptionConstants.WRONG_USERNAME_OR_PASSWORD)
 public class WrongUserOrPasswordException extends RuntimeException {
 
 

@@ -2,5 +2,13 @@
 	"GET": "^/.*/(get|list|query|describe|retrieve|echo|diff).*",
 	"PUT": "^/.*/(update|modify|replace|change|resize|tune|revert|convert).*",
 	"DELETE": "^/.*/(delete|remove|eject|detach|unplug|unset).*",
-	"POST": "^/.*/(login|logout|add|create|new|generate|insert|clone|attach|plug|set|bind|solve).*"
+	"POST": "^/.*/(login|logout|add|create|new|generate|insert|clone|attach|plug|set|bind|solve).*",
+	"DOC": {
+		"changelogs": "开发周报",
+		"resources": "资源周报",
+		"models": "数据模型",
+		"apis": "接口文档",
+		"cases": "用例文档",
+		"specs": "开发规范"
+	}
 }

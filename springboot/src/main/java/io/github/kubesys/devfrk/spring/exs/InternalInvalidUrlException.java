@@ -11,7 +11,7 @@ import io.github.kubesys.devfrk.tools.annotations.Description;
  * @since  2.0.0
  * 
  */
-@Description(desc = "未注册的Url，请访问getHandlers查询所有支持的HttpHandlers、参数和返回值类型", id = 301, see = ExceptionConstants.INVALID_REQUEST_URL)
+@Description(desc = "未注册的Url，请访问getHandlers查询所有支持的HttpHandlers、参数和返回值类型", id = 301, group= "内部错误" , see = ExceptionConstants.INVALID_REQUEST_URL)
 public class InternalInvalidUrlException extends RuntimeException {
 
 
