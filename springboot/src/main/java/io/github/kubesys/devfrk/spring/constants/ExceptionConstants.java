@@ -15,7 +15,7 @@ public class ExceptionConstants {
 		super();
 	}
 
-	public static final String INVALID_REQUEST_URL                                       = "invalid url, see /spec/url.md.";
+	public static final String INVALID_REQUEST_URL                                       = "invalid url, see [IP:port/context-path](resources/application.yml)/spec";
 	
 	public static final String INVALID_REQUEST_PARAMS                                    = "invalid parameters error.";
 	

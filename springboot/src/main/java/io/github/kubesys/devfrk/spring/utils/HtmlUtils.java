@@ -49,7 +49,4 @@ public class HtmlUtils {
                 + renderer.render(document);
 	}
 	
-	public static String toUrl(String path) {
-		return System.getenv("host") + path;
-	}
 }

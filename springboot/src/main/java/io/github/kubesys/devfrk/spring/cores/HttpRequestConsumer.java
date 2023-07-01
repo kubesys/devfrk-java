@@ -6,8 +6,6 @@ package io.github.kubesys.devfrk.spring.cores;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -163,7 +161,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 **************************************************/
 
 	@GetMapping(value = { "/" }, produces = MediaType.TEXT_HTML_VALUE)
-	public String index() {
+	public String index(HttpServletRequest request) {
 
 		StringBuilder markdown = new StringBuilder();
 
@@ -179,8 +177,8 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 				JsonNode value = entry.getValue();
 
 				if (value.has("name")) {
-					markdown.append("- [").append(value.get("name").asText()).append("](").append(HtmlUtils.toUrl(key))
-							.append(")\n");
+					markdown.append("- [").append(value.get("name").asText()).append("](")
+							.append(request.getContextPath() + key).append(")\n");
 				}
 			});
 
@@ -216,7 +214,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 			Map<String, List<Class<?>>> groupMapper = new LinkedHashMap<>();
 			
 			String groupBy = currentConfig.get("groupBy").asText();
-			String orderBy = currentConfig.get("orderBy").asText();
+//			String orderBy = currentConfig.get("orderBy").asText();
 			for (Class<?> c : targetClasses) {
 				Annotation a = c.getAnnotation(targetAnnotaion);
 				// 
@@ -224,14 +222,14 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 				
 				List<Class<?>> list = groupMapper.get(groupName) == null ? 
 							new ArrayList<>() : groupMapper.get(groupName);
-				for (int i = 0; i < list.size(); i++) {
-					String str1 = (String) list.get(i).getMethod(orderBy).invoke(a);
-					String str2 = (String) a.annotationType().getMethod(orderBy).invoke(a);
-					if (str2.compareTo(str1) > 0) {
-						list.add(i, c);
-					}
-					break;
-				}
+//				for (int i = 0; i < list.size(); i++) {
+//					String str2 = (String) a.annotationType().getMethod(orderBy).invoke(a);
+//					String str1 = (String) list.get(i).getMethod(orderBy).invoke(list.get(i));
+//					if (str2.compareTo(str1) > 0) {
+//						list.add(i, c);
+//					}
+//					break;
+//				}
 				
 				list.add(c);
 				groupMapper.put(groupName, list);
@@ -244,7 +242,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 				markdown.append("\n\n## ").append(group).append("\n\n");
 				
 				StringBuilder table = new StringBuilder();
-				JsonNode params = currentConfig.get(servletPath).get("mapper");
+				JsonNode params = currentConfig.get("mapper");
 				
 				table.append("\n | ");
 				for (JsonNode item : params) {
