@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
  * @since  1.1.0
  *
  */
+@Deprecated
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE}) 
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

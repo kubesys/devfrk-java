@@ -4,11 +4,43 @@
 	"DELETE": "^/.*/(delete|remove|eject|detach|unplug|unset).*",
 	"POST": "^/.*/(login|logout|add|create|new|generate|insert|clone|attach|plug|set|bind|solve).*",
 	"DOC": {
-		"changelogs": "开发周报",
-		"resources": "资源周报",
-		"models": "数据模型",
-		"apis": "接口文档",
-		"cases": "用例文档",
-		"specs": "开发规范"
+		"name": "文档目录",
+		"values": {
+			"/specs": {
+				"name": "开发规范"
+			},
+			"/apis": {
+				"name": "接口文档"
+			},
+			"/exceptions": {
+				"name": "异常模型",
+				"scan": "io.github.kubesys.devfrk.tools.annotations.ExceptionDesc",
+				"type": "class",
+				"groupBy": "group",
+				"orderBy": "id",
+				"mapper": [{
+						"name": "错误代号",
+						"value": "id"
+					},
+					{
+						"name": "错误描述",
+						"value": "desc"
+					},
+					{
+						"name": "错误取值",
+						"value": "see"
+					}
+				]
+			},
+			"/models": {
+				"name": "数据模型"
+			},
+			"/changelogs": {
+				"name": "开发周报"
+			},
+			"/resources": {
+				"name": "资源周报"
+			}
+		}
 	}
 }

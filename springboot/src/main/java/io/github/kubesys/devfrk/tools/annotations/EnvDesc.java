@@ -3,30 +3,31 @@
  */
 package io.github.kubesys.devfrk.tools.annotations;
 
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.springframework.core.annotation.AliasFor;
 import org.springframework.stereotype.Component;
 
 /**
- * @author   wuheng@iscas.ac.cn
- * @version  2.3.0
- * @since    2023/06/28
+ * @author wuheng@iscas.ac.cn
+ * @since  1.1.0
  *
- *
- * 生成文档描述
  */
-@Deprecated
-@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE}) 
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Component
-public @interface Document {
+public @interface EnvDesc {
 
+	/**
+	 * The value may indicate a suggestion for a logical component name,
+	 * to be turned into a Spring bean in case of an auto-detected component.
+	 * @return the suggested component name, if any (or empty String otherwise)
+	 */
+	@AliasFor(annotation = Component.class)
 	String value() default "";
-	
 }

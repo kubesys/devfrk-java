@@ -4,14 +4,14 @@
 package io.github.kubesys.devfrk.spring.exs;
 
 import io.github.kubesys.devfrk.spring.constants.ExceptionConstants;
-import io.github.kubesys.devfrk.tools.annotations.Description;
+import io.github.kubesys.devfrk.tools.annotations.ExceptionDesc;
 
 /**
  * @author wuheng@iscas.ac.cn
  * @since  2.0.0
  * 
  */
-@Description(desc = "未注册的Url，请访问getHandlers查询所有支持的HttpHandlers、参数和返回值类型", id = 301, group= "内部错误" , see = ExceptionConstants.INVALID_REQUEST_URL)
+@ExceptionDesc(desc = "未注册的Url，请访问getHandlers查询所有支持的HttpHandlers、参数和返回值类型", id = "301", group= "内部错误" , see = ExceptionConstants.INVALID_REQUEST_URL)
 public class InternalInvalidUrlException extends RuntimeException {
 
 

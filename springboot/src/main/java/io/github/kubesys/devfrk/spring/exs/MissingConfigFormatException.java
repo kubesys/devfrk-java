@@ -4,14 +4,14 @@
 package io.github.kubesys.devfrk.spring.exs;
 
 import io.github.kubesys.devfrk.spring.constants.ExceptionConstants;
-import io.github.kubesys.devfrk.tools.annotations.Description;
+import io.github.kubesys.devfrk.tools.annotations.ExceptionDesc;
 
 /**
  * @author wuheng@iscas.ac.cn
  * @since  2.0.0
  * 
  */
-@Description(desc = "缺少配置格式", id = 503, group= "配置错误", see = ExceptionConstants.MISSING_CONFIG_FILE)
+@ExceptionDesc(desc = "缺少配置格式", id = "503", group= "配置错误", see = ExceptionConstants.MISSING_CONFIG_FILE)
 public class MissingConfigFormatException extends RuntimeException {
 
 

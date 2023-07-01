@@ -4,14 +4,14 @@
 package io.github.kubesys.devfrk.spring.exs;
 
 import io.github.kubesys.devfrk.spring.constants.ExceptionConstants;
-import io.github.kubesys.devfrk.tools.annotations.Description;
+import io.github.kubesys.devfrk.tools.annotations.ExceptionDesc;
 
 /**
  * @author wuheng@iscas.ac.cn
  * @since  2.0.0
  * 
  */
-@Description(desc = "错误的用户名密码", id = 401, group= "权限错误", see = ExceptionConstants.WRONG_USERNAME_OR_PASSWORD)
+@ExceptionDesc(desc = "错误的用户名密码", id = "401", group= "权限错误", see = ExceptionConstants.WRONG_USERNAME_OR_PASSWORD)
 public class WrongUserOrPasswordException extends RuntimeException {
 
 

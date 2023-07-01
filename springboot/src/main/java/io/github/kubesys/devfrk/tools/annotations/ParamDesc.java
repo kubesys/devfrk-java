@@ -13,20 +13,35 @@ import java.lang.annotation.Target;
 import org.springframework.stereotype.Component;
 
 /**
- * @author   wuheng@iscas.ac.cn
- * @version  2.3.0
- * @since    2023/06/28
+ * @author wuheng@iscas.ac.cn
+ * @since  1.1.0
  *
- *
- * 生成文档描述
  */
-@Deprecated
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE}) 
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Component
-public @interface Document {
+public @interface ParamDesc {
 
-	String value() default "";
+	/**
+	 * The value may indicate a suggestion for a logical component name,
+	 * to be turned into a Spring bean in case of an auto-detected component.
+	 * @return the suggested component name, if any (or empty String otherwise)
+	 */
 	
+	boolean required() default true;
+	
+	String desc() default "";
+	
+	String see() default "";
+	
+	String regexp() default "";
+	
+	String date() default "";
+	
+	String author() default "";
+	
+	String time() default "1小时";
+	
+	int id() default 0;
 }
