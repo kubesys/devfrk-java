@@ -154,6 +154,29 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 
 	}
 
+
+	/**************************************************
+	 * 
+	 * Context
+	 * 
+	 **************************************************/
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		if (ctx == null) {
+			ctx = applicationContext;
+		}
+	}
+
+	/**
+	 * @param name name
+	 * @return obj
+	 * @throws Exception exception
+	 */
+	public Object getBean(String name) throws BeansException {
+		return ctx.getBean(name);
+	}
+	
 	/**************************************************
 	 * 
 	 * APIs and Changelog
@@ -192,6 +215,77 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	@GetMapping(value = { "/*" }, produces = MediaType.TEXT_HTML_VALUE)
 	public String docs(HttpServletRequest request) throws Exception {
 
+		JsonNode config = getConfig(request);
+
+		// 找到所有的类，扫描速度与引入第三方包数量成正比
+		// 暂不解决性能问题
+		Class<Annotation> label = (Class<Annotation>) 
+					Class.forName(config.get("scan").asText());
+					
+		Map<String, List<Class<?>>> groups = createGroups(
+				config, label, ClassUtils.scan(new String[] { "", }, label));
+		
+		StringBuilder markdown = new StringBuilder();
+
+		for (JsonNode currentConfig : config.get("values")) {
+			if ("table".equals(currentConfig.get("type").asText())) {
+			    for (Entry<String, List<Class<?>>> entry : groups.entrySet()) {
+			    	String group = entry.getKey();
+					markdown.append("\n\n## ").append(group).append("\n\n");
+					
+					StringBuilder table = new StringBuilder();
+					JsonNode params = currentConfig.get("mapper");
+					
+					table.append("\n | ");
+					for (JsonNode item : params) {
+						table.append(item.get("name").asText()).append(" | ");
+					}
+					
+					List<String> paramList = new ArrayList<>(); 
+					table.append("\n | ");
+					for (JsonNode item : params) {
+						table.append(" ---- | ");
+						paramList.add(item.get("value").asText());
+					}
+					
+					for (Class<?> cls : groups.get(group)) {
+						table.append("\n | ");
+						for (String str : paramList) {
+							Annotation a = cls.getAnnotation(label);
+							String v = (String) a.annotationType().getMethod(str).invoke(a);
+							table.append(v).append(" | ");
+						}
+					}
+					
+					markdown.append(HtmlUtils.toTable(table.toString()));
+					
+				}
+			}
+		}
+
+		return HtmlUtils.toHtml(markdown.toString());
+	}
+
+	private Map<String, List<Class<?>>> createGroups(JsonNode currentConfig, Class<Annotation> targetAnnotaion,
+			Set<Class<?>> targetClasses)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		Map<String, List<Class<?>>> groupMapper = new LinkedHashMap<>();
+		String groupBy = currentConfig.get("groupBy").asText();
+		for (Class<?> c : targetClasses) {
+			Annotation a = c.getAnnotation(targetAnnotaion);
+			// 
+			String groupName = (String) a.annotationType().getMethod(groupBy).invoke(a);
+			
+			List<Class<?>> list = groupMapper.get(groupName) == null ? 
+						new ArrayList<>() : groupMapper.get(groupName);
+			
+			list.add(c);
+			groupMapper.put(groupName, list);
+		}
+		return groupMapper;
+	}
+
+	private JsonNode getConfig(HttpServletRequest request) {
 		// 查看这个请求是否有对应的文档
 		JsonNode allConfig = configServer.getJSON(this.getClass()
 							.getSimpleName(), "DOC").get("values");
@@ -202,98 +296,6 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 		}
 
 		// 根据servletPath获取当前的配置
-		JsonNode currentConfig = allConfig.get(servletPath);
-
-		if ("class".equals(currentConfig.get("type").asText())) {
-			// 找到所有的类，扫描速度与引入第三方包数量成正比
-			// 暂不解决性能问题
-			Class<Annotation> targetAnnotaion = (Class<Annotation>) 
-						Class.forName(currentConfig.get("scan").asText());
-			Set<Class<?>> targetClasses = ClassUtils.scan(new String[] { "", }, targetAnnotaion);
-			
-			Map<String, List<Class<?>>> groupMapper = new LinkedHashMap<>();
-			
-			String groupBy = currentConfig.get("groupBy").asText();
-//			String orderBy = currentConfig.get("orderBy").asText();
-			for (Class<?> c : targetClasses) {
-				Annotation a = c.getAnnotation(targetAnnotaion);
-				// 
-				String groupName = (String) a.annotationType().getMethod(groupBy).invoke(a);
-				
-				List<Class<?>> list = groupMapper.get(groupName) == null ? 
-							new ArrayList<>() : groupMapper.get(groupName);
-//				for (int i = 0; i < list.size(); i++) {
-//					String str2 = (String) a.annotationType().getMethod(orderBy).invoke(a);
-//					String str1 = (String) list.get(i).getMethod(orderBy).invoke(list.get(i));
-//					if (str2.compareTo(str1) > 0) {
-//						list.add(i, c);
-//					}
-//					break;
-//				}
-				
-				list.add(c);
-				groupMapper.put(groupName, list);
-			}			
-			
-			// markdown
-			StringBuilder markdown = new StringBuilder();
-		    for (Entry<String, List<Class<?>>> entry : groupMapper.entrySet()) {
-		    	String group = entry.getKey();
-				markdown.append("\n\n## ").append(group).append("\n\n");
-				
-				StringBuilder table = new StringBuilder();
-				JsonNode params = currentConfig.get("mapper");
-				
-				table.append("\n | ");
-				for (JsonNode item : params) {
-					table.append(item.get("name").asText()).append(" | ");
-				}
-				
-				List<String> paramList = new ArrayList<>(); 
-				table.append("\n | ");
-				for (JsonNode item : params) {
-					table.append(" ---- | ");
-					paramList.add(item.get("value").asText());
-				}
-				
-				for (Class<?> cls : groupMapper.get(group)) {
-					table.append("\n | ");
-					for (String str : paramList) {
-						Annotation a = cls.getAnnotation(targetAnnotaion);
-						String v = (String) a.annotationType().getMethod(str).invoke(a);
-						table.append(v).append(" | ");
-					}
-				}
-				
-				markdown.append(HtmlUtils.toTable(table.toString()));
-				
-			}
-			return HtmlUtils.toHtml(markdown.toString());
-		}
-
-		return "";
-	}
-
-
-	/**************************************************
-	 * 
-	 * Response encapsulation
-	 * 
-	 **************************************************/
-
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		if (ctx == null) {
-			ctx = applicationContext;
-		}
-	}
-
-	/**
-	 * @param name name
-	 * @return obj
-	 * @throws Exception exception
-	 */
-	public Object getBean(String name) throws BeansException {
-		return ctx.getBean(name);
+		return allConfig.get(servletPath);
 	}
 }

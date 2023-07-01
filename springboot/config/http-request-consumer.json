@@ -15,22 +15,23 @@
 			"/exceptions": {
 				"name": "异常模型",
 				"scan": "io.github.kubesys.devfrk.tools.annotations.ExceptionDesc",
-				"type": "class",
 				"groupBy": "group",
-				"orderBy": "id",
-				"mapper": [{
-						"name": "错误代号",
-						"value": "id"
-					},
-					{
-						"name": "错误描述",
-						"value": "desc"
-					},
-					{
-						"name": "错误取值",
-						"value": "see"
-					}
-				]
+				"values": [{
+					"type": "table",
+					"mapper": [{
+							"name": "错误代号",
+							"value": "id"
+						},
+						{
+							"name": "错误描述",
+							"value": "desc"
+						},
+						{
+							"name": "错误取值",
+							"value": "see"
+						}
+					]
+				}]
 			},
 			"/models": {
 				"name": "数据模型"
