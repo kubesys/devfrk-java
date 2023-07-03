@@ -230,30 +230,22 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 		for (JsonNode currentConfig : config.get("values")) {
 			if ("table".equals(currentConfig.get("type").asText())) {
 			    for (Entry<String, List<Class<?>>> entry : groups.entrySet()) {
-			    	String group = entry.getKey();
-					markdown.append("\n\n## ").append(group).append("\n\n");
+			    	
+			    	String group = createGroup(markdown, entry);
 					
-					StringBuilder table = new StringBuilder();
-					JsonNode params = currentConfig.get("mapper");
+			    	StringBuilder table = new StringBuilder();
 					
-					table.append("\n | ");
-					for (JsonNode item : params) {
-						table.append(item.get("name").asText()).append(" | ");
-					}
+			    	List<String> params = createTableHeader(currentConfig, table);
 					
-					List<String> paramList = new ArrayList<>(); 
-					table.append("\n | ");
-					for (JsonNode item : params) {
-						table.append(" ---- | ");
-						paramList.add(item.get("value").asText());
-					}
-					
+					String kind = currentConfig.get("kind").asText();
 					for (Class<?> cls : groups.get(group)) {
 						table.append("\n | ");
-						for (String str : paramList) {
-							Annotation a = cls.getAnnotation(label);
-							String v = (String) a.annotationType().getMethod(str).invoke(a);
-							table.append(v).append(" | ");
+						for (String str : params) {
+							if ("Annotation".equals(kind)) {
+								Annotation a = cls.getAnnotation(label);
+								String v = (String) a.annotationType().getMethod(str).invoke(a);
+								table.append(v).append(" | ");
+							}
 						}
 					}
 					
@@ -264,6 +256,29 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 		}
 
 		return HtmlUtils.toHtml(markdown.toString());
+	}
+
+	private String createGroup(StringBuilder markdown, Entry<String, List<Class<?>>> entry) {
+		String group = entry.getKey();
+		markdown.append("\n\n## ").append(group).append("\n\n");
+		return group;
+	}
+
+	private List<String> createTableHeader(JsonNode currentConfig, StringBuilder table) {
+		JsonNode params = currentConfig.get("mapper");
+		
+		table.append("\n | ");
+		for (JsonNode item : params) {
+			table.append(item.get("name").asText()).append(" | ");
+		}
+		
+		List<String> paramList = new ArrayList<>(); 
+		table.append("\n | ");
+		for (JsonNode item : params) {
+			table.append(" ---- | ");
+			paramList.add(item.get("value").asText());
+		}
+		return paramList;
 	}
 
 	private Map<String, List<Class<?>>> createGroups(JsonNode currentConfig, Class<Annotation> targetAnnotaion,
