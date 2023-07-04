@@ -91,7 +91,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	@RequestMapping(method = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
 			RequestMethod.DELETE }, value = { "/**/**" }, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String forward(HttpServletRequest request,
-			@RequestParam(required = false) @RequestBody JsonNode body) throws Exception {
+			@RequestBody JsonNode body) throws Exception {
 		String regexp = configServer.getString(this.getClass().getSimpleName(), request.getMethod());
 		if (!RegexpUtils.startWith(regexp, request.getServletPath())) {
 			throw new InternalInvalidUrlException(ExceptionConstants.INVALID_REQUEST_URL);
