@@ -7,9 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -66,9 +68,13 @@ public class JSONUtils {
 			return json;
 		}
 		
-		//
-		return new ObjectMapper().readTree(
-				new ObjectMapper().writeValueAsString(obj));
+		// 忽略取值为空的
+		ObjectMapper objectMapper = JsonMapper.builder().
+				serializationInclusion(JsonInclude.Include.NON_NULL)
+				.build();
+		objectMapper.registerModule(new JavaTimeModule());
+		return objectMapper.valueToTree(
+				objectMapper.writeValueAsString(obj));
 	}
 	
 	public static JsonNode fromList(List<Object> objs) throws Exception {

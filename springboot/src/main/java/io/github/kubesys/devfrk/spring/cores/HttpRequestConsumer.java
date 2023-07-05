@@ -38,12 +38,15 @@ import io.github.kubesys.devfrk.spring.constants.ExceptionConstants;
 import io.github.kubesys.devfrk.spring.exs.InternalInvalidUrlException;
 import io.github.kubesys.devfrk.spring.exs.MissingConfigFileException;
 import io.github.kubesys.devfrk.spring.exs.MissingConfigItemException;
+import io.github.kubesys.devfrk.spring.resp.DefaultHttpResponse.HttpResponseCookie;
 import io.github.kubesys.devfrk.spring.resp.HttpResponse;
 import io.github.kubesys.devfrk.spring.utils.ClassUtils;
 import io.github.kubesys.devfrk.spring.utils.HtmlUtils;
 import io.github.kubesys.devfrk.spring.utils.JSONUtils;
 import io.github.kubesys.devfrk.spring.utils.RegexpUtils;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author wuheng@iscas.ac.cn
@@ -83,20 +86,20 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 **************************************************/
 
 	@GetMapping(value = { "/**/**" }, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody String forward(HttpServletRequest request,
+	public @ResponseBody String forward(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam(required = false) Map<String, String> body) throws Exception {
-		return forward(request, JSONUtils.from(body));
+		return forward(request, response, JSONUtils.from(body));
 	}
 
 	@RequestMapping(method = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
 			RequestMethod.DELETE }, value = { "/**/**" }, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody String forward(HttpServletRequest request,
+	public @ResponseBody String forward(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody JsonNode body) throws Exception {
 		String regexp = configServer.getString(this.getClass().getSimpleName(), request.getMethod());
 		if (!RegexpUtils.startWith(regexp, request.getServletPath())) {
 			throw new InternalInvalidUrlException(ExceptionConstants.INVALID_REQUEST_URL);
 		}
-		return doResponse(mapper.getCustomPath(request), body);
+		return doResponse(response, mapper.getCustomPath(request), body);
 	}
 
 	/**************************************************
@@ -128,7 +131,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 * @return resp
 	 * @throws Exception exception
 	 */
-	protected String doResponse(String customPath, JsonNode body) throws Exception {
+	protected String doResponse(HttpServletResponse response, String customPath, JsonNode body) throws Exception {
 
 		m_logger.log(Level.INFO, () -> "Begin to deal with " + customPath);
 
@@ -137,8 +140,17 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 
 			m_logger.log(Level.INFO, () -> body.toPrettyString());
 			Object result = mapper.execHttpHandler(mapper.getHttpHandler(customPath), customPath, body);
-
 			m_logger.log(Level.INFO, () -> "Successfully deal with " + customPath);
+			
+			if (result instanceof HttpResponseCookie token) {
+			    // 对象是 HttpResponseCookie 类型
+				Cookie cookie = new Cookie("token", token.getCookie());
+			    cookie.setMaxAge(token.getMaxAge()); // 设置为一个月的有效期，单位为秒
+			    cookie.setPath("/"); // 设置 Cookie 的作用路径，根路径下的所有请求都可以访问该 Cookie
+			    // 添加 Cookie 到响应
+			    response.addCookie(cookie);
+			    return ((HttpResponse) getBean(BeanConstants.RESPONSE)).success("");
+			}
 			return ((HttpResponse) getBean(BeanConstants.RESPONSE)).success(result);
 		} catch (Exception ex) {
 			if (ex instanceof InvocationTargetException ite) {

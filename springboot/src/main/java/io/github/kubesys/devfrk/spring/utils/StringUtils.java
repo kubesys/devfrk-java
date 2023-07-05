@@ -3,13 +3,9 @@
  */
 package io.github.kubesys.devfrk.spring.utils;
 
-import java.util.Arrays;
-import java.util.Map;
+import java.util.Base64;
 import java.util.Random;
 import java.util.regex.Pattern;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**
  * @author wuheng@iscas.ac.cn
@@ -49,5 +45,9 @@ public class StringUtils {
 	public static boolean isBase64(String str) {
         String base64Pattern = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$";
         return Pattern.matches(base64Pattern, str);
+    }
+	
+	public static String base64Encoder(String str) {
+		return Base64.getEncoder().encodeToString(str.getBytes());
     }
 }

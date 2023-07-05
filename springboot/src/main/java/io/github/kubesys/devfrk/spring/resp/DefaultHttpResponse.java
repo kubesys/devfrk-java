@@ -94,6 +94,36 @@ public class DefaultHttpResponse implements HttpResponse {
 		return new ObjectMapper().writeValueAsString(response);
 	}
 	
+	
+	public static class HttpResponseCookie {
+		
+		protected int maxAge = 3600;
+		
+		protected String cookie;
+
+		public HttpResponseCookie(String cookie) {
+			super();
+			this.cookie = cookie;
+		}
+
+		public int getMaxAge() {
+			return maxAge;
+		}
+
+		public void setMaxAge(int maxAge) {
+			this.maxAge = maxAge;
+		}
+
+		public String getCookie() {
+			return cookie;
+		}
+
+		public void setCookie(String cookie) {
+			this.cookie = cookie;
+		}
+		
+	}
+	
 	public static class HttpResponseData {
 		/**
 		 * neither Success or Failure
