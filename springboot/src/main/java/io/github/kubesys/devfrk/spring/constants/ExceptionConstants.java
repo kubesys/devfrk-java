@@ -21,7 +21,7 @@ public class ExceptionConstants {
 	
 	public static final String INVALID_REQUEST_RESULT                                    = "invalid result error.";
 	
-	public static final String WRONG_USERNAME_OR_PASSWORD                                = "wrong username or password.";
+	public static final String DB_WRONG_USERNAME_OR_PASSWORD                             = "wrong username or password.";
 	
 	public static final String MISSING_CONFIG_FILE                                       = "missing config file, ";
 	

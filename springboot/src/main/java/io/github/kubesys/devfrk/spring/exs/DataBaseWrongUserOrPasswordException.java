@@ -11,8 +11,8 @@ import io.github.kubesys.devfrk.tools.annotations.ExceptionDesc;
  * @since  2.0.0
  * 
  */
-@ExceptionDesc(desc = "错误的用户名密码", id = "401", group= "权限错误", see = ExceptionConstants.WRONG_USERNAME_OR_PASSWORD)
-public class WrongUserOrPasswordException extends RuntimeException {
+@ExceptionDesc(desc = "错误的用户名密码", id = "401", group= "权限错误", see = ExceptionConstants.DB_WRONG_USERNAME_OR_PASSWORD)
+public class DataBaseWrongUserOrPasswordException extends RuntimeException {
 
 
 	/**
@@ -21,13 +21,13 @@ public class WrongUserOrPasswordException extends RuntimeException {
 	private static final long serialVersionUID = -1057346529882181459L;
 
 	
-	public WrongUserOrPasswordException() {
+	public DataBaseWrongUserOrPasswordException() {
 		super();
 	}
 
 
 
-	public WrongUserOrPasswordException(String message) {
+	public DataBaseWrongUserOrPasswordException(String message) {
 		super(message);
 	}
 	
