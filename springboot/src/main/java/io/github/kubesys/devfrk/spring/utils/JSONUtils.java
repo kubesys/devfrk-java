@@ -85,6 +85,13 @@ public class JSONUtils {
 		return json;
     }
 	
+	public static String toKubeFullKind(JsonNode json) throws Exception {
+		String kind = json.get("kind").asText();
+		String group = json.has("apiVersion") ? json.get("apiVersion").asText() : "v1";
+		int idx = group.indexOf("/");
+		return idx == - 1 ? kind : group.substring(0, idx) + "." + kind;
+    }
+	
 	public static JsonNode objToJson(Object obj) throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.registerModule(new JavaTimeModule());

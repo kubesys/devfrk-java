@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -32,19 +33,19 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.github.kubesys.devfrk.spring.auth.AuthingModel;
 import io.github.kubesys.devfrk.spring.config.LocalConfigServer;
 import io.github.kubesys.devfrk.spring.constants.BeanConstants;
 import io.github.kubesys.devfrk.spring.constants.ExceptionConstants;
+import io.github.kubesys.devfrk.spring.exs.InternalInvalidTokenException;
 import io.github.kubesys.devfrk.spring.exs.InternalInvalidUrlException;
 import io.github.kubesys.devfrk.spring.exs.MissingConfigFileException;
 import io.github.kubesys.devfrk.spring.exs.MissingConfigItemException;
-import io.github.kubesys.devfrk.spring.resp.DefaultHttpResponse.HttpResponseCookie;
 import io.github.kubesys.devfrk.spring.resp.HttpResponse;
 import io.github.kubesys.devfrk.spring.utils.ClassUtils;
 import io.github.kubesys.devfrk.spring.utils.HtmlUtils;
 import io.github.kubesys.devfrk.spring.utils.JSONUtils;
 import io.github.kubesys.devfrk.spring.utils.RegexpUtils;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -95,11 +96,33 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 			RequestMethod.DELETE }, value = { "/**/**" }, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String forward(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody JsonNode body) throws Exception {
-		String regexp = configServer.getString(this.getClass().getSimpleName(), request.getMethod());
-		if (!RegexpUtils.startWith(regexp, request.getServletPath())) {
+		
+		String type = request.getMethod();
+		String regexp = configServer.getString(this.getClass().getSimpleName(), type);
+		
+		String servletPath = request.getServletPath();
+		if (!RegexpUtils.startWith(regexp, servletPath)) {
 			throw new InternalInvalidUrlException(ExceptionConstants.INVALID_REQUEST_URL);
 		}
-		return doResponse(response, mapper.getCustomPath(request), body);
+		
+		boolean authorised = true;
+		
+		Object beanInstance = getBean(BeanConstants.AUTHING); 
+		if (beanInstance != null && !servletPath.endsWith("/login")) {
+			String auth = request.getHeader("authorization");
+			String[] parts = auth.split("\\s+");
+			String user = request.getHeader("user");
+			AuthingModel authModel = new AuthingModel(parts[0], parts[1], user);
+			String kind = body.has("fullkind") ? 
+						body.get("fullkind").asText() : 
+							JSONUtils.toKubeFullKind(body);
+			authorised = ((HttpAuthingInterceptor) beanInstance).check(authModel, type, kind);
+		}
+		
+		if (!authorised) {
+			throw new InternalInvalidTokenException(ExceptionConstants.INVALID_REQUEST_TOKEN);
+		}
+		return doResponse( mapper.getCustomPath(request), body);
 	}
 
 	/**************************************************
@@ -131,7 +154,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 * @return resp
 	 * @throws Exception exception
 	 */
-	protected String doResponse(HttpServletResponse response, String customPath, JsonNode body) throws Exception {
+	protected String doResponse(String customPath, JsonNode body) throws Exception {
 
 		m_logger.log(Level.INFO, () -> "Begin to deal with " + customPath);
 
@@ -142,16 +165,9 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 			Object result = mapper.execHttpHandler(mapper.getHttpHandler(customPath), customPath, body);
 			m_logger.log(Level.INFO, () -> "Successfully deal with " + customPath);
 			
-			if (result instanceof HttpResponseCookie token) {
-			    // 对象是 HttpResponseCookie 类型
-				Cookie cookie = new Cookie("token", token.getCookie());
-			    cookie.setMaxAge(token.getMaxAge()); // 设置为一个月的有效期，单位为秒
-			    cookie.setPath("/"); // 设置 Cookie 的作用路径，根路径下的所有请求都可以访问该 Cookie
-			    // 添加 Cookie 到响应
-			    response.addCookie(cookie);
-			    return ((HttpResponse) getBean(BeanConstants.RESPONSE)).success("");
-			}
-			return ((HttpResponse) getBean(BeanConstants.RESPONSE)).success(result);
+			HttpResponse httpResponse = (HttpResponse) getBean(BeanConstants.RESPONSE) == null ?
+					(HttpResponse) getBean(BeanConstants.DEF_RESPONSE) : (HttpResponse) getBean(BeanConstants.RESPONSE);
+			return httpResponse.success(result);
 		} catch (Exception ex) {
 			if (ex instanceof InvocationTargetException ite) {
 				return invalidResponse((Exception) ite.getTargetException());
@@ -183,10 +199,13 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	/**
 	 * @param name name
 	 * @return obj
-	 * @throws Exception exception
 	 */
-	public Object getBean(String name) throws BeansException {
-		return ctx.getBean(name);
+	public Object getBean(String name) {
+		try {
+			return ctx.getBean(name);
+		} catch (NoSuchBeanDefinitionException ex) {
+			return null;
+		}
 	}
 	
 	/**************************************************

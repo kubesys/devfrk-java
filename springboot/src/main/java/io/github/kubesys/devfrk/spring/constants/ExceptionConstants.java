@@ -17,9 +17,11 @@ public class ExceptionConstants {
 
 	public static final String INVALID_REQUEST_URL                                       = "invalid url, see [IP:port/context-path](resources/application.yml)/spec";
 	
-	public static final String INVALID_REQUEST_PARAMS                                    = "invalid parameters error.";
+	public static final String INVALID_REQUEST_PARAMS                                    = "invalid parameters.";
 	
-	public static final String INVALID_REQUEST_RESULT                                    = "invalid result error.";
+	public static final String INVALID_REQUEST_RESULT                                    = "invalid result.";
+	
+	public static final String INVALID_REQUEST_TOKEN                                      = "invalid token.";
 	
 	public static final String DB_WRONG_USERNAME_OR_PASSWORD                             = "wrong username or password.";
 	
