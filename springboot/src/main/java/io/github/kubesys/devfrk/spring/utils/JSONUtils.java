@@ -86,12 +86,16 @@ public class JSONUtils {
     }
 	
 	public static String toKubeFullKind(JsonNode json) throws Exception {
-		String kind = json.has("kind") ? json.get("kind").asText() 
-							: json.get("data").get("kind").asText();
-		String apiVersion = json.has("apiVersion") ? json.get("apiVersion").asText()
-							: json.get("data").get("apiVersion").asText();
-		int idx = apiVersion.indexOf("/");
+		try {
+			String kind = json.has("kind") ? json.get("kind").asText() 
+								: json.get("data").get("kind").asText();
+			String apiVersion = json.has("apiVersion") ? json.get("apiVersion").asText()
+								: json.get("data").get("apiVersion").asText();
+			int idx = apiVersion.indexOf("/");
 		return idx == - 1 ? kind : apiVersion.substring(0, idx) + "." + kind;
+		} catch (Exception ex) {
+			return null;
+		}
     }
 	
 	public static JsonNode objToJson(Object obj) throws Exception {
