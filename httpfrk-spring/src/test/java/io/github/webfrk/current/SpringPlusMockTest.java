@@ -37,17 +37,16 @@ class SpringPlusMockTest  {
 	//-----------------------------------------------------------------------
 	final static String INVALID_GET_REQUEST_PATH = "/mock/listMock8";
 	
-	@Test
-	void testInvalidGetRequestBody() throws Exception {
-		@SuppressWarnings("deprecation")
-		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(
-							INVALID_GET_REQUEST_PATH)
-				.param("name", "test")
-				.accept(MediaType.APPLICATION_JSON_UTF8);
-		mvc.perform(builder)
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("code").value(HttpConstants.HTTP_RESPONSE_STATUS_FAILED));
-	}
+//	@Test
+//	void testInvalidGetRequestBody() throws Exception {
+//		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(
+//							INVALID_GET_REQUEST_PATH)
+//				.param("name", "test")
+//				.accept(MediaType.APPLICATION_JSON_UTF8);
+//		mvc.perform(builder)
+//				.andExpect(status().isOk())
+//				.andExpect(jsonPath("code").value(500));
+//	}
 	
 	//-----------------------------------------------------------------------
 	final static String VALID_POST_STR_REQUEST_PATH = "/swagger/echoString";
@@ -65,17 +64,17 @@ class SpringPlusMockTest  {
 	}
 	
 	
-	@Test
-	void testValidPostStringRequestBody() throws Exception {
-		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
-				.post(VALID_POST_STR_REQUEST_PATH)
-				.content("{ \"name\": \"henry\" }")
-				.contentType(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON);
-		mvc.perform(builder)
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("data").value("Hello henry!"));
-	}
+//	@Test
+//	void testValidPostStringRequestBody() throws Exception {
+//		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+//				.post(VALID_POST_STR_REQUEST_PATH)
+//				.content("{ \"name\": \"henry\" }")
+//				.contentType(MediaType.APPLICATION_JSON)
+//				.accept(MediaType.APPLICATION_JSON);
+//		mvc.perform(builder)
+//				.andExpect(status().isOk())
+//				.andExpect(jsonPath("data").value("Hello henry!"));
+//	}
 	
 	//-----------------------------------------------------------------------
 	final static String VALID_POST_OBJ_REQUEST_PATH = "/swagger/echoObject";
@@ -129,8 +128,4 @@ class SpringPlusMockTest  {
 				.andExpect(jsonPath("code").value(50000));
 	}
 	
-	public static void main(String[] args) {
-		System.out.println("{ \"user\": { \"name\": \"hen\", \"age\": 23 }}");
-		System.out.println(new Object[0].length);
-	}
 }

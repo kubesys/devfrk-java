@@ -5,24 +5,27 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.kubesys</groupId>
 	<artifactId>httpfrk-springboot</artifactId>
-	<version>2.2.2</version>
+	<version>2.2.3</version>
 	<packaging>jar</packaging>
 	<name>httpfrk-springboot</name>
 	<description>httpfrk-springboot</description>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.1.1</version>
+		<version>3.1.5</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
 		<jackson.version>2.15.2</jackson.version>
-		<spring.version>6.0.10</spring.version>
+		<spring.version>6.0.13</spring.version>
 		<openapi.version>1.7.0</openapi.version>
-		<validator.version>8.0.0.Final</validator.version>
+		<validator.version>8.0.1.Final</validator.version>
 		<collections4.version>4.4</collections4.version>
 		<jakarta.version>3.1.0</jakarta.version>
 		<commonmark.version>0.21.0</commonmark.version>
+		
 	</properties>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
@@ -243,4 +246,65 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<!-- Source -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>${maven.source.version}</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- Javadoc -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>${maven.javadoc.version}</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- GPG -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>${maven.gpg.version}</version>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<distributionManagement>
+        <repository>
+            <!--必须与 settings.xml 的 id 一致-->
+            <id>g-ubjg5602-iscas-system-maven</id>
+            <name>maven</name>
+            <url>https://g-ubjg5602-maven.pkg.coding.net/repository/iscas-system/jars/</url>
+        </repository>
+    </distributionManagement>
 </project>

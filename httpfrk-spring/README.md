@@ -34,14 +34,14 @@ We assume your IDE supports Maven.
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.0.5</version>
+		<version>3.1.5</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<dependencies>
 		<dependency>
 			<groupId>io.github.kubesys</groupId>
 			<artifactId>httpfrk-springboot</artifactId>
-			<version>2.1.5</version>
+			<version>2.2.3</version>
 		</dependency>
 	</dependencies>
 	
@@ -53,6 +53,47 @@ We assume your IDE supports Maven.
 		</repository>
 	</repositories>
 </project>
+```
+
+maven setting
+
+```
+<settings>
+    <!-- omitted xml -->
+    <servers>
+        <server>
+            <id>g-ubjg5602-iscas-system-maven</id>
+            <username>wuheng@iscas.ac.cn</username>
+            <password>[PASSWORD]</password>
+        </server>
+    </servers>
+</settings>
+```
+
+pom setting
+
+```
+<profiles>
+    <profile>
+        <id>Repository Proxy</id>
+        <activation>
+            <activeByDefault>true</activeByDefault>
+        </activation>
+        <repositories>
+            <repository>
+                <id>g-ubjg5602-iscas-system-maven</id>
+                <name>maven</name>
+                <url>https://g-ubjg5602-maven.pkg.coding.net/repository/iscas-system/jars/</url>
+                <releases>
+                    <enabled>true</enabled>
+                </releases>
+                <snapshots>
+                    <enabled>true</enabled>
+                </snapshots>
+            </repository>
+        </repositories>
+    </profile>
+</profiles>
 ```
 
 ### 2.2 application.yml
