@@ -20,23 +20,7 @@ We assume your IDE supports Maven.
 ### 2.1 pom.xml
 
 ```
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>[Your Project GroupId]</groupId>
-	<artifactId>[Your Project ArtifactId]</artifactId>
-	<version>[Youre Project Version]/version>
-	<packaging>jar</packaging>
-	<name>[Your Project Name]</name>
-  
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.1.5</version>
-		<relativePath /> <!-- lookup parent from repository -->
-	</parent>
+	
 	<dependencies>
 		<dependency>
 			<groupId>io.github.kubesys</groupId>
@@ -45,35 +29,7 @@ We assume your IDE supports Maven.
 		</dependency>
 	</dependencies>
 	
-	<repositories>
-		<repository>
-			<id>pdos-repos</id>
-			<name>PDOS Releases</name>
-			<url>https://nexus3.iecas.cn/repository/maven-public/</url>
-		</repository>
-	</repositories>
-</project>
-```
-
-maven setting
-
-```
-<settings>
-    <!-- omitted xml -->
-    <servers>
-        <server>
-            <id>g-ubjg5602-iscas-system-maven</id>
-            <username>wuheng@iscas.ac.cn</username>
-            <password>[PASSWORD]</password>
-        </server>
-    </servers>
-</settings>
-```
-
-pom setting
-
-```
-<profiles>
+	<profiles>
     <profile>
         <id>Repository Proxy</id>
         <activation>
@@ -94,6 +50,21 @@ pom setting
         </repositories>
     </profile>
 </profiles>
+```
+
+maven setting
+
+```
+<settings>
+    <!-- omitted xml -->
+    <servers>
+        <server>
+            <id>g-ubjg5602-iscas-system-maven</id>
+            <username>wuheng@iscas.ac.cn</username>
+            <password>[PASSWORD]</password>
+        </server>
+    </servers>
+</settings>
 ```
 
 ### 2.2 application.yml
