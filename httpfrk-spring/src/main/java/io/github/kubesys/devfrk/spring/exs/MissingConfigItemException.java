@@ -3,15 +3,11 @@
  */
 package io.github.kubesys.devfrk.spring.exs;
 
-import io.github.kubesys.devfrk.spring.constants.ExceptionConstants;
-import io.github.kubesys.devfrk.tools.annotations.ExceptionDesc;
-
 /**
  * @author wuheng@iscas.ac.cn
  * @since  2.0.0
  * 
  */
-@ExceptionDesc(desc = "缺少配置项", id = "501", group= "配置错误", see = ExceptionConstants.MISSING_CONFIG_ITEM)
 public class MissingConfigItemException extends RuntimeException {
 
 

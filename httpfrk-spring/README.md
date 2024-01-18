@@ -25,7 +25,7 @@ We assume your IDE supports Maven.
 		<dependency>
 			<groupId>io.github.kubesys</groupId>
 			<artifactId>httpfrk-springboot</artifactId>
-			<version>2.2.3</version>
+			<version>2.2.8</version>
 		</dependency>
 	</dependencies>
 	
@@ -50,21 +50,6 @@ We assume your IDE supports Maven.
         </repositories>
     </profile>
 </profiles>
-```
-
-maven setting
-
-```
-<settings>
-    <!-- omitted xml -->
-    <servers>
-        <server>
-            <id>g-ubjg5602-iscas-system-maven</id>
-            <username>wuheng@iscas.ac.cn</username>
-            <password>[PASSWORD]</password>
-        </server>
-    </servers>
-</settings>
 ```
 
 ### 2.2 application.yml

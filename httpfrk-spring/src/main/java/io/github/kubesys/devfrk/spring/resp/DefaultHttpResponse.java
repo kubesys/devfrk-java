@@ -12,7 +12,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.kubesys.devfrk.spring.constants.BeanConstants;
-import io.github.kubesys.devfrk.tools.annotations.Description;
 import jakarta.annotation.Resource;
 
 /**
@@ -68,15 +67,9 @@ public class DefaultHttpResponse implements HttpResponse {
 		m_logger.warning("handle request error: " + ex);
 		try {
 			return ((DefaultHttpResponse) context.getBean(BeanConstants.RESPONSE))
-					.unwrap("fail", ex.getClass().getAnnotationsByType(
-								Description.class)[0].id(), ex);
-		} catch (Exception e) {
-			try {
-				return ((DefaultHttpResponse) context.getBean(BeanConstants.RESPONSE))
-						.unwrap("fail", 300, e);
-			} catch (JsonProcessingException | BeansException e1) {
-				return fail(e1);
-			}
+					.unwrap("fail", 300, ex);
+		} catch (JsonProcessingException | BeansException e1) {
+			return fail(e1);
 		}
 		
 	}

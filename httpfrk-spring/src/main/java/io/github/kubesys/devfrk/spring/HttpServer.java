@@ -19,7 +19,7 @@ import io.github.kubesys.devfrk.spring.resp.HttpResponse;
 
 /**
  * @author  wuheng@iscas.ac.cn
- * @version 2.3.0
+ * @version 2.1.0
  * @since   2023/06/28
  * 
  *  
