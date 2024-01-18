@@ -47,6 +47,7 @@ import io.github.kubesys.devfrk.spring.exs.InternalInvalidUrlException;
 import io.github.kubesys.devfrk.spring.resp.HttpResponse;
 import io.github.kubesys.devfrk.spring.utils.JSONUtils;
 import io.github.kubesys.devfrk.spring.utils.RegexpUtils;
+import io.swagger.v3.oas.models.OpenAPI;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -75,12 +76,16 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 
 	@Autowired
 	protected LocalConfigServer configServer;
+	
+	@Autowired
+	protected HttpOpenapiGenerator httpOpenapiGenerator;
 
 	/**
 	 * 应用上下文
 	 */
 	protected ApplicationContext ctx;
 
+	
 	/**************************************************
 	 * 
 	 * forward all requests
@@ -126,6 +131,11 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 		return doResponse( mapper.getCustomPath(request), body);
 	}
 
+	@GetMapping(value = { "/api" }, produces = MediaType.APPLICATION_JSON_VALUE)
+	public OpenAPI getOpenAPI() {
+		return httpOpenapiGenerator.getOpenAPI();
+	}
+	
 	/**************************************************
 	 * 
 	 * handle all responses

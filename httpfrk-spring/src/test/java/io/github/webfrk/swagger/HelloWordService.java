@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
 
 /**
  * @author wuheng@iscas.ac.cn
@@ -33,8 +34,9 @@ public class HelloWordService {
 	}
 
 	public static void main(String[] args) {
+		OpenAPI openapi = new OpenAPI();
 		
+		Info info = new Info();
+		openapi.setInfo(info );
 	}
-	
-	
 }
