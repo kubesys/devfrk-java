@@ -63,4 +63,10 @@ public interface AbstractConfigServer {
 	 */
 	public abstract JsonNode getJSON(String kind, String key);
 
+	/**
+	 * @param kind      类型，本质就是类名
+	 * @return    返回json
+	 */
+	public abstract JsonNode getJSON(String kind);
+
 }

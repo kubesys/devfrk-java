@@ -28,6 +28,7 @@ import org.springframework.boot.CommandLineRunner;
 import io.github.kubesys.devfrk.spring.constants.ExceptionConstants;
 import io.github.kubesys.devfrk.spring.constants.HttpConstants;
 import io.github.kubesys.devfrk.spring.exs.HttpFramworkException;
+import io.swagger.v3.oas.models.PathItem;
 
 /**
  * @author   wuheng@iscas.ac.cn
@@ -48,6 +49,9 @@ public abstract class AbstractHttpHandler implements CommandLineRunner {
 	 */
 	@Autowired
 	protected HttpHandlerRegistry registry;
+	
+	@Autowired
+	protected HttpOpenapiGenerator openapi;
 	
 	
 	public static final Set<String> ignores = new HashSet<>();
@@ -115,6 +119,11 @@ public abstract class AbstractHttpHandler implements CommandLineRunner {
 			// 3. register to <code>HttpHandlerRegistry<code>
 			// this url is servicePath/serviceName
 			registry.addHttpHandler(servicePath, serviceName);
+
+			PathItem item = new PathItem();
+			String type = openapi.getType("/" + servicePath + "/" + serviceName.getName());
+			
+			openapi.addPath("/" + servicePath + "/" + serviceName.getName(), item );
 		}
 	}
 

@@ -15,15 +15,21 @@
  */
 package io.github.kubesys.devfrk.spring.cores;
 
+import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.kubesys.devfrk.spring.config.LocalConfigServer;
+import io.github.kubesys.devfrk.spring.utils.RegexpUtils;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.oas.models.Paths;
 
 
 /**
@@ -55,14 +61,36 @@ public class HttpOpenapiGenerator {
 		super();
 		this.configServer = configServer;
 		this.openAPI = new ObjectMapper().convertValue(
-				configServer.getJSON(
-						this.getClass().getSimpleName(), "value"), 
+				configServer.getJSON(this.getClass().getSimpleName()), 
 				OpenAPI.class);
 	}
-
 
 	public OpenAPI getOpenAPI() {
 		return openAPI;
 	}
+
+	public void addPath(String name, PathItem item) {
+		Paths paths = this.openAPI.getPaths();
+		if (paths == null) {
+			paths = new Paths();
+		}
+		paths.addPathItem(name, item);
+		this.openAPI.setPaths(paths);
+	}
 	
+	public String getType(String path) {
+		JsonNode jsonNode = configServer.getJSON(
+				HttpRequestConsumer.class.getSimpleName());
+		Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.fields();
+        while (fields.hasNext()) {
+            String key = fields.next().getKey();
+            String val = jsonNode.get(key).asText();
+            
+            if (RegexpUtils.startWith(val, path)) {
+            	return key;
+            }
+        }
+        m_logger.severe("Unsupport operator, it should be GET, POST, PUT or DELETE");
+		return null;
+	}
 }

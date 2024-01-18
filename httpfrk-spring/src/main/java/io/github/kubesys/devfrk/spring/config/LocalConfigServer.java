@@ -123,6 +123,13 @@ public class LocalConfigServer implements AbstractConfigServer {
 		return getJSON(kind, key).asBoolean();
 	}
 
+	
+	@Override
+	public JsonNode getJSON(String kind) {
+		checkKey(kind);
+		return configValueHub.get(kind);
+	}
+	
 	@Override
 	public JsonNode getJSON(String kind, String key) {
 		checkKey(kind);
