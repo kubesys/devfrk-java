@@ -145,16 +145,16 @@ public abstract class AbstractHttpHandler implements CommandLineRunner {
 			
 			Operation operation = new Operation();
 			if ("GET".equals(httpType)) {
-				operation.parameters(params(serviceName));
+				operation.setParameters(params(serviceName));
 				item.setGet(operation);
 			} else if ("POST".equals(httpType)) {
-				operation.requestBody(requestBody(serviceName));
+				operation.setRequestBody(requestBody(serviceName));
 				item.setPost(operation);
 			} else if ("PUT".equals(httpType)) {
-				operation.requestBody(requestBody(serviceName));
+				operation.setRequestBody(requestBody(serviceName));
 				item.setPut(operation);
 			} else if ("DELETE".equals(httpType)) {
-				operation.requestBody(requestBody(serviceName));
+				operation.setRequestBody(requestBody(serviceName));
 				item.setDelete(operation);
 			} 
 			openapi.addPath(url, item );
@@ -171,6 +171,8 @@ public abstract class AbstractHttpHandler implements CommandLineRunner {
 			schema.setType(p.getType().getTypeName());
 			schema.setDefault(JavaUtils.m_values.get(p.getType().getTypeName()));
 			param.setSchema(schema );
+			
+			list.add(param);
 		}
 		return list;
 	}
