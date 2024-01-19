@@ -27,6 +27,5 @@ public class SpringPlusBootServer extends HttpServer  {
 	public static void main(String[] args) {
 		SpringApplication.run(SpringPlusBootServer.class, args);
 	}
-
 	
 }

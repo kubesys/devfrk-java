@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.github.kubesys.devfrk.spring.bean.AuthingModel;
+import io.github.kubesys.devfrk.spring.bean.OpenapiModel;
 import io.github.kubesys.devfrk.spring.config.LocalConfigServer;
 import io.github.kubesys.devfrk.spring.constants.BeanConstants;
 import io.github.kubesys.devfrk.spring.constants.ExceptionConstants;
@@ -47,7 +48,6 @@ import io.github.kubesys.devfrk.spring.exs.InternalInvalidUrlException;
 import io.github.kubesys.devfrk.spring.resp.HttpResponse;
 import io.github.kubesys.devfrk.spring.utils.JSONUtils;
 import io.github.kubesys.devfrk.spring.utils.RegexpUtils;
-import io.swagger.v3.oas.models.OpenAPI;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -132,7 +132,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	}
 
 	@GetMapping(value = { "/api" }, produces = MediaType.APPLICATION_JSON_VALUE)
-	public OpenAPI getOpenAPI() {
+	public OpenapiModel getOpenAPI() {
 		return httpOpenapiGenerator.getOpenAPI();
 	}
 	

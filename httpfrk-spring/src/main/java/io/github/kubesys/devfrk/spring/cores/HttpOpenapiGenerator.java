@@ -25,9 +25,9 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.github.kubesys.devfrk.spring.bean.OpenapiModel;
 import io.github.kubesys.devfrk.spring.config.LocalConfigServer;
 import io.github.kubesys.devfrk.spring.utils.RegexpUtils;
-import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.Paths;
 
@@ -54,7 +54,7 @@ public class HttpOpenapiGenerator {
 	/**
 	 * 
 	 */
-	protected final OpenAPI openAPI;
+	protected final OpenapiModel openAPI;
 
 	@Autowired
 	public HttpOpenapiGenerator(LocalConfigServer configServer) {
@@ -62,10 +62,10 @@ public class HttpOpenapiGenerator {
 		this.configServer = configServer;
 		this.openAPI = new ObjectMapper().convertValue(
 				configServer.getJSON(this.getClass().getSimpleName()), 
-				OpenAPI.class);
+				OpenapiModel.class);
 	}
 
-	public OpenAPI getOpenAPI() {
+	public OpenapiModel getOpenAPI() {
 		return openAPI;
 	}
 
