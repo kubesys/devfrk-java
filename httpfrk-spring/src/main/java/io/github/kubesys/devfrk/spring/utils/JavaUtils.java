@@ -16,6 +16,7 @@
 package io.github.kubesys.devfrk.spring.utils;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -69,6 +70,28 @@ public class JavaUtils {
 		m_primitive.add("long");
 		m_primitive.add("double");
 		m_primitive.add("float");
+	}
+	
+	public static final Map<String, Object> m_values = new HashMap<>();
+
+	static {
+		m_values.put(String.class.getName(), "string");
+		m_values.put(Boolean.class.getName(), true);
+		m_values.put(Character.class.getName(), 'c');
+		m_values.put(Byte.class.getName(), 'c');
+		m_values.put(Short.class.getName(), 0);
+		m_values.put(Integer.class.getName(), 0);
+		m_values.put(Long.class.getName(), 0);
+		m_values.put(Double.class.getName(), 0);
+		m_values.put(Float.class.getName(), 0);
+		m_values.put("boolean", true);
+		m_values.put("char", 'c');
+		m_values.put("byte", 'c');
+		m_values.put("short", 0);
+		m_values.put("int", 0);
+		m_values.put("long", 0);
+		m_values.put("double", 0);
+		m_values.put("float", 0);
 	}
 	
 

@@ -15,14 +15,5 @@
 	},
 	"servers": [{
 		"url": "http://localhost:8080/httpfrk"
-	}],
-	"tags": [{
-			"name": "pet",
-			"description": "Everything about your Pets"
-		},
-		{
-			"name": "store",
-			"description": "Access to Petstore orders"
-		}
-	]
+	}]
 }

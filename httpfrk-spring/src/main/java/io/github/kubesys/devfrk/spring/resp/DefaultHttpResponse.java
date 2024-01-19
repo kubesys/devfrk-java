@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -96,7 +97,9 @@ public class DefaultHttpResponse implements HttpResponse {
 				new HttpResponseData(50000, id, value.toString()) 
 				: new HttpResponseData(20000, value);
 		
-		return new ObjectMapper().writeValueAsString(response);
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+		return objectMapper.writeValueAsString(response);
 	}
 	
 	

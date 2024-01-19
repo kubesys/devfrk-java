@@ -122,7 +122,8 @@ public class JSONUtils {
     }
 	
 	public static JsonNode fillObject(Type type) throws Exception {
-		ObjectNode json = new ObjectMapper().createObjectNode();
+		ObjectMapper objectMapper = new ObjectMapper();
+		ObjectNode json = objectMapper.createObjectNode();
 		Class<?> clz = Class.forName(type.getTypeName());
 		for (Field f : clz.getDeclaredFields()) {
 			if (Modifier.isStatic(f.getModifiers())) {

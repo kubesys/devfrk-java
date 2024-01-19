@@ -44,6 +44,7 @@ import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.examples.Example;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.MediaType;
+import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.RequestBody;
 
 /**
@@ -144,20 +145,40 @@ public abstract class AbstractHttpHandler implements CommandLineRunner {
 			
 			Operation operation = new Operation();
 			if ("GET".equals(httpType)) {
-				
-			} else if ("POST".equals(httpType)
-					|| "PUT".equals(httpType)
-					|| "DELETE".equals(httpType)) {
+				operation.parameters(params(serviceName));
+				item.setGet(operation);
+			} else if ("POST".equals(httpType)) {
 				operation.requestBody(requestBody(serviceName));
+				item.setPost(operation);
+			} else if ("PUT".equals(httpType)) {
+				operation.requestBody(requestBody(serviceName));
+				item.setPut(operation);
+			} else if ("DELETE".equals(httpType)) {
+				operation.requestBody(requestBody(serviceName));
+				item.setDelete(operation);
 			} 
-			
 			openapi.addPath(url, item );
 		}
 	}
 
-	public RequestBody requestBody(Method serviceName) throws Exception {
+	List<io.swagger.v3.oas.models.parameters.Parameter> params(Method serviceName) throws Exception {
+		List<io.swagger.v3.oas.models.parameters.Parameter> list = new ArrayList<>();
+		for (Parameter p : serviceName.getParameters()) {
+			io.swagger.v3.oas.models.parameters.Parameter param = new io.swagger.v3.oas.models.parameters.Parameter();
+			param.setName(p.getName());
+			param.setIn("query");
+			Schema<Object> schema = new Schema<Object>();
+			schema.setType(p.getType().getTypeName());
+			schema.setDefault(JavaUtils.m_values.get(p.getType().getTypeName()));
+			param.setSchema(schema );
+		}
+		return list;
+	}
+	
+	RequestBody requestBody(Method serviceName) throws Exception {
 		RequestBody body = new RequestBody();
-		ObjectNode json = new ObjectMapper().createObjectNode();
+		ObjectMapper objectMapper = new ObjectMapper();
+		ObjectNode json = objectMapper.createObjectNode();
 		for (Parameter p : serviceName.getParameters()) {
 			Type paramType = p.getParameterizedType();
 			if (JavaUtils.isBool(paramType)) {
