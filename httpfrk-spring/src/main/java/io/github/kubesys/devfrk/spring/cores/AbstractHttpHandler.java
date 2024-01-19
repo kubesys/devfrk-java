@@ -17,7 +17,13 @@ package io.github.kubesys.devfrk.spring.cores;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,10 +31,20 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import io.github.kubesys.devfrk.spring.constants.ExceptionConstants;
 import io.github.kubesys.devfrk.spring.constants.HttpConstants;
 import io.github.kubesys.devfrk.spring.exs.HttpFramworkException;
+import io.github.kubesys.devfrk.spring.utils.JSONUtils;
+import io.github.kubesys.devfrk.spring.utils.JavaUtils;
+import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.oas.models.examples.Example;
+import io.swagger.v3.oas.models.media.Content;
+import io.swagger.v3.oas.models.media.MediaType;
+import io.swagger.v3.oas.models.parameters.RequestBody;
 
 /**
  * @author   wuheng@iscas.ac.cn
@@ -121,10 +137,71 @@ public abstract class AbstractHttpHandler implements CommandLineRunner {
 			registry.addHttpHandler(servicePath, serviceName);
 
 			PathItem item = new PathItem();
-			String type = openapi.getType("/" + servicePath + "/" + serviceName.getName());
+			String url = "/" + servicePath + "/" + serviceName.getName();
 			
-			openapi.addPath("/" + servicePath + "/" + serviceName.getName(), item );
+			String httpType = openapi.getType(url);
+			item.description("");
+			
+			Operation operation = new Operation();
+			if ("GET".equals(httpType)) {
+				
+			} else if ("POST".equals(httpType)
+					|| "PUT".equals(httpType)
+					|| "DELETE".equals(httpType)) {
+				operation.requestBody(requestBody(serviceName));
+			} 
+			
+			openapi.addPath(url, item );
 		}
+	}
+
+	public RequestBody requestBody(Method serviceName) throws Exception {
+		RequestBody body = new RequestBody();
+		ObjectNode json = new ObjectMapper().createObjectNode();
+		for (Parameter p : serviceName.getParameters()) {
+			Type paramType = p.getParameterizedType();
+			if (JavaUtils.isBool(paramType)) {
+				json.put(p.getName(), true);
+			} else if (JavaUtils.isChar(paramType) 
+					|| JavaUtils.isString(paramType)) {
+				json.put(p.getName(), "string");
+			} else if (JavaUtils.isDouble(paramType)
+					|| JavaUtils.isFloat(paramType)
+					|| JavaUtils.isInt(paramType)
+					|| JavaUtils.isShort(paramType)) {
+				json.put(p.getName(), 0);
+			} else if (JavaUtils.isStringList(paramType)
+					|| JavaUtils.isStringSet(paramType)) {
+				List<String> list = new ArrayList<>();
+				list.add("string");
+				list.add("string");
+				json.set(p.getName(), JSONUtils.from(list));
+			} else if (JavaUtils.isStringStringMap(paramType)) {
+				Map<String, String> map = new HashMap<>();
+				map.put("string", "string");
+				json.set(p.getName(), JSONUtils.from(map));
+			} else if (JavaUtils.isStringObjectMap(paramType)) {
+				List<Object> list = new ArrayList<>();
+				list.add(JSONUtils.fillObject(paramType));
+				list.add(JSONUtils.fillObject(paramType));
+				json.set(p.getName(), JSONUtils.from(list));
+			} else if (JavaUtils.isObjectList(paramType) 
+					|| JavaUtils.isObjectSet(paramType)) {
+				Map<String, Object> map = new HashMap<>();
+				map.put("string", JSONUtils.fillObject(paramType));
+				json.set(p.getName(), JSONUtils.from(map));
+			} else {
+				json.set(p.getName(), JSONUtils.fillObject(paramType));
+			}
+		}
+		Content content = new Content();
+		MediaType mediaType = new MediaType();
+		Example example = new Example();
+		example.setValue(json.toPrettyString());
+		mediaType.addExamples("application/json", example );
+		content.put("application/json", mediaType );
+		body.setContent(content );
+		return body;
 	}
 
 	

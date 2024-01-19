@@ -15,6 +15,10 @@
  */
 package io.github.kubesys.devfrk.spring.utils;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -116,5 +120,52 @@ public class JSONUtils {
 		String replaceAll = objectMapper.writeValueAsString(obj);
 		return objectMapper.readTree(replaceAll);
     }
+	
+	public static JsonNode fillObject(Type type) throws Exception {
+		ObjectNode json = new ObjectMapper().createObjectNode();
+		Class<?> clz = Class.forName(type.getTypeName());
+		for (Field f : clz.getDeclaredFields()) {
+			if (Modifier.isStatic(f.getModifiers())) {
+				continue;
+			}
+
+			Type paramType = f.getGenericType();
+			
+			if (JavaUtils.isBool(paramType)) {
+				json.put(f.getName(), true);
+			} else if (JavaUtils.isChar(paramType) 
+					|| JavaUtils.isString(paramType)) {
+				json.put(f.getName(), "string");
+			} else if (JavaUtils.isDouble(paramType)
+					|| JavaUtils.isFloat(paramType)
+					|| JavaUtils.isInt(paramType)
+					|| JavaUtils.isShort(paramType)) {
+				json.put(f.getName(), 0);
+			} else if (JavaUtils.isStringList(paramType)
+					|| JavaUtils.isStringSet(paramType)) {
+				List<String> list = new ArrayList<>();
+				list.add("string");
+				list.add("string");
+				json.set(f.getName(), JSONUtils.from(list));
+			} else if (JavaUtils.isStringStringMap(paramType)) {
+				Map<String, String> map = new HashMap<>();
+				map.put("string", "string");
+				json.set(f.getName(), JSONUtils.from(map));
+			} else if (JavaUtils.isStringObjectMap(paramType)) {
+				List<Object> list = new ArrayList<>();
+				list.add(JSONUtils.fillObject(paramType));
+				list.add(JSONUtils.fillObject(paramType));
+				json.set(f.getName(), JSONUtils.from(list));
+			} else if (JavaUtils.isObjectList(paramType) 
+					|| JavaUtils.isObjectSet(paramType)) {
+				Map<String, Object> map = new HashMap<>();
+				map.put("string", JSONUtils.fillObject(paramType));
+				json.set(f.getName(), JSONUtils.from(map));
+			} else {
+				json.set(f.getName(), JSONUtils.fillObject(paramType));
+			}
+		}
+		return json;
+	}
 
 }

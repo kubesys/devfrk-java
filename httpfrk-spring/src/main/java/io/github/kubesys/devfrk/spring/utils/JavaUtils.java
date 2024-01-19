@@ -49,7 +49,7 @@ public class JavaUtils {
 	/**
 	 * primitive type in Java
 	 */
-	private final static Set<String> m_primitive = new HashSet<String>();
+	private static final Set<String> m_primitive = new HashSet<>();
 
 	static {
 		m_primitive.add(String.class.getName());
@@ -70,9 +70,15 @@ public class JavaUtils {
 		m_primitive.add("double");
 		m_primitive.add("float");
 	}
+	
 
 	public static boolean isString(Class<?> clazz) {
 		String typename = clazz.getTypeName();
+		return typename.equals(String.class.getName());
+	}
+	
+	public static boolean isString(Type type) {
+		String typename = type.getTypeName();
 		return typename.equals(String.class.getName());
 	}
 	
@@ -81,8 +87,19 @@ public class JavaUtils {
 		return typename.equals("int") || typename.equals(Integer.class.getName());
 	}
 	
+	public static boolean isInt(Type type) {
+		String typename = type.getTypeName();
+		return typename.equals("int") || typename.equals(Integer.class.getName());
+	}
+	
+	
 	public static boolean isLong(Class<?> clazz) {
 		String typename = clazz.getTypeName();
+		return typename.equals("long") || typename.equals(Long.class.getName());
+	}
+	
+	public static boolean isLong(Type type) {
+		String typename = type.getTypeName();
 		return typename.equals("long") || typename.equals(Long.class.getName());
 	}
 	
@@ -91,8 +108,18 @@ public class JavaUtils {
 		return typename.equals("float") || typename.equals(Float.class.getName());
 	}
 	
+	public static boolean isFloat(Type type) {
+		String typename = type.getTypeName();
+		return typename.equals("float") || typename.equals(Float.class.getName());
+	}
+	
 	public static boolean isDouble(Class<?> clazz) {
 		String typename = clazz.getTypeName();
+		return typename.equals("double") || typename.equals(Double.class.getName());
+	}
+	
+	public static boolean isDouble(Type type) {
+		String typename = type.getTypeName();
 		return typename.equals("double") || typename.equals(Double.class.getName());
 	}
 	
@@ -101,13 +128,28 @@ public class JavaUtils {
 		return typename.equals("short") || typename.equals(Short.class.getName());
 	}
 	
+	public static boolean isShort(Type type) {
+		String typename = type.getTypeName();
+		return typename.equals("short") || typename.equals(Short.class.getName());
+	}
+	
 	public static boolean isChar(Class<?> clazz) {
 		String typename = clazz.getTypeName();
 		return typename.equals("char") || typename.equals(Character.class.getName());
 	}
 	
+	public static boolean isChar(Type type) {
+		String typename = type.getTypeName();
+		return typename.equals("char") || typename.equals(Character.class.getName());
+	}
+	
 	public static boolean isBool(Class<?> clazz) {
 		String typename = clazz.getTypeName();
+		return typename.equals("boolean") || typename.equals(Boolean.class.getName());
+	}
+	
+	public static boolean isBool(Type type) {
+		String typename = type.getTypeName();
 		return typename.equals("boolean") || typename.equals(Boolean.class.getName());
 	}
 	
@@ -180,9 +222,10 @@ public class JavaUtils {
 	 * @param type typename
 	 * @return return true if the typename is Map, but not java.util.Map with
 	 *         (String, String) style, otherwise return false
+	 * @throws ClassNotFoundException 
 	 */
-	public static boolean isStringObjectMap(Type type) {
-		return !isStringStringMap(type);
+	public static boolean isStringObjectMap(Type type) throws ClassNotFoundException {
+		return isMap(Class.forName(type.getTypeName())) && !isStringStringMap(type);
 	}
 
 	/**
@@ -213,9 +256,10 @@ public class JavaUtils {
 	 * @param type typename
 	 * @return return true if the typename is java.util.List with String style,
 	 *         otherwise return false
+	 * @throws ClassNotFoundException 
 	 */
-	public static boolean isObjectList(Type type) {
-		return !isStringList(type);
+	public static boolean isObjectList(Type type) throws ClassNotFoundException {
+		return isList(Class.forName(type.getTypeName())) && !isStringList(type);
 	}
 
 	/**
@@ -224,7 +268,7 @@ public class JavaUtils {
 	 *         java.util.List with String style, otherwise return false
 	 */
 	public static boolean isObjectList(Class<?> clz) {
-		return !isStringList(clz);
+		return isList(clz) && !isStringList(clz);
 	}
 
 	/**
@@ -255,16 +299,18 @@ public class JavaUtils {
 	 * @param type typename
 	 * @return return true if the typename is starts with java.util.List, but not
 	 *         java.util.List with String style, otherwise return false
+	 * @throws ClassNotFoundException 
 	 */
-	public static boolean isObjectSet(Type type) {
-		return !isStringSet(type);
+	public static boolean isObjectSet(Type type) throws ClassNotFoundException {
+		return isSet(Class.forName(type.getTypeName())) && !isStringSet(type);
 	}
 
 	/**
 	 * @param type              Map
 	 * @return classname
+	 * @throws ClassNotFoundException 
 	 */
-	public static String getValueClassForGenericMap(Type type) {
+	public static String getValueClassForGenericMap(Type type) throws ClassNotFoundException {
 		if (!isStringObjectMap(type)) {
 			m_logger.warning(type + " is not " + Map.class.getName());
 			return null;
@@ -278,8 +324,9 @@ public class JavaUtils {
 	/**
 	 * @param type              List
 	 * @return classname
+	 * @throws ClassNotFoundException 
 	 */
-	public static String getClassForGenericList(Type type) {
+	public static String getClassForGenericList(Type type) throws ClassNotFoundException {
 		if (!isObjectList(type)) {
 			m_logger.warning(type + " is not " + List.class.getName());
 			return null;
@@ -293,8 +340,9 @@ public class JavaUtils {
 	/**
 	 * @param type              Set
 	 * @return classname
+	 * @throws ClassNotFoundException 
 	 */
-	public static String getClassForGenericSet(Type type) {
+	public static String getClassForGenericSet(Type type) throws ClassNotFoundException {
 		if (!isObjectSet(type)) {
 			m_logger.warning(type + " is not " + Set.class.getName());
 			return null;
