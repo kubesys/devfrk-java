@@ -248,7 +248,7 @@ public class JavaUtils {
 	 * @throws ClassNotFoundException 
 	 */
 	public static boolean isStringObjectMap(Type type) throws ClassNotFoundException {
-		return isMap(Class.forName(type.getTypeName())) && !isStringStringMap(type);
+		return isMap(Class.forName(getClassname(type))) && !isStringStringMap(type);
 	}
 
 	/**
@@ -282,7 +282,7 @@ public class JavaUtils {
 	 * @throws ClassNotFoundException 
 	 */
 	public static boolean isObjectList(Type type) throws ClassNotFoundException {
-		return isList(Class.forName(type.getTypeName())) && !isStringList(type);
+		return isList(Class.forName(getClassname(type))) && !isStringList(type);
 	}
 
 	/**
@@ -299,7 +299,7 @@ public class JavaUtils {
 	 * @return return true if the typename is starts with java.util.Set
 	 */
 	public static boolean isSet(Class<?> clz) {
-		return isNull(clz) ? false : Set.class.isAssignableFrom(clz);
+		return isNull(clz) ? false : Set.class.isAssignableFrom(clz) || List.class.isAssignableFrom(clz);
 	}
 	
 	/**
@@ -325,9 +325,19 @@ public class JavaUtils {
 	 * @throws ClassNotFoundException 
 	 */
 	public static boolean isObjectSet(Type type) throws ClassNotFoundException {
-		return isSet(Class.forName(type.getTypeName())) && !isStringSet(type);
+		return isSet(Class.forName(getClassname(type))) && !isStringSet(type);
 	}
 
+	/**
+	 * @param type typename
+	 * @return string
+	 */
+	protected static String getClassname(Type type) {
+		String typename = type.getTypeName();
+		int idx = typename.indexOf("<");
+		return idx == -1 ? typename : typename.substring(0, idx);
+	}
+	
 	/**
 	 * @param type              Map
 	 * @return classname
