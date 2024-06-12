@@ -111,23 +111,30 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 			throw new InternalInvalidUrlException(ExceptionConstants.INVALID_REQUEST_URL);
 		}
 		
-		boolean authorised = true;
+		boolean authorised = false;
 		
-		Object beanInstance = getBean(BeanConstants.AUTHING); 
-		if (beanInstance != null && !servletPath.endsWith("/login")) {
-			String auth = request.getHeader("authorization");
-			String[] parts = auth.split("\\s+");
-			String user = request.getHeader("user");
-			AuthingModel authModel = new AuthingModel(parts[0], parts[1], user);
-			String kind = body.has("fullkind") ? 
-						body.get("fullkind").asText() : 
-							JSONUtils.toKubeFullKind(body);
-			authorised = ((HttpAuthingInterceptor) beanInstance).check(authModel, type, kind);
+		try {
+			authorised = Boolean.parseBoolean(System.getenv(BeanConstants.AUTHING));
+		} catch (Exception ex) {
+			// ignore here
 		}
 		
-		if (!authorised) {
-			throw new InternalInvalidTokenException(ExceptionConstants.INVALID_REQUEST_TOKEN);
+		if (authorised) {
+			Object beanInstance = getBean(BeanConstants.AUTHING); 
+			if (beanInstance != null && !servletPath.endsWith("/login")) {
+				String auth = request.getHeader("authorization");
+				String[] parts = auth.split("\\s+");
+				String user = request.getHeader("user");
+				AuthingModel authModel = new AuthingModel(parts[0], parts[1], user);
+				String kind = body.has("fullkind") ? 
+							body.get("fullkind").asText() : 
+								JSONUtils.toKubeFullKind(body);
+				authorised = ((HttpAuthingInterceptor) beanInstance).check(authModel, type, kind);
+			} else {
+				throw new InternalInvalidTokenException(ExceptionConstants.INVALID_REQUEST_TOKEN);
+			}
 		}
+		
 		return doResponse( mapper.getCustomPath(request), body);
 	}
 
