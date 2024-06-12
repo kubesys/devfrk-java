@@ -111,13 +111,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 			throw new InternalInvalidUrlException(ExceptionConstants.INVALID_REQUEST_URL);
 		}
 		
-		boolean authorised = false;
-		
-		try {
-			authorised = Boolean.parseBoolean(System.getenv(BeanConstants.AUTHING));
-		} catch (Exception ex) {
-			// ignore here
-		}
+		boolean authorised = isAuthing();
 		
 		if (authorised) {
 			Object beanInstance = getBean(BeanConstants.AUTHING); 
@@ -137,6 +131,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 		
 		return doResponse( mapper.getCustomPath(request), body);
 	}
+
 
 	@GetMapping(value = { "/api" }, produces = MediaType.APPLICATION_JSON_VALUE)
 	public OpenapiModel getOpenAPI() {
