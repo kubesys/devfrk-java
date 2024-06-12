@@ -46,6 +46,7 @@ import io.github.kubesys.devfrk.spring.constants.ExceptionConstants;
 import io.github.kubesys.devfrk.spring.exs.InternalInvalidTokenException;
 import io.github.kubesys.devfrk.spring.exs.InternalInvalidUrlException;
 import io.github.kubesys.devfrk.spring.resp.HttpResponse;
+import io.github.kubesys.devfrk.spring.utils.EnvUtils;
 import io.github.kubesys.devfrk.spring.utils.JSONUtils;
 import io.github.kubesys.devfrk.spring.utils.RegexpUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -111,7 +112,7 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 			throw new InternalInvalidUrlException(ExceptionConstants.INVALID_REQUEST_URL);
 		}
 		
-		boolean authorised = isAuthing();
+		boolean authorised = EnvUtils.isAuthing();
 		
 		if (authorised) {
 			Object beanInstance = getBean(BeanConstants.AUTHING); 
