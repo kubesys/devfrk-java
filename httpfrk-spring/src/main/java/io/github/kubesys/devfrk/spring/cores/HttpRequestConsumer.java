@@ -93,13 +93,13 @@ public class HttpRequestConsumer implements ApplicationContextAware {
 	 * 
 	 **************************************************/
 
-	@GetMapping(value = { "/**/**" }, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = { "/**/**" })
 	public @ResponseBody String forward(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam(required = true) Map<String, String> body) throws Exception {
 		return forward(request, response, JSONUtils.from(body));
 	}
 
-	@RequestMapping(method = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
+	@RequestMapping(method = { RequestMethod.POST, RequestMethod.PUT,
 			RequestMethod.DELETE }, value = { "/**/**" }, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String forward(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody JsonNode body) throws Exception {
